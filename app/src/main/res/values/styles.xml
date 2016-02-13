@@ -1,0 +1,96 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="TVTitleStyle" parent="android:Widget.TextView">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/_20sdp</item>
+        <item name="android:layout_marginBottom">@dimen/_20sdp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="TVContentStyle" parent="android:Widget.TextView">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="EVInputStyle" parent="android:Widget.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginLeft">@dimen/_10sdp</item>
+        <item name="android:layout_marginRight">@dimen/_10sdp</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:inputType">textPersonName</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle"></item>
+        <item name="android:paddingLeft">@dimen/_8sdp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="btn_login">
+        <item name="android:layout_height">@dimen/_50sdp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginLeft">@dimen/_55sdp</item>
+        <item name="android:layout_marginRight">@dimen/_55sdp</item>
+        <item name="android:typeface">serif</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/rounded_corner_green</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="btn_register">
+        <item name="android:layout_height">@dimen/_50sdp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginLeft">@dimen/_55sdp</item>
+        <item name="android:layout_marginRight">@dimen/_55sdp</item>
+        <item name="android:typeface">serif</item>
+        <item name="android:textColor">@color/btnRegisterTextColor</item>
+        <item name="android:background">@drawable/rounded_corner_white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="vertical_space">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+    </style>
+
+    <style name="whiteLineLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="chb_Register" parent="android:Widget.Holo.CheckedTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:button">@drawable/custom_checkbox</item>
+
+    </style>
+
+    <style name="greenLineLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/darkgreen</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+</resources>

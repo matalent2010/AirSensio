@@ -1,0 +1,8 @@
+<resources>
+    <integer name="FS_exbold">5</integer>
+    <integer name="FS_exbold_italic">7</integer>
+    <integer name="FS_semibold">9</integer>
+    <integer name="FS_semibold_italic">11</integer>
+    <integer name="FS_light">16</integer>
+    <integer name="FS_light_italic">18</integer>
+</resources>

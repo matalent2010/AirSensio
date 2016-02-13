@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">AirSensio</string>
+    <string name="action_settings">Settings</string>
+
+<!-- Font Name -->
+    <string name="font_name_opensans">OpenSans</string>
+    <string name="font_name_path_opensans">font/OpenSans-SemiboldItalic.ttf</string>
+
+<!-- Strings realted to Terms and Condition -->
+    <string name="title_terms">TERMS &amp; CONDITIONS</string>
+    <string name="content_terms">Please read the foolwings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\nPlease read the foolwings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\nPlease read the foolwings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\nPlease read the foolwings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\n</string>
+    <string name="button_accept">ACCEPT &amp; CONTINUE</string>
+
+<!-- Strings related to login -->
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_new_account"><u>Create New Account</u></string>
+    <string name="action_sign_in_short">GET STARTED!</string>
+    <string name="description_login">Tells you what\'s in the\nair you breathe</string>
+    <string name="description_otherlogin">Or Login with</string>
+    <string name="description_license">I accept the terms and conditions</string>
+
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="password_hint">Password</string>
+    <string name="username_hint">Username</string>
+
+<!-- Strings related to Create Account -->
+    <string name="title_create_account">CREATE ACCOUNT</string>
+    <string name="hint_firstname">First name</string>
+    <string name="hint_lastname">Last name</string>
+    <string name="hint_birthday">Date of birth</string>
+    <string name="hint_gender">Gender</string>
+    <string name="chb_geolocation">Allow geolocation</string>
+    <string name="chb_subscribe">Subscribe to newsletter</string>
+    <string name="btn_register">REGISTER</string>
+    <string name="otherregister">Or Register with</string>
+
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+</resources>
