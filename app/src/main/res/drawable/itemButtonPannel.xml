@@ -5,15 +5,15 @@
 
     <!-- view background color -->
     <solid
-        android:color="@color/white" >
+        android:color="@color/background_panel" >
     </solid>
 
     <stroke
-        android:width="0dp"
-        android:color="@color/white" >
+        android:width="1dp"
+        android:color="@color/darkgreen" >
     </stroke>
 
     <corners
-        android:radius="10dp"   >
+        android:radius="0dp"   >
     </corners>
 </shape>

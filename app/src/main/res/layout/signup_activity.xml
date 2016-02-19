@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_signup">
+    android:background="@drawable/bg_signup"
+    tools:context="com.wondereight.airsensio.Activity.SignupActivity">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,22 +17,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_35sdp"
+                android:layout_marginTop="@dimen/_20sdp"
                 android:paddingLeft="@dimen/_18sdp"
                 android:paddingRight="@dimen/_18sdp"
                 android:orientation="vertical">
 
                 <com.wondereight.airsensio.CustomView.CustomFontTextView
                     android:text="@string/title_create_account"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:textSize="26sp"
+                    style = "@style/TVTitleStyle"
                     app:textStyle="@integer/FS_light"
-                    android:textColor="@color/white"
                     app:font="@string/font_name_opensans"/>
 
             </LinearLayout>
@@ -56,7 +55,7 @@
                     android:orientation="vertical">
                     <EditText
                         android:id="@+id/etFirstName"
-                        style="@style/EVInputStyle"
+                        style="@style/EVInputCenterStyle"
                         android:hint="@string/hint_firstname"/>
 
                     <LinearLayout
@@ -71,7 +70,7 @@
                     android:orientation="vertical">
                     <EditText
                         android:id="@+id/etLastName"
-                        style="@style/EVInputStyle"
+                        style="@style/EVInputCenterStyle"
                         android:hint="@string/hint_lastname"/>
 
                     <LinearLayout
@@ -86,7 +85,7 @@
                     android:orientation="vertical">
                     <EditText
                         android:id="@+id/etBirthday"
-                        style="@style/EVInputStyle"
+                        style="@style/EVInputCenterStyle"
                         android:hint="@string/hint_birthday"/>
 
                     <LinearLayout
@@ -101,7 +100,7 @@
                     android:orientation="vertical">
                     <EditText
                         android:id="@+id/etGender"
-                        style="@style/EVInputStyle"
+                        style="@style/EVInputCenterStyle"
                         android:hint="@string/hint_gender"/>
 
                     <LinearLayout
@@ -115,11 +114,12 @@
                     android:layout_marginTop="@dimen/_15sdp"
                     android:layout_marginLeft="@dimen/_50sdp">
                     <CheckBox
-                        style="@style/chb_Register"
+                        style="@style/chb_style1"
                         android:text="@string/chb_geolocation"
-                        android:id="@+id/chbGelocation"/>
+                        android:id="@+id/chbGelocation"
+                        android:checked="true"/>
                     <CheckBox
-                        style="@style/chb_Register"
+                        style="@style/chb_style1"
                         android:layout_marginTop="5dp"
                         android:text="@string/chb_subscribe"
                         android:id="@+id/chbSubscribe"/>
@@ -152,8 +152,8 @@
                         android:text="@string/otherregister"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="3dp"
-                        android:layout_marginRight="3dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
                         android:textStyle="italic"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/white"/>
@@ -212,7 +212,7 @@
 
             <LinearLayout
                 style="@style/vertical_space"
-                android:layout_weight="1">
+                android:layout_weight="5">
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

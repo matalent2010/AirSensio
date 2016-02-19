@@ -12,19 +12,19 @@ import butterknife.OnClick;
 
 import com.wondereight.airsensio.R;
 
-public class MainActivity extends AppCompatActivity {
+public class HealthActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.health_activity);
         ButterKnife.bind(this);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_health, menu);
         return true;
     }
 
@@ -43,10 +43,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    @OnClick(R.id.btnAcceptTerms)
-    void onClickBtnAcceptTerms() {
-        Intent LogninIntent = new Intent(MainActivity.this, LoginAcitivity.class);
-        startActivity(LogninIntent);
+    @OnClick(R.id.btnHealthSave) void onClickBtnHealthSave(){
+        Intent HomeIntent = new Intent(HealthActivity.this, HomeActivity.class);
+        startActivity(HomeIntent);
     }
 }

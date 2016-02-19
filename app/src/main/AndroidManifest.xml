@@ -20,8 +20,10 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".Activity.MainActivity"
-            android:label="@string/app_name" >
-        <!--android:windowSoftInputMode="adjustPan"-->
+            android:label="@string/app_name"
+            android:noHistory="true" >
+
+            <!-- android:windowSoftInputMode="adjustPan" -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,6 +34,27 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".Activity.LoginAcitivity"
+            android:label="@string/title_activity_login_acitivity" >
+        </activity>
+        <activity
+            android:name=".Activity.SignupActivity"
+            android:label="@string/title_activity_signup" >
+        </activity>
+        <activity
+            android:name=".Activity.HealthActivity"
+            android:label="@string/title_activity_health" >
+        </activity>
+        <activity
+            android:name=".Activity.HomeActivity"
+            android:label="@string/title_activity_home" >
+        </activity>
+        <activity
+            android:name=".Activity.SymptomActivity"
+            android:label="@string/title_activity_sympton" >
+        </activity>
     </application>
 
 </manifest>

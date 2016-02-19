@@ -11,8 +11,9 @@
         <item name="android:layout_marginTop">@dimen/_20sdp</item>
         <item name="android:layout_marginBottom">@dimen/_20sdp</item>
         <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:gravity">center_horizontal</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textSize">26sp</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
 
@@ -25,6 +26,21 @@
     </style>
 
     <style name="EVInputStyle" parent="android:Widget.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginLeft">@dimen/_10sdp</item>
+        <item name="android:layout_marginRight">@dimen/_10sdp</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:inputType">textPersonName</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textStyle"></item>
+        <item name="android:paddingLeft">@dimen/_8sdp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="EVInputCenterStyle" parent="android:Widget.EditText">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_marginLeft">@dimen/_10sdp</item>
@@ -78,13 +94,43 @@
         <item name="android:layout_marginTop">10dp</item>
     </style>
 
-    <style name="chb_Register" parent="android:Widget.Holo.CheckedTextView">
+    <style name="chb_style1" parent="android:Widget.Holo.CheckedTextView">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/white</item>
+        <item name="android:paddingLeft">10dp</item>
         <item name="android:textSize">22sp</item>
-        <item name="android:button">@drawable/custom_checkbox</item>
+        <item name="android:button">@drawable/custom_checkbox1</item>
+    </style>
 
+    <style name="chb_style2" parent="android:Widget.Holo.CheckedTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:button">@drawable/custom_checkbox2</item>
+    </style>
+
+    <style name="chb_smallstyle1" parent="android:Widget.Holo.CheckedTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:button">@drawable/custom_smallcheckbox1</item>
+    </style>
+
+    <style name="chb_smallstyle2" parent="android:Widget.Holo.CheckedTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:button">@drawable/custom_smallcheckbox2</item>
     </style>
 
     <style name="greenLineLayout">

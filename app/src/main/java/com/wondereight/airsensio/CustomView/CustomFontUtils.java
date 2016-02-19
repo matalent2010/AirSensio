@@ -47,13 +47,13 @@ public class CustomFontUtils {
         if (fontName.contentEquals(context.getString(R.string.font_name_opensans))) {
 
             switch (textStyle) {
-                case Typeface.BOLD: // bold
+                case Typeface.BOLD: // bold, equals 1
                     return FontCache.getTypeface("font/OpenSans-Bold.ttf", context);
 
-                case Typeface.ITALIC: // italic
+                case Typeface.ITALIC: // italic, equals 2
                     return FontCache.getTypeface("font/OpenSans-Italic.ttf", context);
 
-                case Typeface.BOLD_ITALIC: // bold italic
+                case Typeface.BOLD_ITALIC: // bold italic,  equals 3
                     return FontCache.getTypeface("font/OpenSans-BoldItalic.ttf", context);
 
                 case 5: // extra bold, equals @integer/FS_exbold
@@ -73,7 +73,8 @@ public class CustomFontUtils {
 
                 case 18: // light italic, equals @integer/FS_lightitalic
                     return FontCache.getTypeface("font/OpenSans-LightItalic.ttf", context);
-                case Typeface.NORMAL: // regular
+
+                case Typeface.NORMAL: // regular, equals 0
                 default:
                     return FontCache.getTypeface("font/OpenSans-Regular.ttf", context);
             }

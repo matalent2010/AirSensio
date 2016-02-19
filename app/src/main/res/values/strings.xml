@@ -8,7 +8,7 @@
 
 <!-- Strings realted to Terms and Condition -->
     <string name="title_terms">TERMS &amp; CONDITIONS</string>
-    <string name="content_terms">Please read the foolwings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\nPlease read the foolwings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\nPlease read the foolwings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\nPlease read the foolwings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\n</string>
+    <string name="content_terms">Please read the followings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\nPlease read the foolwings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\nPlease read the foolwings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\nPlease read the foolwings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\n</string>
     <string name="button_accept">ACCEPT &amp; CONTINUE</string>
 
 <!-- Strings related to login -->
@@ -17,7 +17,7 @@
     <string name="prompt_password">Password</string>
     <string name="action_new_account"><u>Create New Account</u></string>
     <string name="action_sign_in_short">GET STARTED!</string>
-    <string name="description_login">Tells you what\'s in the\nair you breathe</string>
+    <string name="description_login">Tells you what\'s in the \nair you breathe</string>
     <string name="description_otherlogin">Or Login with</string>
     <string name="description_license">I accept the terms and conditions</string>
 
@@ -28,6 +28,7 @@
     <string name="username_hint">Username</string>
 
 <!-- Strings related to Create Account -->
+    <string name="title_activity_signup">Create Account</string>
     <string name="title_create_account">CREATE ACCOUNT</string>
     <string name="hint_firstname">First name</string>
     <string name="hint_lastname">Last name</string>
@@ -37,7 +38,39 @@
     <string name="chb_subscribe">Subscribe to newsletter</string>
     <string name="btn_register">REGISTER</string>
     <string name="otherregister">Or Register with</string>
+    <string name="title_activity_login_acitivity">Sign in</string>
 
+<!-- Strings related to About Health -->
+    <string name="title_activity_health">Your Health</string>
+    <string name="title_health">TELL US MORE ABOUT \nYOUR HEALTH</string>
+    <string name="chb_conscious">I\'m just health conscious.</string>
+    <string name="chb_allergies">I have allergies, asthma:</string>
+    <string name="chb_eyes">Eyes</string>
+    <string name="chb_nose">Nose</string>
+    <string name="chb_lungs">Lungs</string>
+    <string name="hint_specify">Please specify</string>
+    <string name="chb_respiratory">I have another respiratory</string>
+    <string name="chb_pet">I have a pet at home</string>
+    <string name="btn_save_continue">SAVE &amp; CONTINUE</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="hello_world">Hello world!</string>
+
+<!-- Strings related to Home -->
+    <string name="btn_home">Home</string>
+    <string name="btn_statistics">Statistics</string>
+    <string name="btn_preorder">Pre-order</string>
+    <string name="btn_profile">Profile</string>
+    <string name="btn_settings">Settings</string>
+    <string name="title_activity_sympton">SymptonActivity</string>
+
+<!-- Strings realted to Select Symptom -->
+    <string name="title_symptom">SELECT SYMPTOM</string>
+    <string name="description_symptom">Press to modify the\nintensity of your symptom</string>
+    <string name="btnSubmit">Submit</string>
+
+<!-- Strings realted to Settings -->
+    <string name="title_settings">SETTINGS</string>
+    <string name="description_settings">Set the minimum threshold\nfor your notifications:</string>
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
 </resources>

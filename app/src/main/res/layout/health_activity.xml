@@ -1,0 +1,179 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg_tellus"
+    tools:context="com.wondereight.airsensio.Activity.HealthActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true"
+            android:isScrollContainer="false"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:orientation="vertical">
+
+                    <com.wondereight.airsensio.CustomView.CustomFontTextView
+                        android:text="@string/title_health"
+                        style = "@style/TVTitleStyle"
+                        app:textStyle="@integer/FS_light"
+                        app:font="@string/font_name_opensans"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/_40sdp"
+                    android:paddingRight="@dimen/_40sdp"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:layout_marginLeft="@dimen/_8sdp">
+                        <CheckBox
+                            style="@style/chb_style2"
+                            android:text="@string/chb_conscious"
+                            android:id="@+id/chbconscious"
+                            android:checked="true"/>
+                        <CheckBox
+                            style="@style/chb_style2"
+                            android:text="@string/chb_subscribe"
+                            android:id="@+id/chbSubscribe"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:layout_marginLeft="@dimen/_8sdp"
+                        android:paddingLeft="@dimen/_10sdp">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+                            <CheckBox
+                                style="@style/chb_smallstyle1"
+                                android:text="@string/chb_eyes"
+                                android:id="@+id/chbeyes"
+                                android:checked="true"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+                            <CheckBox
+                                style="@style/chb_smallstyle1"
+                                android:text="@string/chb_nose"
+                                android:id="@+id/chbnose"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+                            <CheckBox
+                                style="@style/chb_smallstyle1"
+                                android:text="@string/chb_lungs"
+                                android:id="@+id/chblungs"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/etspecify"
+                            style="@style/EVInputStyle"
+                            android:hint="@string/hint_specify"/>
+
+                        <LinearLayout
+                            style="@style/whiteLineLayout"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:layout_marginLeft="@dimen/_8sdp">
+                        <CheckBox
+                            style="@style/chb_style2"
+                            android:text="@string/chb_respiratory"
+                            android:id="@+id/chbrespiratory"
+                            android:checked="true"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/etanotherspecify"
+                            style="@style/EVInputStyle"
+                            android:hint="@string/hint_specify"/>
+
+                        <LinearLayout
+                            style="@style/whiteLineLayout"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:layout_marginLeft="@dimen/_8sdp">
+                        <CheckBox
+                            style="@style/chb_style2"
+                            android:text="@string/chb_pet"
+                            android:id="@+id/chbpet"
+                            android:checked="true"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white">
+            <TextView
+                android:id="@+id/btnHealthSave"
+                android:text="@string/btn_save_continue"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/TermsButtonTextColor"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:background="@color/transparent"
+                android:padding="10dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -18,6 +18,7 @@
     <color name="littlegreen">#73ac7e</color>
     <color name="lightgreen">#89BA62</color>
     <color name="darkgreen">#396562</color>
+    <color name="darkred">#F00</color>
 
 <!--Terms&Condition Color-->
     <color name="TermsButtonColor">@color/white</color>
@@ -29,6 +30,16 @@
 <!--Register Color-->
     <color name="btnRegisterTextColor">@color/orange</color>
 
+<!-- Home Page Color-->
+    <color name="BottomMenuTextColor_n">@color/black</color>
+    <color name="BottomMenuTextColor_s">@color/lightgreen</color>
+
+<!-- Home Fragment Color-->
+    <color name="textShadowColor_gray">#b0b0b0</color>
+
+<!-- Statistics Fragment Color-->
+    <color name="textColor_Green">@color/littlegreen</color>
+    <color name="background_panel">@color/white</color>
     <!-- Menu -->
     <color name="MenuColor">#323232</color>
     <color name="MenuOrange">#ff9536</color>

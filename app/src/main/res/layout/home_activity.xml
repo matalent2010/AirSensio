@@ -1,0 +1,172 @@
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="bottom"
+        android:background="@color/white"
+        android:minHeight="?attr/actionBarSize"
+        android:id="@+id/LLBottomMenu"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/btn_home"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/ivitem_home"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_width="@dimen/_35sdp"
+                android:src="@drawable/btn_home_s" />
+            <TextView
+                android:id="@+id/ivitemtext_home"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:gravity="center_horizontal"
+                android:layout_marginBottom="5dp"
+                android:textAllCaps="true"
+                android:textColor="@color/BottomMenuTextColor_s"
+                android:textSize="11sp"
+                android:text="@string/btn_home"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_statistics"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView android:id="@+id/ivitem_statistics"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_width="@dimen/_35sdp"
+                android:src="@drawable/btn_statistics_n" />
+            <TextView
+                android:id="@+id/ivitemtext_statistics"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:gravity="center_horizontal"
+                android:layout_marginBottom="5dp"
+                android:textAllCaps="true"
+                android:textColor="@color/BottomMenuTextColor_n"
+                android:textSize="11sp"
+                android:text="@string/btn_statistics"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_preorder"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView android:id="@+id/ivitem_preorder"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_width="@dimen/_35sdp"
+                android:src="@drawable/btn_preorder_n" />
+            <TextView
+                android:id="@+id/ivitemtext_preorder"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:gravity="center_horizontal"
+                android:layout_marginBottom="5dp"
+                android:textAllCaps="true"
+                android:textColor="@color/BottomMenuTextColor_n"
+                android:textSize="11sp"
+                android:text="@string/btn_preorder"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_profile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView android:id="@+id/ivitem_profile"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_width="@dimen/_35sdp"
+                android:src="@drawable/btn_profile_n" />
+            <TextView
+                android:id="@+id/ivitemtext_profile"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:gravity="center_horizontal"
+                android:layout_marginBottom="5dp"
+                android:textAllCaps="true"
+                android:textColor="@color/BottomMenuTextColor_n"
+                android:textSize="11sp"
+                android:text="@string/btn_profile"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_settings"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView android:id="@+id/ivitem_settings"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_width="@dimen/_35sdp"
+                android:src="@drawable/btn_settings_n" />
+            <TextView
+                android:id="@+id/ivitemtext_settings"
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:gravity="center_horizontal"
+                android:layout_marginBottom="5dp"
+                android:textAllCaps="true"
+                android:textColor="@color/BottomMenuTextColor_n"
+                android:textSize="11sp"
+                android:text="@string/btn_settings"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/LLBottomMenu"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <com.wondereight.airsensio.CustomView.CustomViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </com.wondereight.airsensio.CustomView.CustomViewPager>
+
+    </LinearLayout>
+
+</RelativeLayout>
+
+<!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--xmlns:tools="http://schemas.android.com/tools"-->
+<!--android:id="@+id/fragment"-->
+<!--android:name="com.wondereight.airsensio.Fragment.HomeActivityFragment"-->
+<!--tools:layout="@layout/fragment_home"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="match_parent" />-->
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
