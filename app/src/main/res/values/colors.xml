@@ -4,12 +4,13 @@
 <!-- Common Colors-->
     <color name="transparent">#00000000</color>
     <color name="white">#FFF</color>
-    <color name="darkgray">#666</color>
-    <color name="whitegrey">#EEEEEE</color>
+    <color name="darkgray">#DDD</color>
+    <color name="whitegray">#EEEEEE</color>
     <color name="white50">#80FFFFFF</color>
     <color name="red">#ec483c</color>
     <color name="green">#22AA22</color>
     <color name="black">#000000</color>
+    <color name="lightblack">#666</color>
     <color name="orange">#ff9536</color>
     <color name="yellow">#f3eb0e</color>
 
@@ -34,12 +35,20 @@
     <color name="BottomMenuTextColor_n">@color/black</color>
     <color name="BottomMenuTextColor_s">@color/lightgreen</color>
 
+<!-- Symptom Page Color-->
+    <color name="SymptomTextColor">@color/lightblack</color>
+
 <!-- Home Fragment Color-->
     <color name="textShadowColor_gray">#b0b0b0</color>
 
 <!-- Statistics Fragment Color-->
     <color name="textColor_Green">@color/littlegreen</color>
+    <color name="textColor_White">@color/white</color>
     <color name="background_panel">@color/white</color>
+    <color name="background_Green">#5d9f67</color>
+    <color name="background_Gray">@color/darkgray</color>
+    <color name="background_outline">#5d9f67</color>
+
     <!-- Menu -->
     <color name="MenuColor">#323232</color>
     <color name="MenuOrange">#ff9536</color>

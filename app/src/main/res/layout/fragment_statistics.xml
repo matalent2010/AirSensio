@@ -23,46 +23,74 @@
             android:gravity="center"/>
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/tabmenu"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_30sdp"
+        android:baselineAligned="false"
         android:layout_below="@id/topStaticsName"
-        android:background="@drawable/itemButtonPannel"
+        android:background="@drawable/itembuttonpannel"
         android:padding="1dp"
         android:orientation="horizontal">
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="@dimen/_5sdp"
             android:gravity="center"
-            android:orientation="vertical"
-            android:background="@drawable/itemButtonPannel">
-
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tab_day"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center|center_horizontal"
+                android:textColor="@color/textColor_White"
+                android:background="@drawable/itemgreenpannel"
+                android:text="Day"/>
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_35sdp"
-        android:layout_above="@id/LLButtonPanel"
-        android:background="@color/background_panel"
-        android:orientation="horizontal"
-        android:gravity="center">
         <LinearLayout
-            android:layout_width="@dimen/_15sdp"
-            android:layout_height="@dimen/_15sdp"
-            android:background="@drawable/eclipse_red">
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_8sdp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:gravity="center"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Your outbreaks"
-            android:textColor="@color/black"/>
-
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tab_week"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center|center_horizontal"
+                android:textColor="@color/textColor_Green"
+                android:background="@drawable/itembuttonpannel"
+                android:text="Week"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tab_month"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center|center_horizontal"
+                android:textColor="@color/textColor_Green"
+                android:background="@drawable/itembuttonpannel"
+                android:text="Month"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tab_year"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center|center_horizontal"
+                android:textColor="@color/textColor_Green"
+                android:background="@drawable/itembuttonpannel"
+                android:text="Year"/>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -78,13 +106,14 @@
             android:layout_height="@dimen/_110sdp"
             android:orientation="horizontal">
             <LinearLayout
+                android:id="@+id/item_particles"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:padding="@dimen/_5sdp"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:background="@drawable/itemButtonPannel">
+                android:background="@drawable/itembuttonpannel">
                 <ImageView
                     android:layout_width="@dimen/_40sdp"
                     android:layout_height="@dimen/_40sdp"
@@ -106,13 +135,14 @@
                     android:textColor="@color/black"/>
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/item_allergen"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:padding="@dimen/_5sdp"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:background="@drawable/itemButtonPannel">
+                android:background="@drawable/itembuttonpannel">
                 <ImageView
                     android:layout_width="@dimen/_40sdp"
                     android:layout_height="@dimen/_40sdp"
@@ -134,13 +164,14 @@
                     android:textColor="@color/black"/>
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/item_humidity"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:padding="@dimen/_5sdp"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:background="@drawable/itemButtonPannel">
+                android:background="@drawable/itembuttonpannel">
                 <ImageView
                     android:layout_width="@dimen/_40sdp"
                     android:layout_height="@dimen/_40sdp"
@@ -168,13 +199,14 @@
             android:layout_height="@dimen/_110sdp"
             android:orientation="horizontal">
             <LinearLayout
+                android:id="@+id/item_temperature"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:padding="@dimen/_5sdp"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:background="@drawable/itemButtonPannel">
+                android:background="@drawable/itembuttonpannel">
                 <ImageView
                     android:layout_width="@dimen/_40sdp"
                     android:layout_height="@dimen/_40sdp"
@@ -196,13 +228,14 @@
                     android:textColor="@color/black"/>
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/item_sunlight"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:padding="@dimen/_5sdp"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:background="@drawable/itemButtonPannel">
+                android:background="@drawable/itembuttonpannel">
                 <ImageView
                     android:layout_width="@dimen/_40sdp"
                     android:layout_height="@dimen/_40sdp"
@@ -224,13 +257,14 @@
                     android:textColor="@color/black"/>
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/item_gas"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:padding="@dimen/_5sdp"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:background="@drawable/itemButtonPannel">
+                android:background="@drawable/itembuttonpannel">
                 <ImageView
                     android:layout_width="@dimen/_40sdp"
                     android:layout_height="@dimen/_40sdp"
@@ -254,4 +288,54 @@
 
         </LinearLayout>
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/outbreaks"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_35sdp"
+        android:layout_above="@id/LLButtonPanel"
+        android:background="@color/background_panel"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <LinearLayout
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:background="@drawable/eclipse_red">
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_8sdp"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Your outbreaks"
+            android:textColor="@color/black"/>
+
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/tabmenu"
+        android:layout_above="@id/outbreaks"
+        android:background="@drawable/bg_graph"
+        android:padding="1dp"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/_5sdp"
+            android:gravity="center"
+            android:orientation="vertical">
+            <com.db.chart.view.LineChartView
+                xmlns:chart="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/chart1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="15dp"
+                chart:chart_axisColor="#30547d99"
+                chart:chart_typeface="OpenSans-Regular.ttf"/>
+        </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

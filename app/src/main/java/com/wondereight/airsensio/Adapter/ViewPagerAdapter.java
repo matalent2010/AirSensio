@@ -13,6 +13,10 @@ import com.wondereight.airsensio.Fragment.StatisticsFragment;
 
 import java.util.ArrayList;
 
+/**
+ * Created by Miguel on 02/2/2016.
+ */
+
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
 	private Context _context;

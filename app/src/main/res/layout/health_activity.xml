@@ -57,8 +57,8 @@
                             android:checked="true"/>
                         <CheckBox
                             style="@style/chb_style2"
-                            android:text="@string/chb_subscribe"
-                            android:id="@+id/chbSubscribe"/>
+                            android:text="@string/chb_allergies"
+                            android:id="@+id/chballergies"/>
                     </LinearLayout>
 
                     <LinearLayout

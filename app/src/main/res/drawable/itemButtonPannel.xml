@@ -10,7 +10,7 @@
 
     <stroke
         android:width="1dp"
-        android:color="@color/darkgreen" >
+        android:color="@color/background_outline" >
     </stroke>
 
     <corners

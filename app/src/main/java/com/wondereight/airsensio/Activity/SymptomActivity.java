@@ -16,6 +16,9 @@ import com.wondereight.airsensio.UtilClass.Global;
 
 import java.util.List;
 
+/**
+ * Created by Miguel on 02/2/2016.
+ */
 
 public class SymptomActivity extends AppCompatActivity {
 

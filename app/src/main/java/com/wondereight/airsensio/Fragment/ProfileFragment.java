@@ -12,7 +12,7 @@ import com.wondereight.airsensio.R;
 import butterknife.ButterKnife;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Created by Miguel on 02/2/2016.
  */
 public class ProfileFragment extends Fragment {
     private static Context _context;

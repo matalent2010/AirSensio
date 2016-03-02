@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.Button;
 
 /**
- * Created by norman on 3/8/15.
+ * Created by Miguel on 2/8/2016.
  */
 public class CustomFontButton extends Button {
 

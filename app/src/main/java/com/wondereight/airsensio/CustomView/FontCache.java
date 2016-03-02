@@ -6,8 +6,7 @@ import android.graphics.Typeface;
 import java.util.HashMap;
 
 /**
- * Created by VENUSPC on 2/2/2016.
- *
+ * Created by Miguel on 02/2/2016.
  */
 public class FontCache {
 

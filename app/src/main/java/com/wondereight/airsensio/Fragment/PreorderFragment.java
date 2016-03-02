@@ -15,7 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Created by Miguel on 02/2/2016.
  */
 public class PreorderFragment extends Fragment {
     private static Context _context;

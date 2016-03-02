@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 /**
- * Created by VENUSPC on 2/2/2016.
+ * Created by Miguel on 2/2/2016.
  */
 public class CustomFontTextView extends TextView {
 

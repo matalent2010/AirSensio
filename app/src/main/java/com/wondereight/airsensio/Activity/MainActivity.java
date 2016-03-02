@@ -1,8 +1,10 @@
 package com.wondereight.airsensio.Activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -11,6 +13,11 @@ import butterknife.Bind;
 import butterknife.OnClick;
 
 import com.wondereight.airsensio.R;
+import com.wondereight.airsensio.UtilClass.SaveSharedPreferences;
+
+/**
+ * Created by Miguel on 02/2/2016.
+ */
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +26,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        if(getIntent().getExtras()==null) {
+            if (SaveSharedPreferences.getInstallInfo(MainActivity.this) == false) {
+                SaveSharedPreferences.setInstallInfo(MainActivity.this, true);
+            } else {
+                Intent LogninIntent = new Intent(MainActivity.this, LoginAcitivity.class);
+                startActivity(LogninIntent);
+                finish();
+            }
+        }
     }
 
     @Override
@@ -46,7 +63,10 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnAcceptTerms)
     void onClickBtnAcceptTerms() {
-        Intent LogninIntent = new Intent(MainActivity.this, LoginAcitivity.class);
-        startActivity(LogninIntent);
+        if( getIntent().getExtras()==null ) {
+            Intent LogninIntent = new Intent(MainActivity.this, LoginAcitivity.class);
+            startActivity(LogninIntent);
+        }
+        finish();
     }
 }

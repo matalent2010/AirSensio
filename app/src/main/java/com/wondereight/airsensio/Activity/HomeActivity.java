@@ -15,7 +15,10 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
+import cz.msebera.android.httpclient.Header;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.wondereight.airsensio.Adapter.ViewPagerAdapter;
 import com.wondereight.airsensio.CustomView.CustomViewPager;
 import com.wondereight.airsensio.Fragment.HomeFragment;
@@ -23,21 +26,41 @@ import com.wondereight.airsensio.Fragment.PreorderFragment;
 import com.wondereight.airsensio.Fragment.ProfileFragment;
 import com.wondereight.airsensio.Fragment.SettingsFragment;
 import com.wondereight.airsensio.Fragment.StatisticsFragment;
+import com.wondereight.airsensio.Helper._Debug;
+import com.wondereight.airsensio.Modal.DeviceDataModal;
 import com.wondereight.airsensio.R;
+import com.wondereight.airsensio.UtilClass.AirSensioRestClient;
+import com.wondereight.airsensio.UtilClass.Constant;
+import com.wondereight.airsensio.UtilClass.ParsingResponse;
+import com.wondereight.airsensio.UtilClass.SaveSharedPreferences;
+import com.wondereight.airsensio.UtilClass.UtilityClass;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+/**
+ * Created by Miguel on 02/2/2016.
+ */
 
 public class HomeActivity extends FragmentActivity {
 
     private int curTabIndex;
+
+    public UtilityClass utilityClass;
+    private static final String LOG_TAG = "HomeActivity";
+    private static _Debug _debug = new _Debug(true);
+
     @Bind(R.id.viewpager) public CustomViewPager mTabPager;
 
     @Bind(R.id.ivitem_home) public ImageView mBtnHomeImage;
     @Bind(R.id.ivitemtext_home) public TextView mBtnHomeText;
     @Bind(R.id.ivitem_statistics) public ImageView mBtnStatisticsImage;
     @Bind(R.id.ivitemtext_statistics) public TextView mBtnStatisticsText;
-    @Bind(R.id.ivitem_preorder) public ImageView mBtnPreorderImage;
-    @Bind(R.id.ivitemtext_preorder) public TextView mBtnPreorderText;
+    @Bind(R.id.ivitem_sensio) public ImageView mBtnSensioImage;
+    @Bind(R.id.ivitemtext_sensio) public TextView mBtnSensioText;
     @Bind(R.id.ivitem_profile) public ImageView mBtnProfileImage;
     @Bind(R.id.ivitemtext_profile) public TextView mBtnProfileText;
     @Bind(R.id.ivitem_settings) public ImageView mBtnSettingsImage;
@@ -49,7 +72,9 @@ public class HomeActivity extends FragmentActivity {
         setContentView(R.layout.home_activity);
         ButterKnife.bind(HomeActivity.this);
 
-        mTabPager.setPagingEnabled(false);
+        utilityClass = new UtilityClass(HomeActivity.this);
+        restCallDeviceDataApi();
+        mTabPager.setPagingEnabled(true);
         try {
             mTabPager.setOnPageChangeListener(new TabPageChangeListener());
         } catch ( Exception e){
@@ -64,6 +89,7 @@ public class HomeActivity extends FragmentActivity {
         mPagerAdapter.addFragment(SettingsFragment.newInstance(HomeActivity.this));
         mTabPager.setAdapter(mPagerAdapter);
         mTabPager.setCurrentItem(0);
+
     }
 
 
@@ -97,8 +123,8 @@ public class HomeActivity extends FragmentActivity {
     void onClickStatistics(){
         mTabPager.setCurrentItem(1, false);
     }
-    @OnClick(R.id.btn_preorder)
-    void onClickPreorder(){
+    @OnClick(R.id.btn_sensio)
+    void onClickSensio(){
         mTabPager.setCurrentItem(2, false);
     }
     @OnClick(R.id.btn_profile)
@@ -135,9 +161,9 @@ public class HomeActivity extends FragmentActivity {
                     mBtnStatisticsText.setTextColor(getResources().getColor(R.color.BottomMenuTextColor_n));
                     break;
                 case 2:
-                    sDrawableNormal = getResources().getDrawable(R.drawable.btn_preorder_n);
-                    mBtnPreorderImage.setImageDrawable(sDrawableNormal);
-                    mBtnPreorderText.setTextColor(getResources().getColor(R.color.BottomMenuTextColor_n));
+                    sDrawableNormal = getResources().getDrawable(R.drawable.btn_sensio_n);
+                    mBtnSensioImage.setImageDrawable(sDrawableNormal);
+                    mBtnSensioText.setTextColor(getResources().getColor(R.color.BottomMenuTextColor_n));
                     break;
                 case 3:
                     sDrawableNormal = getResources().getDrawable(R.drawable.btn_profile_n);
@@ -167,9 +193,9 @@ public class HomeActivity extends FragmentActivity {
                     mBtnStatisticsText.setTextColor(getResources().getColor(R.color.BottomMenuTextColor_s));
                     break;
                 case 2:
-                    sDrawablePressed = getResources().getDrawable(R.drawable.btn_preorder_s);
-                    mBtnPreorderImage.setImageDrawable(sDrawablePressed);
-                    mBtnPreorderText.setTextColor(getResources().getColor(R.color.BottomMenuTextColor_s));
+                    sDrawablePressed = getResources().getDrawable(R.drawable.btn_sensio_s);
+                    mBtnSensioImage.setImageDrawable(sDrawablePressed);
+                    mBtnSensioText.setTextColor(getResources().getColor(R.color.BottomMenuTextColor_s));
                     break;
                 case 3:
                     sDrawablePressed = getResources().getDrawable(R.drawable.btn_profile_s);
@@ -187,4 +213,106 @@ public class HomeActivity extends FragmentActivity {
             curTabIndex = arg0;
         }
     }
+    private void restCallDeviceDataApi() {
+
+        RequestParams params = new RequestParams();
+        String str_userid = SaveSharedPreferences.getLoginUserData(HomeActivity.this).getId();
+        String str_deviceid = utilityClass.GetDeviceID();
+        String str_email = SaveSharedPreferences.getLoginUserData(HomeActivity.this).getEmail();
+        String str_hash = utilityClass.MD5(str_deviceid + SaveSharedPreferences.getLoginUserData(HomeActivity.this).getEmail() + Constant.LOGIN_SECTRET);
+        String str_cityid =  "1"; //Global.GetInstance().GetCityName().isEmpty() ? Constant.DEFAULT_CITYNAME : Global.GetInstance().GetCityName();
+
+        params.put(Constant.STR_USERID, str_userid);
+        params.put(Constant.STR_EMAIL, str_email);
+        params.put(Constant.STR_DEVICEID, str_deviceid);
+        params.put(Constant.STR_CITYID, str_cityid);
+        params.put(Constant.STR_HASH, str_hash);
+
+        // AirSensioRestClient.post(AirSensioRestClient.LOGIN, params, new AsyncHttpResponseHandler() {
+        AirSensioRestClient.post(AirSensioRestClient.GET_DEVICE_DATA, params, new JsonHttpResponseHandler() {   //new JsonHttpResponseHandler(false) : onSuccess(int statusCode, Header[] headers, String responseString) must be overrided.
+            @Override
+            public void onStart() {
+                // called before request is started
+                utilityClass.processDialogStart(false);
+                _debug.d(LOG_TAG, "AirSensioRestClient.onStart(GET_DEVICE_DATA)");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // If the response is JSONObject instead of expected JSONArray
+                utilityClass.processDialogStop();
+                _debug.d(LOG_TAG, "Recieved JSONObject result");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                // Pull out the first event on the public response
+                utilityClass.processDialogStop();
+                DeviceDataModal deviceData = ParsingResponse.parsingDeviceData(response);
+                if (deviceData != null) ;
+                {
+//                    userModal.setPassword(etPassword.getText().toString());   //add password in UserModal
+//                    SaveSharedPreferences.setLoginUserData(LoginAcitivity.this, userModal);
+//                    Intent HealthActivity = new Intent(LoginAcitivity.this, HealthActivity.class);
+//                    startActivity(HealthActivity);
+                    ;
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                utilityClass.processDialogStop();
+                if (responseString == null) {
+
+                    _debug.e(LOG_TAG, "None response string");
+                } else if (responseString.equals("1")) {
+
+                    utilityClass.showAlertMessage("Alert", "Incorrect Hash");
+                    _debug.e(LOG_TAG, "Incorrect Hash");
+                } else if (responseString.equals("2")) {
+
+                    _debug.d(LOG_TAG, "Device ID not provided");
+                } else if (responseString.equals("3")) {
+
+                    _debug.d(LOG_TAG, "User ID not provided");
+                } else if (responseString.equals("9")) {
+
+                    utilityClass.toast(getResources().getString(R.string.not_found));
+                    _debug.d(LOG_TAG, "Device not found");
+                } else {
+                    _debug.e(LOG_TAG, "Get Device Data Error:"+responseString);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                utilityClass.processDialogStop();
+                utilityClass.toast(getResources().getString(R.string.check_internet));
+                if (errorResponse==null) _debug.d(LOG_TAG, "errorJSONObject: null"); else _debug.d(LOG_TAG, "errorJSONObject:" + errorResponse.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                utilityClass.processDialogStop();
+                utilityClass.toast(getResources().getString(R.string.check_internet));
+                if (errorResponse==null) _debug.d(LOG_TAG, "errorJSONArray: null"); else _debug.d(LOG_TAG, "errorJSONArray:" + errorResponse.toString());
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+                // called when request is retried{
+                utilityClass.processDialogStop();
+                utilityClass.toast(getResources().getString(R.string.try_again));
+                _debug.d(LOG_TAG, "AirSensioRestClient.GET_DEVICE_DATA.onRetry");
+            }
+
+            @Override
+            public void onFinish() {
+                utilityClass.processDialogStop();
+            }
+
+        });
+    }
+
 }

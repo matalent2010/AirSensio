@@ -2,41 +2,52 @@ package com.wondereight.airsensio.CustomView;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
+
+/**
+ * Created by Miguel on 02/2/2016.
+ */
 
 public class SnapBar extends SeekBar {
 
-    private static final int SNAP_MIN = 0;
-    private static final int SNAP_MIDDLE = 50;
-    private static final int SNAP_MAX = 100;
+    private final int SNAP_MAX = 100;
+    private final int SNAP_STEP = 11;    // in this case, step is 0 ~ 10
 
-    private static final int LOWER_HALF = (SNAP_MIN + SNAP_MIDDLE) / 2;
-    private static final int UPPER_HALF = (SNAP_MIDDLE + SNAP_MAX) / 2;
+    private int[] STEP_HALF = new int[SNAP_STEP+1];
+    private int[] STEP_POINT = new int[SNAP_STEP];
+    private boolean isScrollingSmooth = false;  //if true, be animated when scroll the thumb.
 
     public SnapBar(Context context) {
         super(context);
         setMax(SNAP_MAX);
+        setStepValues();
         setOnSeekBarChangeListener(new SnapBarChangeListener());
     }
 
     public SnapBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         setMax(SNAP_MAX);
+        setStepValues();
         setOnSeekBarChangeListener(new SnapBarChangeListener());
     }
 
     public SnapBar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr, 0);
         setMax(SNAP_MAX);
+        setStepValues();
         setOnSeekBarChangeListener(new SnapBarChangeListener());
     }
 
     public SnapBar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         setMax(SNAP_MAX);
+        setStepValues();
         setOnSeekBarChangeListener(new SnapBarChangeListener());
     }
 
@@ -44,26 +55,25 @@ public class SnapBar extends SeekBar {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+            if( !isScrollingSmooth) {
+                seekBar.setProgress(STEP_POINT[getSteps()]);
+            }
         }
 
         @Override
         public void onStartTrackingTouch(SeekBar seekBar) {
+
         }
 
         @Override
         public void onStopTrackingTouch(final SeekBar seekBar) {
-
-            int progress = seekBar.getProgress();
-            if (progress >= SNAP_MIN && progress <= LOWER_HALF)
-                setProgressAnimatedJdk(seekBar, progress, SNAP_MIN);
-            if (progress > LOWER_HALF && progress <= UPPER_HALF)
-                setProgressAnimatedJdk(seekBar, progress, SNAP_MIDDLE);
-            if (progress > UPPER_HALF && progress <= SNAP_MAX) {
-                setProgressAnimatedJdk(seekBar, progress, SNAP_MAX);
+            if( isScrollingSmooth ) {
+                int progress = seekBar.getProgress();
+                setProgressAnimatedJdk(seekBar, progress, STEP_POINT[getSteps()]);
             }
         }
     }
+
     private static void setProgressAnimatedJdk(final SeekBar seekBar, int from, int to) {
         ValueAnimator anim = ValueAnimator.ofInt(from, to);
         anim.setDuration(100);
@@ -75,5 +85,27 @@ public class SnapBar extends SeekBar {
             }
         });
         anim.start();
+    }
+
+    private void setStepValues(){
+        for( int i=0; i<SNAP_STEP; i++){
+            STEP_HALF[i] = i==0 ? 0: SNAP_MAX/(SNAP_STEP-1) * i - SNAP_MAX/(SNAP_STEP-1)/2;
+            STEP_POINT[i] = SNAP_MAX/(SNAP_STEP-1) * i;
+        }
+        STEP_HALF[SNAP_STEP] = SNAP_MAX;
+    }
+
+    public int getSteps(){
+        int nValue = getProgress();
+        if(nValue == 0) return 0;
+        for( int i=0; i<SNAP_STEP; i++){
+            if(STEP_HALF[i] < nValue && nValue <= STEP_HALF[i+1] )
+                return i;
+        }
+        return 0;
+    }
+
+    public void setMovingSmooth(boolean isSmooth){
+        isScrollingSmooth = isSmooth;
     }
 }

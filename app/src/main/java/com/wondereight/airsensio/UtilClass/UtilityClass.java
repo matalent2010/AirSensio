@@ -13,34 +13,38 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 
+
 import com.wondereight.airsensio.R;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 /**
- * Created by Miguel on 02-17-2016.
+ * Created by Miguel on 02/17/2016.
  */
 public class UtilityClass {
 
     //Class
-    Context context;
+    Context _context;
     private ProgressDialog pdialog;
-    AlertDialog alertDialog;
+    private AlertDialog alertDialog;
 
 //Variable
 
     public UtilityClass(Context context) {
-        this.context = context;
+        this._context = context;
     }
 
     public void toast(String str) {
-        Toast.makeText(context, str, Toast.LENGTH_LONG).show();
+        Toast.makeText(_context, str, Toast.LENGTH_LONG).show();
     }
 
     public boolean isInternetConnection() {
 
         try {
-            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            ConnectivityManager connectivityManager = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
            /* if (connectivityManager != null)
             {
                 NetworkInfo[] info = connectivityManager.getAllNetworkInfo();
@@ -70,11 +74,13 @@ public class UtilityClass {
         }
     }
 
-    public void processDialogStart() {
-        pdialog = new ProgressDialog(context);
-        pdialog.setMessage("Please Wait");
-        pdialog.setIndeterminate(false);
-        pdialog.setCancelable(true);
+    public void processDialogStart(boolean cancelable) {
+        if(pdialog == null) {
+            pdialog = new ProgressDialog(_context);
+            pdialog.setMessage("Please Wait");
+            pdialog.setIndeterminate(false);
+            pdialog.setCancelable(cancelable);
+        }
         pdialog.show();
 
     }
@@ -89,25 +95,29 @@ public class UtilityClass {
 
     public int GetHeight() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        ((Activity) _context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.heightPixels;
     }
 
     public int GetWidth() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        ((Activity) _context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.widthPixels;
     }
 
+    public String GetDeviceID() {
+        return Settings.Secure.getString(_context.getContentResolver(),Settings.Secure.ANDROID_ID);
+    }
+
     public void showGPSDisabledAlertToUser() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(_context);
         alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
                 .setCancelable(false)
                 .setPositiveButton("Setting", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent callGPSSettingIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        context.startActivity(callGPSSettingIntent);
+                        _context.startActivity(callGPSSettingIntent);
                     }
                 });
         alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -121,4 +131,43 @@ public class UtilityClass {
         alertDialog.show();
     }
 
+    public void showAlertMessage(String title, String msg) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(_context);
+        alertDialogBuilder.setTitle(title)
+                .setMessage(msg)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+//Convert to MD5
+    public static String MD5(String string) {
+        final String MD5 = "MD5";
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest
+                    .getInstance(MD5);
+            digest.update(string.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            // Create Hex String
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : messageDigest) {
+                String h = Integer.toHexString(0xFF & aMessageDigest);
+                while (h.length() < 2)
+                    h = "0" + h;
+                hexString.append(h);
+            }
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 }

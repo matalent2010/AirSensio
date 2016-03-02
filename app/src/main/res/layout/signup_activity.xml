@@ -21,7 +21,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_20sdp"
                 android:paddingLeft="@dimen/_18sdp"
                 android:paddingRight="@dimen/_18sdp"
                 android:orientation="vertical">
@@ -76,6 +75,7 @@
                     <LinearLayout
                         style="@style/whiteLineLayout"/>
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -84,8 +84,28 @@
                     android:layout_marginTop="@dimen/_15sdp"
                     android:orientation="vertical">
                     <EditText
-                        android:id="@+id/etBirthday"
+                        android:id="@+id/etPhonenum"
                         style="@style/EVInputCenterStyle"
+                        android:inputType="phone"
+                        android:lines="1"
+                        android:maxLength="14"
+                        android:hint="@string/hint_phonenum"/>
+
+                    <LinearLayout
+                        style="@style/whiteLineLayout"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_40sdp"
+                    android:layout_marginRight="@dimen/_40sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tvBirthday"
+                        style="@style/EVInputCenterStyle"
+                        android:inputType="none"
                         android:hint="@string/hint_birthday"/>
 
                     <LinearLayout
@@ -94,17 +114,20 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_40sdp"
-                    android:layout_marginRight="@dimen/_40sdp"
+                    android:orientation="horizontal"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:orientation="vertical">
-                    <EditText
-                        android:id="@+id/etGender"
-                        style="@style/EVInputCenterStyle"
-                        android:hint="@string/hint_gender"/>
-
-                    <LinearLayout
-                        style="@style/whiteLineLayout"/>
+                    android:layout_marginLeft="@dimen/_50sdp">
+                    <CheckBox
+                        style="@style/chb_style1"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:text="@string/chb_male"
+                        android:id="@+id/chbMale"
+                        android:checked="true"/>
+                    <CheckBox
+                        style="@style/chb_style1"
+                        android:layout_marginLeft="@dimen/_40sdp"
+                        android:text="@string/chb_female"
+                        android:id="@+id/chbFemale"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -114,15 +137,16 @@
                     android:layout_marginTop="@dimen/_15sdp"
                     android:layout_marginLeft="@dimen/_50sdp">
                     <CheckBox
+                        android:id="@+id/chbGelocation"
                         style="@style/chb_style1"
                         android:text="@string/chb_geolocation"
-                        android:id="@+id/chbGelocation"
                         android:checked="true"/>
                     <CheckBox
+                        android:id="@+id/chbNewsletter"
                         style="@style/chb_style1"
                         android:layout_marginTop="5dp"
                         android:text="@string/chb_subscribe"
-                        android:id="@+id/chbSubscribe"/>
+                        android:checked="true"/>
                 </LinearLayout>
 
                 <Button

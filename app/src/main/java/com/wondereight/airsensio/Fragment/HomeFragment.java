@@ -18,7 +18,7 @@ import com.wondereight.airsensio.R;
 
 
 /**
- * A placeholder fragment containing a simple view.
+ * Created by Miguel on 02/2/2016.
  */
 public class HomeFragment extends Fragment {
 

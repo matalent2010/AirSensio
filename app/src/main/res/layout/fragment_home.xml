@@ -16,9 +16,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <LinearLayout
-                android:layout_width="@dimen/_150sdp"
+                android:layout_width="@dimen/_120sdp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_35sdp"
+                android:layout_marginTop="@dimen/_25sdp"
                 android:layout_gravity="center"
                 android:orientation="vertical">
                 <TextView
@@ -28,7 +28,7 @@
                     android:gravity="center"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/white"
-                    android:textSize="32sp"
+                    android:textSize="26sp"
                     android:textStyle="bold"
                     android:text="Longdon"
                     android:editable="false"/>
@@ -45,7 +45,7 @@
                         android:layout_marginTop="@dimen/_5sdp"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:textSize="56sp"
+                        android:textSize="46sp"
                         android:textColor="@color/white"
                         android:textStyle="bold"
                         android:shadowColor="@color/textShadowColor_gray"
@@ -73,7 +73,7 @@
                         android:layout_marginTop="@dimen/_5sdp"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:textSize="36sp"
+                        android:textSize="30sp"
                         android:textColor="@color/white"
                         android:textStyle="bold"
                         android:shadowColor="@color/textShadowColor_gray"
@@ -97,15 +97,16 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="@dimen/_150sdp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_30sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
                     android:orientation="vertical">
-                    <ImageView
+                    <ImageButton
                         android:id="@+id/btnPress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:src="@drawable/btn_log_outbreak_press"
+                        android:background="@color/transparent"
                         android:adjustViewBounds="true"
                         android:scaleType="fitXY"/>
                 </LinearLayout>
@@ -115,7 +116,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_20sdp"
                 android:orientation="vertical">
                 <TextView
                     android:layout_width="wrap_content"
@@ -123,7 +124,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:textSize="30sp"
+                    android:textSize="22sp"
                     android:textStyle="bold"
                     android:textColor="@color/darkgray"
                     android:shadowColor="@color/textShadowColor_gray"

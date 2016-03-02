@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.wondereight.airsensio.R;
 
 /**
- * Created by VENUSPC on 2/2/2016.
+ * Created by Miguel on 2/2/2016.
  */
 public class CustomFontUtils {
 

@@ -27,10 +27,11 @@
                 android:orientation="horizontal">
 
                 <com.wondereight.airsensio.CustomView.CustomFontTextView
-                    android:id="@+id/btnSignup"
-                    android:text="@string/action_new_account"
+                    android:id="@+id/btnForgotPass"
+                    android:text="@string/action_forgot_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:clickable="true"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/darkgreen"
@@ -121,7 +122,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_20sdp"
-                        android:layout_marginRight="@dimen/_20sdp">
+                        android:layout_marginRight="@dimen/_2sdp">
                         <ImageView
                             android:layout_width="@dimen/_30sdp"
                             android:layout_height="@dimen/_30sdp"
@@ -129,17 +130,16 @@
                             android:src="@drawable/user_icon" />
 
                         <EditText
-                            android:id="@+id/etUser"
+                            android:id="@+id/etEmail"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@android:color/transparent"
-                            android:hint="@string/username_hint"
-                            android:inputType="textPersonName"
+                            android:hint="@string/email_hint"
+                            android:inputType="textEmailAddress"
                             android:layout_marginLeft="10dp"
                             android:textSize="22sp"
                             android:textStyle="bold"
-                            android:paddingLeft="@dimen/_8sdp"
-                            android:text=""
+                            android:text="test@test.com"
                             android:fontFamily="sans-serif"
                             android:textColorHint="@color/darkgreen"
                             android:textColor="@color/darkgreen"/>
@@ -159,7 +159,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_20sdp"
-                        android:layout_marginRight="@dimen/_20sdp">
+                        android:layout_marginRight="@dimen/_2sdp">
                         <ImageView
                             android:layout_width="@dimen/_30sdp"
                             android:layout_height="@dimen/_30sdp"
@@ -176,8 +176,7 @@
                             android:layout_marginLeft="10dp"
                             android:textSize="22sp"
                             android:textStyle="bold"
-                            android:paddingLeft="@dimen/_8sdp"
-                            android:text=""
+                            android:text="test"
                             android:fontFamily="sans-serif"
                             android:textColorHint="@color/darkgreen"
                             android:textColor="@color/darkgreen"/>

@@ -37,7 +37,7 @@ tools:context=".Activity.SymptomActivity">
                     <com.wondereight.airsensio.CustomView.CustomFontTextView
                         android:text="@string/title_symptom"
                         style = "@style/TVTitleStyle"
-                        android:textColor="@color/darkgray"
+                        android:textColor="@color/SymptomTextColor"
                         app:textStyle="@integer/FS_light"
                         app:font="@string/font_name_opensans"/>
                 </LinearLayout>
@@ -53,7 +53,7 @@ tools:context=".Activity.SymptomActivity">
                         android:gravity="center"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="@string/description_symptom"
-                        android:textColor="@color/darkgray"
+                        android:textColor="@color/SymptomTextColor"
                         app:textStyle="@integer/FS_light"
                         app:font="@string/font_name_opensans"/>
 
