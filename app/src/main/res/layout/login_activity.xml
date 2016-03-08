@@ -139,7 +139,7 @@
                             android:layout_marginLeft="10dp"
                             android:textSize="22sp"
                             android:textStyle="bold"
-                            android:text="test@test.com"
+                            android:text="test@test1.com"
                             android:fontFamily="sans-serif"
                             android:textColorHint="@color/darkgreen"
                             android:textColor="@color/darkgreen"/>

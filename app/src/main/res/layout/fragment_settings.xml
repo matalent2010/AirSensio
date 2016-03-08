@@ -183,7 +183,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/btnSendEmail"
+                    android:id="@+id/btnSaveSettings"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_20sdp"
@@ -191,7 +191,7 @@
                     android:gravity="center"
                     android:textSize="18sp"
                     android:textColor="@color/textwhitebtn"
-                    android:text="Send your data via Email"
+                    android:text="@string/btn_savesettings"
                     android:clickable="true"
                     android:focusableInTouchMode="true"
                     android:focusable="true"/>
@@ -200,14 +200,31 @@
                     style="@style/whiteLineLayout"/>
 
                 <TextView
-                    android:id="@+id/btnViewTerms"
+                    android:id="@+id/btnSendEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
                     android:gravity="center"
                     android:textSize="18sp"
                     android:textColor="@color/textwhitebtn"
-                    android:text="View Terms &amp; Conditions"/>
+                    android:text="@string/btn_senddata"
+                    android:clickable="true"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true"/>
+
+                <!--<LinearLayout-->
+                    <!--style="@style/whiteLineLayout"/>-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/btnViewTerms"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="@dimen/_20sdp"-->
+                    <!--android:gravity="center"-->
+                    <!--android:textSize="18sp"-->
+                    <!--android:textColor="@color/textwhitebtn"-->
+                    <!--android:text="View Terms &amp; Conditions"/>-->
             </LinearLayout>
 
             <LinearLayout

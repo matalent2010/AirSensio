@@ -5,8 +5,69 @@
     android:orientation="vertical"
     android:background="@drawable/bg_symptom"
     tools:context="com.wondereight.airsensio.Fragment.ProfileFragment">
-
-    <TextView android:text="Profile" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="@dimen/_120sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_25sdp"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:text="Longdon"
+            android:editable="false"/>
+        <LinearLayout
+            style="@style/whiteLineLayout"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_25sdp"
+        android:orientation="vertical">
+        <ImageButton
+            android:id="@+id/btnPress"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:src="@drawable/btn_find_doctor_press"
+            android:background="@color/transparent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="32sp"
+            android:lineSpacingMultiplier="1.2"
+            android:textStyle="bold"
+            android:textColor="@color/textColor_gray"
+            android:text="@string/label_finddoctor"
+            android:clickable="true"
+            android:focusableInTouchMode="true"
+            android:focusable="true"/>
+        <TextView
+            android:id="@+id/btn_chemist_physician"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/textgraybtn"
+            android:text="@string/btn_chemist"
+            android:clickable="true"
+            android:focusableInTouchMode="true"
+            android:focusable="true"/>
+    </LinearLayout>
 
 </RelativeLayout>

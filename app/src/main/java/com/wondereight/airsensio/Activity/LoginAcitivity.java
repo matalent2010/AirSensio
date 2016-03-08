@@ -81,13 +81,13 @@ public class LoginAcitivity extends AppCompatActivity {
 
     @OnClick(R.id.btnLogin)
     void onClickBtnLogin() {
-        if( checkValidation() ){
+        //if( checkValidation() ){
             if (!utilityClass.isInternetConnection()) {
                 utilityClass.toast(getResources().getString(R.string.check_internet));
             } else {
                 restCallLoginApi();
             }
-        }
+        //}
 //        Intent HealthActivity = new Intent(LoginAcitivity.this, HealthActivity.class);
 //        startActivity(HealthActivity);
     }

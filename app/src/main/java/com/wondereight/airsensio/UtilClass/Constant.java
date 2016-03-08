@@ -64,7 +64,6 @@ public static final String DEFAULT_CITYNAME = "London";
     public static String STR_PASSWORD = "password";
     public static String STR_DEVICEID = "device_id";
     public static String STR_HASH = "hash";
-
     public static String STR_NOTIFICATION = "push_notifications";
     public static String STR_NBR = "session_nbr";
 
@@ -79,7 +78,14 @@ public static final String DEFAULT_CITYNAME = "London";
 
     //statistics page
     public static String STR_USERID = "user_id";    //must confirm "id" | "user_id" ?
-    public static String STR_CITYID = "city_id ";
+    public static String STR_CITYID = "city_id";
+    public static String STR_DURATION = "statistics_duration";
+
+    public static String STR_PARAMETER = "parameter_name";
+    public static String STR_VALUE = "log_value";
+    public static String STR_DATE = "log_date";
+    public static String STR_TIME = "log_time";
+
     //public static String STR_HASH = "hash";
     //public static String STR_DEVICEID = "device_id";
 
@@ -94,7 +100,7 @@ public static final String DEFAULT_CITYNAME = "London";
     public static String STR_RES_OTHER = "respiratory_other";
     public static String STR_PET = "pet";
 
-    //Saving Settings pages
+    //Saving Settings page
     public static String STR_NOTI_ALLERGENS = "notification_allergens";
     public static String STR_NOTI_POLLUTION = "notification_pollution";
 
@@ -102,5 +108,12 @@ public static final String DEFAULT_CITYNAME = "London";
     public static String STR_ENVVALUE = "env_value";
     public static String STR_LOGDATETIME = "log_datetime";
 
-
+    //Symptom page
+    public static String STR_LOCATION = "user_current_location ";
+    public static String STR_SYMPTOM_1 = "symptom_1";
+    public static String STR_SYMPTOM_2 = "symptom_2";
+    public static String STR_SYMPTOM_3 = "symptom_3";
+    public static String STR_SYMPTOM_4 = "symptom_4";
+    public static String STR_SYMPTOM_5 = "symptom_5";
+    public static String STR_SYMPTOM_6 = "symptom_6";
 }

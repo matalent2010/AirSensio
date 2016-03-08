@@ -22,7 +22,7 @@ import com.loopj.android.http.RequestParams;
 import com.wondereight.airsensio.Adapter.ViewPagerAdapter;
 import com.wondereight.airsensio.CustomView.CustomViewPager;
 import com.wondereight.airsensio.Fragment.HomeFragment;
-import com.wondereight.airsensio.Fragment.PreorderFragment;
+import com.wondereight.airsensio.Fragment.SensioFragment;
 import com.wondereight.airsensio.Fragment.ProfileFragment;
 import com.wondereight.airsensio.Fragment.SettingsFragment;
 import com.wondereight.airsensio.Fragment.StatisticsFragment;
@@ -73,7 +73,7 @@ public class HomeActivity extends FragmentActivity {
         ButterKnife.bind(HomeActivity.this);
 
         utilityClass = new UtilityClass(HomeActivity.this);
-        restCallDeviceDataApi();
+        //restCallDeviceDataApi();
         mTabPager.setPagingEnabled(true);
         try {
             mTabPager.setOnPageChangeListener(new TabPageChangeListener());
@@ -84,7 +84,7 @@ public class HomeActivity extends FragmentActivity {
         ViewPagerAdapter mPagerAdapter = new ViewPagerAdapter(HomeActivity.this, getSupportFragmentManager());
         mPagerAdapter.addFragment(HomeFragment.newInstance(HomeActivity.this));
         mPagerAdapter.addFragment(StatisticsFragment.newInstance(HomeActivity.this));
-        mPagerAdapter.addFragment(PreorderFragment.newInstance(HomeActivity.this));
+        mPagerAdapter.addFragment(SensioFragment.newInstance(HomeActivity.this));
         mPagerAdapter.addFragment(ProfileFragment.newInstance(HomeActivity.this));
         mPagerAdapter.addFragment(SettingsFragment.newInstance(HomeActivity.this));
         mTabPager.setAdapter(mPagerAdapter);
@@ -219,11 +219,10 @@ public class HomeActivity extends FragmentActivity {
         String str_userid = SaveSharedPreferences.getLoginUserData(HomeActivity.this).getId();
         String str_deviceid = utilityClass.GetDeviceID();
         String str_email = SaveSharedPreferences.getLoginUserData(HomeActivity.this).getEmail();
-        String str_hash = utilityClass.MD5(str_deviceid + SaveSharedPreferences.getLoginUserData(HomeActivity.this).getEmail() + Constant.LOGIN_SECTRET);
+        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
         String str_cityid =  "1"; //Global.GetInstance().GetCityName().isEmpty() ? Constant.DEFAULT_CITYNAME : Global.GetInstance().GetCityName();
 
         params.put(Constant.STR_USERID, str_userid);
-        params.put(Constant.STR_EMAIL, str_email);
         params.put(Constant.STR_DEVICEID, str_deviceid);
         params.put(Constant.STR_CITYID, str_cityid);
         params.put(Constant.STR_HASH, str_hash);
@@ -314,5 +313,4 @@ public class HomeActivity extends FragmentActivity {
 
         });
     }
-
 }

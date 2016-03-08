@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.wondereight.airsensio.Fragment.HomeFragment;
-import com.wondereight.airsensio.Fragment.PreorderFragment;
+import com.wondereight.airsensio.Fragment.SensioFragment;
 import com.wondereight.airsensio.Fragment.ProfileFragment;
 import com.wondereight.airsensio.Fragment.SettingsFragment;
 import com.wondereight.airsensio.Fragment.StatisticsFragment;

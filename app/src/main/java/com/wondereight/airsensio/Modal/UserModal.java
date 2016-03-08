@@ -16,6 +16,8 @@ public class UserModal {
     private String newsletter = "";
     private String session_nbr = "";
     private String password = "";
+//    private String geolocation = "";
+//    private String cityname = "";
 
     public String getId() {
         return id;
@@ -104,6 +106,22 @@ public class UserModal {
     public void setSession_nbr(String session_nbr) {
         this.session_nbr = session_nbr;
     }
+
+//    public String getGeolocation() {
+//        return geolocation;
+//    }
+//
+//    public void setGeolocation(String geolocation) {
+//        this.geolocation = geolocation;
+//    }
+//
+//    public String getCityname() {
+//        return cityname;
+//    }
+//
+//    public void setCityname(String cityname) {
+//        this.cityname = cityname;
+//    }
 
 }
 

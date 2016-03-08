@@ -15,11 +15,15 @@ public class AirSensioRestClient {
     public static final String GET_DEVICE_DATA = "get_device_data.php";
     public static final String SAVE_INFO = "do_saveinfo.php";   //about your health page
     public static final String SAVE_SETTINGS = "do_savesettings.php";
+    public static final String SEND_USERINFO = "send_user_info.php";
     public static final String GET_GRAPH_DATA = "get_graph_data.php";
     public static final String LOG_OUTBREAK = "do_logoutbreak.php";
 
     private static AsyncHttpClient client = new AsyncHttpClient();
 
+    AirSensioRestClient(){
+        client.setConnectTimeout(20 * 1000);
+    }
     public static void get(String url, RequestParams params, AsyncHttpResponseHandler  responseHandler) {
         client.get(getAbsoluteUrl(url), params, responseHandler);
     }

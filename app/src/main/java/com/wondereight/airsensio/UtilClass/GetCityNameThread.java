@@ -70,7 +70,7 @@ public class GetCityNameThread implements Runnable {
                         if (location != null) {
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
-                            _debug.d(LOG_TAG, String.format("Geolocation by network : %f, %f", latitude, latitude));
+                            _debug.d(LOG_TAG, String.format("Geolocation by network : %f, %f", latitude, longitude));
                         }
                     }
                 }
@@ -87,7 +87,7 @@ public class GetCityNameThread implements Runnable {
                                 if (location != null) {
                                     latitude = location.getLatitude();
                                     longitude = location.getLongitude();
-                                    _debug.d(LOG_TAG, String.format("Geolocation by GPS : %f, %f", latitude, latitude));
+                                    _debug.d(LOG_TAG, String.format("Geolocation by GPS : %f, %f", latitude, longitude));
                                 }
                             }
                         }

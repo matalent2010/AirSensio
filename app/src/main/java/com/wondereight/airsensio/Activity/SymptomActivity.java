@@ -1,5 +1,6 @@
 package com.wondereight.airsensio.Activity;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,9 +11,20 @@ import android.widget.ImageView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
+import cz.msebera.android.httpclient.Header;
 
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
+import com.wondereight.airsensio.Helper._Debug;
+import com.wondereight.airsensio.Interface.ThreadCallback;
+import com.wondereight.airsensio.Modal.UserModal;
 import com.wondereight.airsensio.R;
+import com.wondereight.airsensio.UtilClass.AirSensioRestClient;
+import com.wondereight.airsensio.UtilClass.Constant;
+import com.wondereight.airsensio.UtilClass.GetCityNameThread;
 import com.wondereight.airsensio.UtilClass.Global;
+import com.wondereight.airsensio.UtilClass.SaveSharedPreferences;
+import com.wondereight.airsensio.UtilClass.UtilityClass;
 
 import java.util.List;
 
@@ -21,6 +33,10 @@ import java.util.List;
  */
 
 public class SymptomActivity extends AppCompatActivity {
+
+    private static final String LOG_TAG = "SymptomActivity";
+    private static _Debug _debug = new _Debug(true);
+    UtilityClass utilityClass;
 
     int[] symptomList;
     Drawable sDrawable;
@@ -41,7 +57,7 @@ public class SymptomActivity extends AppCompatActivity {
     }
 
     private void declaration() {
-
+        utilityClass = new UtilityClass(SymptomActivity.this);
         symptomList = Global.GetInstance().GetStateSymptomList();
     }
 
@@ -104,7 +120,40 @@ public class SymptomActivity extends AppCompatActivity {
     @OnClick(R.id.btnSubmit)
     void onClickSubmit(){
         Global.GetInstance().SetStateSymptomList(symptomList);
-        finish();
+        if(isSelectedSymptom(symptomList)) {
+            if( Global.GetInstance().GetGeolocation().isEmpty() ) {
+                GetCityNameThread getCityNameThread = new GetCityNameThread(SymptomActivity.this, new ThreadCallback() {
+
+                    @Override
+                    public void runSuccessCallback() {
+                        SymptomActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //utilityClass.processDialogStop();
+                                restCallLogOutbreakApi();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void runFailCallback() {
+                        SymptomActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                utilityClass.processDialogStop();
+                            }
+                        });
+                    }
+                });
+                utilityClass.processDialogStart(false);
+                new Thread(getCityNameThread).start();
+            } else {
+                restCallLogOutbreakApi();
+            }
+
+        }
+        else
+            utilityClass.toast(getResources().getString(R.string.select_symptom));
     }
 
     @OnClick(R.id.sneezing)
@@ -161,6 +210,105 @@ public class SymptomActivity extends AppCompatActivity {
 
         sDrawable = getResources().getDrawable(idDrawable[5][symptomList[5]]);
         ivSymptoms.get(5).setImageDrawable(sDrawable);
+    }
+
+    private void restCallLogOutbreakApi() {
+
+        RequestParams params = new RequestParams();
+
+        UserModal userModal = SaveSharedPreferences.getLoginUserData(SymptomActivity.this);
+
+        String str_email = userModal.getEmail();
+        String str_userid = userModal.getId();
+        String str_location = Global.GetInstance().GetGeolocation();
+        String str_temp = Global.GetInstance().GetCityName();
+        String str_cityid = GetCityID(Global.GetInstance().GetCityName());
+        String str_deviceid = utilityClass.GetDeviceID();
+        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+
+        params.put(Constant.STR_EMAIL, str_email);
+        params.put(Constant.STR_DEVICEID, str_deviceid);
+        params.put(Constant.STR_HASH, str_hash);
+        params.put(Constant.STR_USERID, str_userid);
+        params.put(Constant.STR_CITYID, str_cityid);
+        params.put(Constant.STR_LOCATION, str_location);
+        params.put(Constant.STR_SYMPTOM_1, String.valueOf(symptomList[0]));
+        params.put(Constant.STR_SYMPTOM_2, String.valueOf(symptomList[1]));
+        params.put(Constant.STR_SYMPTOM_3, String.valueOf(symptomList[2]));
+        params.put(Constant.STR_SYMPTOM_4, String.valueOf(symptomList[3]));
+        params.put(Constant.STR_SYMPTOM_5, String.valueOf(symptomList[4]));
+        params.put(Constant.STR_SYMPTOM_6, String.valueOf(symptomList[5]));
+
+        _debug.i(LOG_TAG, params.toString());
+        // AirSensioRestClient.post(AirSensioRestClient.LOGIN, params, new AsyncHttpResponseHandler() {
+        AirSensioRestClient.post(AirSensioRestClient.LOG_OUTBREAK, params, new TextHttpResponseHandler() {   //new JsonHttpResponseHandler(false) : onSuccess(int statusCode, Header[] headers, String responseString) must be overrided.
+            @Override
+            public void onStart() {
+                // called before request is started
+                utilityClass.processDialogStart(false);
+                _debug.d(LOG_TAG, "AirSensioRestClient.LOG_OUTBREAK.onStart");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                utilityClass.processDialogStop();
+                if (responseString == null) {
+                    _debug.e(LOG_TAG, "None response string");
+                } else if (responseString.equals("0")) {
+                    finish();
+                    _debug.e(LOG_TAG, "Log outbreak Success");
+                } else if (responseString.equals("1")) {
+                    _debug.e(LOG_TAG, "Incorrect Hash");
+                } else if (responseString.equals("2")) {
+                    utilityClass.toast(getResources().getString(R.string.userid_not));
+                    _debug.e(LOG_TAG, "User ID Not Provided");
+                } else if (responseString.equals("3")) {
+                    utilityClass.toast(getResources().getString(R.string.device_not));
+                    _debug.e(LOG_TAG, "Device ID not provided");
+                } else if (responseString.equals("8")) {
+                    utilityClass.toast(getResources().getString(R.string.select_symptom));
+                    _debug.e(LOG_TAG, "You have to select at least 1 symptom");
+                } else if (responseString.equals("9")) {
+                    utilityClass.toast(getResources().getString(R.string.try_again));
+                    _debug.d(LOG_TAG, "Error, Please Try Again Later");
+                } else {
+                    _debug.e(LOG_TAG, "Log your outbreak Exception Error:" + responseString);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                utilityClass.processDialogStop();
+                utilityClass.toast(getResources().getString(R.string.check_internet));
+                _debug.e(LOG_TAG, "errorString: " + responseString);
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+                // called when request is retried{
+                utilityClass.processDialogStop();
+                utilityClass.toast(getResources().getString(R.string.try_again));
+                _debug.d(LOG_TAG, "AirSensioRestClient.LOG_OUTBREAK.onRetry");
+            }
+
+            @Override
+            public void onFinish() {
+                utilityClass.processDialogStop();
+            }
+
+        });
+    }
+
+    public String GetCityID(String CityName){
+        return "1";
+    }
+
+    public Boolean isSelectedSymptom(int[] SymptomList){
+        for ( int i= 0; i<6; i++){
+            if( SymptomList[i]!=0 )
+                return true;
+        }
+        return false;
     }
 
 }

@@ -2,7 +2,7 @@
     <string name="app_name">AirSensio</string>
     <string name="action_settings">Settings</string>
 
-<!-- Common Button String-->
+    <!-- Common Button String-->
     <string name="Tag_Yes">Yes</string>
     <string name="Tag_No">No</string>
     <string name="Tag_Ok">OK</string>
@@ -16,16 +16,16 @@
         <item>female</item>
     </string-array>
 
-<!-- Font Name -->
+    <!-- Font Name -->
     <string name="font_name_opensans">OpenSans</string>
     <string name="font_name_path_opensans">font/OpenSans-SemiboldItalic.ttf</string>
 
-<!-- Strings realted to Terms and Condition -->
+    <!-- Strings realted to Terms and Condition -->
     <string name="title_terms">TERMS &amp; CONDITIONS</string>
     <string name="content_terms">Please read the followings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\nPlease read the foolwings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\nPlease read the foolwings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\nPlease read the foolwings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\n</string>
     <string name="button_accept">ACCEPT &amp; CONTINUE</string>
 
-<!-- Strings related to login -->
+    <!-- Strings related to login -->
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
@@ -42,7 +42,7 @@
     <string name="password_hint">Password</string>
     <string name="email_hint">Email</string>
 
-<!-- Strings related to Create Account -->
+    <!-- Strings related to Create Account -->
     <string name="title_activity_signup">Create Account</string>
     <string name="title_create_account">CREATE ACCOUNT</string>
     <string name="hint_firstname">First name</string>
@@ -58,7 +58,7 @@
     <string name="otherregister">Or Register with</string>
     <string name="title_activity_login_acitivity">Sign in</string>
 
-<!-- Strings related to About Health -->
+    <!-- Strings related to About Health -->
     <string name="title_activity_health">Your Health</string>
     <string name="title_health">TELL US MORE ABOUT \nYOUR HEALTH</string>
     <string name="chb_conscious">I\'m just health conscious.</string>
@@ -73,7 +73,7 @@
     <string name="title_activity_home">HomeActivity</string>
     <string name="hello_world">Hello world!</string>
 
-<!-- Strings related to Home -->
+    <!-- Strings related to Home -->
     <string name="btn_home">Home</string>
     <string name="btn_statistics">Statistics</string>
     <string name="btn_preorder">Pre-order</string>
@@ -82,18 +82,19 @@
     <string name="btn_settings">Settings</string>
     <string name="title_activity_sympton">SymptonActivity</string>
 
-<!-- Strings realted to Select Symptom -->
+    <!-- Strings realted to Select Symptom -->
     <string name="title_symptom">SELECT SYMPTOM</string>
     <string name="description_symptom">Press to modify the\nintensity of your symptom</string>
     <string name="btnSubmit">Submit</string>
 
-<!-- Strings realted to Settings -->
+    <!-- Strings realted to Settings -->
     <string name="title_settings">SETTINGS</string>
     <string name="description_settings">Set the minimum threshold\nfor your notifications:</string>
-    <!--<string name=""></string>-->
+    <string name="btn_senddata">Send your data via Email</string>
+    <string name="btn_savesettings">Save your information</string>
     <!--<string name=""></string>-->
 
-<!-- Strings of Alert -->
+    <!-- Strings of Alert -->
     <string name="title_message">Message</string>
     <string name="title_alert">Alert</string>
     <string name="title_notice">Notice</string>
@@ -104,13 +105,28 @@
     <string name="email_notprovided">Email Not Provided</string>
     <string name="email_unable">Unable to Send Email</string>
     <string name="register_success">Register Success</string>
+    <string name="userid_not">UserID Not Provided</string>
     <string name="device_not">Device ID not provided</string>
     <string name="not_found">Device not found</string>
     <string name="no_exist">Account Does Not Exist</string>
+    <string name="not_sendable">Unable to Send Email</string>
     <string name="email_noexist">Email Does not exist</string>
     <string name="input_email">Please input your correct Email</string>
-    <string name="savingsetting_success">Saved settings successfully.</string>
+    <string name="savingsetting_success">Saved your settings successfully.</string>
+    <string name="senduserinfo_success">Your info was sent successfully.</string>
     <string name="forgotpass_msg_format">Forgot your password?\nEmail: %s</string>
     <string name="forgot_success">A new password has been sent to your email.</string>
+    <string name="select_symptom">You have to select at least 1 symptom.</string>
+
     <!--<string name="try">Please</string>-->
+
+    <!-- Strings realted to Sensio Page-->
+    <string name="str_scanning">Scanning...</string>
+    <string name="str_scann_qrcode">SCAN THE QR CODE ON\nTHE BACK OF THE DEVICE</string>
+    <string name="str_nodevice">Don\'t have the device?</string>
+    <string name="btn_sensio_now"><u>Pre-order it now!</u></string>
+
+    <!-- Strings realted to Settings -->
+    <string name="label_finddoctor">FINDE A DOCTOR\nNEAR YOU</string>
+    <string name="btn_chemist">Register as a Chemist or Physician</string>
 </resources>

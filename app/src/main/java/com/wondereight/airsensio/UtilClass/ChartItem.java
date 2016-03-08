@@ -19,10 +19,10 @@ public class ChartItem {
     private float[] fValue_Temperature;
     private float[] fValue_Sunlight;
     private float[] fValue_Gas;
+    private float[] fValue_outbreak;
 
 
     public ChartItem(){
-        _debug = new _Debug();
         nCount = 0;
         strLabel = null;
         fValue_Particles = null;
@@ -177,6 +177,26 @@ public class ChartItem {
         }
     }
 
+    public void setValueOutbreak(float[] outbreak){
+
+        fValue_outbreak = new float[nCount];
+        if ( nCount > outbreak.length )
+        {
+            for (int i = 0; i < outbreak.length; i++) {
+                fValue_outbreak[i] = outbreak[i];
+            }
+            for (int i=outbreak.length; i<nCount; i++){
+                fValue_outbreak[i] = 0;
+            }
+            _debug.e(LOG_TAG, "The length of gas Values list is less than X-Axis values");
+
+        } else {
+            for (int i = 0; i < nCount; i++) {
+                fValue_outbreak[i] = outbreak[i];
+            }
+        }
+    }
+
     public String[] getLabel(){
         return strLabel;
     }
@@ -197,6 +217,9 @@ public class ChartItem {
     }
     public float[] getValueGas(){
         return fValue_Gas;
+    }
+    public float[] getValueOutbreak(){
+        return fValue_outbreak;
     }
 
 }

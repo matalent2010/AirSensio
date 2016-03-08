@@ -67,15 +67,20 @@ public class SettingsFragment extends Fragment {
 
     @OnClick(R.id.btnSendEmail)
     public void onclickSendEmail(){
+        restCallSendUserinfoApi();
+    }
+
+    @OnClick(R.id.btnSaveSettings)
+    public void onclickSaveSettings(){
         restCallSaveSettingsApi();
     }
 
-    @OnClick(R.id.btnViewTerms)
-    public void onclickViewTerms(){
-        Intent intentTerms = new Intent(SettingsFragment._context, MainActivity.class);
-        intentTerms.putExtra("Settings", true);
-        startActivity(intentTerms);
-    }
+//    @OnClick(R.id.btnViewTerms)
+//    public void onclickViewTerms(){
+//        Intent intentTerms = new Intent(SettingsFragment._context, MainActivity.class);
+//        intentTerms.putExtra("Settings", true);
+//        startActivity(intentTerms);
+//    }
 
     private boolean checkValidation() {
         boolean ret = true;
@@ -150,6 +155,80 @@ public class SettingsFragment extends Fragment {
                 utilityClass.processDialogStop();
                 utilityClass.toast(getResources().getString(R.string.try_again));
                 _debug.d(LOG_TAG, "AirSensioRestClient.SAVE_INFO.onRetry");
+            }
+
+            @Override
+            public void onFinish() {
+                utilityClass.processDialogStop();
+            }
+
+        });
+    }
+
+    private void restCallSendUserinfoApi() {
+
+        RequestParams params = new RequestParams();
+        UserModal userModal = SaveSharedPreferences.getLoginUserData(getActivity());
+        String str_userid = userModal.getId();
+        String str_email = userModal.getEmail();
+        String str_deviceid = utilityClass.GetDeviceID();
+        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+
+        params.put(Constant.STR_USERID, str_userid);
+        params.put(Constant.STR_EMAIL, str_email);
+        params.put(Constant.STR_DEVICEID, str_deviceid);
+        params.put(Constant.STR_HASH, str_hash);
+
+
+        // AirSensioRestClient.post(AirSensioRestClient.LOGIN, params, new AsyncHttpResponseHandler() {
+        AirSensioRestClient.post(AirSensioRestClient.SEND_USERINFO, params, new TextHttpResponseHandler() {   //new JsonHttpResponseHandler(false) : onSuccess(int statusCode, Header[] headers, String responseString) must be overrided.
+            @Override
+            public void onStart() {
+                // called before request is started
+                utilityClass.processDialogStart(false);
+                _debug.d(LOG_TAG, "AirSensioRestClient.SEND_USERINFO.onStart");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                utilityClass.processDialogStop();
+                if (responseString == null) {
+                    _debug.e(LOG_TAG, "None response string");
+                } else if (responseString.equals("0")) {
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.senduserinfo_success));
+                    _debug.d(LOG_TAG, "Sending of User info Success");
+                } else if (responseString.equals("1")) {
+                    _debug.e(LOG_TAG, "Incorrect Hash");
+                } else if (responseString.equals("2")) {
+                    utilityClass.toast(getResources().getString(R.string.email_notprovided));
+                    _debug.d(LOG_TAG, "Email Not Provided");
+                } else if (responseString.equals("3")) {
+                    utilityClass.toast(getResources().getString(R.string.device_not));
+                    _debug.d(LOG_TAG, "Device ID not provided");
+                } else if (responseString.equals("4")) {
+                    utilityClass.toast(getResources().getString(R.string.not_sendable));
+                    _debug.d(LOG_TAG, "Unable to Send Email");
+                } else if (responseString.equals("5")) {
+                    utilityClass.toast(getResources().getString(R.string.email_noexist));
+                    _debug.e(LOG_TAG, "Email Does not exist");
+                } else {
+                    _debug.e(LOG_TAG, "Send user info Exception Error:"+responseString);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                utilityClass.processDialogStop();
+                utilityClass.toast(getResources().getString(R.string.check_internet));
+                _debug.e(LOG_TAG, "errorString: " + responseString);
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+                // called when request is retried{
+                utilityClass.processDialogStop();
+                utilityClass.toast(getResources().getString(R.string.try_again));
+                _debug.d(LOG_TAG, "AirSensioRestClient.SEND_USERINFO.onRetry");
             }
 
             @Override
