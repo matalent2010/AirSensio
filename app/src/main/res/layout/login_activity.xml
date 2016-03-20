@@ -26,7 +26,7 @@
                 android:paddingRight="@dimen/_18sdp"
                 android:orientation="horizontal">
 
-                <com.wondereight.airsensio.CustomView.CustomFontTextView
+                <com.wondereight.airsensio.CustomView.CustomFontView.CustomFontTextView
                     android:id="@+id/btnForgotPass"
                     android:text="@string/action_forgot_password"
                     android:layout_width="wrap_content"
@@ -85,7 +85,7 @@
                         android:layout_weight="0.3"/>
                 </LinearLayout>
 
-                <com.wondereight.airsensio.CustomView.CustomFontTextView
+                <com.wondereight.airsensio.CustomView.CustomFontView.CustomFontTextView
                     android:text="@string/description_login"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -139,7 +139,6 @@
                             android:layout_marginLeft="10dp"
                             android:textSize="22sp"
                             android:textStyle="bold"
-                            android:text="test@test1.com"
                             android:fontFamily="sans-serif"
                             android:textColorHint="@color/darkgreen"
                             android:textColor="@color/darkgreen"/>
@@ -176,7 +175,6 @@
                             android:layout_marginLeft="10dp"
                             android:textSize="22sp"
                             android:textStyle="bold"
-                            android:text="test"
                             android:fontFamily="sans-serif"
                             android:textColorHint="@color/darkgreen"
                             android:textColor="@color/darkgreen"/>

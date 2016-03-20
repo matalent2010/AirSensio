@@ -4,8 +4,11 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.wondereight.airsensio.Helper._Debug;
+import com.wondereight.airsensio.Modal.CityModal;
+import com.wondereight.airsensio.Modal.DataDetailsModal;
 import com.wondereight.airsensio.Modal.DeviceDataModal;
 import com.wondereight.airsensio.Modal.GraphDataModal;
+import com.wondereight.airsensio.Modal.IndexModal;
 import com.wondereight.airsensio.Modal.UserModal;
 
 import org.json.JSONArray;
@@ -15,6 +18,7 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -84,8 +88,10 @@ public class ParsingResponse {
                 item.setLogValue(obj_item.optString(Constant.STR_VALUE));
                 item.setLogDate(obj_item.optString(Constant.STR_DATE));
                 item.setLogTime(obj_item.optString(Constant.STR_TIME));
+                item.setNumWeek(obj_item.optString(Constant.STR_NUM_WEEK));
+                item.setLabel(obj_item.optString(Constant.STR_LABEL));
                 graphDataArray.add(item);
-                _debug.d(LOG_TAG, "GraphStyle(" + String.valueOf(state) + ") Data "+i+" : " + obj_item.toString());
+                _debug.d(LOG_TAG, "GraphStyle(" + String.valueOf(state) + ") Data " + i + " : " + obj_item.toString());
             } catch (Exception e) {
                 _debug.e(LOG_TAG, "(" + String.valueOf(i) + ")th item of Response JsonArray : " + e.toString());
             }
@@ -108,7 +114,7 @@ public class ParsingResponse {
         return result;
     }
 
-    static class ValuesData {
+    private static class ValuesData {
         String str;
         int nCount;
         float[] fValue;
@@ -131,45 +137,47 @@ public class ParsingResponse {
         }
     }
 
-    static ChartItem getDayGraphData(ArrayList<GraphDataModal> ArrOfGraph){
+
+    private static ChartItem getDayGraphData(ArrayList<GraphDataModal> ArrOfGraph){
         ChartItem result = new ChartItem();
-        ArrayList<String> labels = new ArrayList<>();
-        ArrayList<String> short_labels = new ArrayList<>();
+//        ArrayList<String> labels = new ArrayList<>();
+        ArrayList<String> short_labels = new ArrayList(Arrays.asList(new String[]{"00:00", "03:00", "06:00", "09:00", "12:00", "15:00", "18:00", "21:00", "24:00"}));
 
         ArrayList<ValuesData> arrDayGraphData = new ArrayList<>();
-        arrDayGraphData.add(new ValuesData("Particles Count"));
+        arrDayGraphData.add(new ValuesData("Particle Count"));
         arrDayGraphData.add(new ValuesData("Allergen Count"));
         arrDayGraphData.add(new ValuesData("Humidity"));
         arrDayGraphData.add(new ValuesData("Temperature"));
-        arrDayGraphData.add(new ValuesData("Sunlight"));
+        arrDayGraphData.add(new ValuesData("UV Index"));
         arrDayGraphData.add(new ValuesData("Harmful Gas"));
         arrDayGraphData.add(new ValuesData("Outbreak"));
 
-        for( GraphDataModal item : ArrOfGraph ){
-            if(item.getParameter().equalsIgnoreCase(arrDayGraphData.get(6).str)){  // "Outbreak"
-                break;
-            }
-            Boolean isInclude = false;
-            for(String label : labels){
-                if(item.getLogTime().equalsIgnoreCase(label)) {
-                    isInclude = true;
-                    break;
-                }
-            }
-            if(!isInclude)
-                labels.add(item.getLogTime());
-        }
-        Collections.sort(labels, new Comparator<String>() {
-            @Override
-            public int compare(String lhs, String rhs) {
-                return lhs.compareToIgnoreCase(rhs);
-            }
-        });
-        for (String label : labels){
-            short_labels.add(label.substring(0,label.length()-3));
-        }
+        ValuesDataForDayOutbreak dayOutbreakData = new ValuesDataForDayOutbreak();
+//        for( GraphDataModal item : ArrOfGraph ){
+//            if(item.getParameter().equalsIgnoreCase(arrDayGraphData.get(6).str)){  // "Outbreak"
+//                break;
+//            }
+//            Boolean isInclude = false;
+//            for(String label : labels){
+//                if(item.getLogTime().equalsIgnoreCase(label)) {
+//                    isInclude = true;
+//                    break;
+//                }
+//            }
+//            if(!isInclude)
+//                labels.add(item.getLogTime());
+//        }
+//        Collections.sort(labels, new Comparator<String>() {
+//            @Override
+//            public int compare(String lhs, String rhs) {
+//                return lhs.compareToIgnoreCase(rhs);
+//            }
+//        });
+//        for (String label : labels){
+//            short_labels.add(label.substring(0,label.length()-3));
+//        }
         for ( ValuesData dayGraph : arrDayGraphData ){
-            dayGraph.setCount(labels.size());
+            dayGraph.setCount(short_labels.size());
         }
 
         String[] mStringArray = new String[short_labels.size()];
@@ -177,15 +185,13 @@ public class ParsingResponse {
         result.setLabel(mStringArray);
         for( GraphDataModal item : ArrOfGraph ){
             if(item.getParameter().equalsIgnoreCase(arrDayGraphData.get(6).str)){  // "Outbreak"
-                for(int k=0; k<labels.size(); k++){
-                    arrDayGraphData.get(6).setfValueWithIndex(Float.parseFloat(item.getLogValue()),k);
-                }
-                break;
+                dayOutbreakData.addData(item.getLogTime(), Float.parseFloat(item.getLogValue()));
             }
             for(int j=0; j<6/*arrDayGraphData.size()-1*/; j++){
                 if(item.getParameter().equalsIgnoreCase(arrDayGraphData.get(j).str)){
-                    for(int k=0; k<labels.size(); k++){
-                        if( item.getLogTime().equalsIgnoreCase(labels.get(k))){
+                    for(int k=0; k<short_labels.size(); k++){
+                        String logTime = item.getLogTime();
+                        if( logTime.substring(0, logTime.length()-3).equalsIgnoreCase(short_labels.get(k))){
                             arrDayGraphData.get(j).setfValueWithIndex(Float.parseFloat(item.getLogValue()),k);
                             break;
                         }
@@ -193,8 +199,9 @@ public class ParsingResponse {
                     break;
                 }
             }
-
         }
+        dayOutbreakData.sortValue();
+
         result.setValueParticles(arrDayGraphData.get(0).getfValue());
         result.setValueAllergen(arrDayGraphData.get(1).getfValue());
         result.setValueHumidity(arrDayGraphData.get(2).getfValue());
@@ -203,20 +210,22 @@ public class ParsingResponse {
         result.setValueGas(arrDayGraphData.get(5).getfValue());
         result.setValueOutbreak(arrDayGraphData.get(6).getfValue());
 
+        result.setValueDayOutbreak(dayOutbreakData);
+
         return result;
     }
 
-    static ChartItem getWeekGraphData(ArrayList<GraphDataModal> ArrOfGraph){
+    private static ChartItem getWeekGraphData(ArrayList<GraphDataModal> ArrOfGraph){
         ChartItem result = new ChartItem();
         ArrayList<String> labels = new ArrayList<>();
         ArrayList<String> week_labels = new ArrayList<>();
 
         ArrayList<ValuesData> arrWeekGraphData = new ArrayList<>();
-        arrWeekGraphData.add(new ValuesData("Particles Count"));
+        arrWeekGraphData.add(new ValuesData("Particle Count"));
         arrWeekGraphData.add(new ValuesData("Allergen Count"));
         arrWeekGraphData.add(new ValuesData("Humidity"));
         arrWeekGraphData.add(new ValuesData("Temperature"));
-        arrWeekGraphData.add(new ValuesData("Sunlight"));
+        arrWeekGraphData.add(new ValuesData("UV Index"));
         arrWeekGraphData.add(new ValuesData("Harmful Gas"));
         arrWeekGraphData.add(new ValuesData("Outbreak"));
 
@@ -294,7 +303,6 @@ public class ParsingResponse {
                     break;
                 }
             }
-
         }
         result.setValueParticles(arrWeekGraphData.get(0).getfValue());
         result.setValueAllergen(arrWeekGraphData.get(1).getfValue());
@@ -306,14 +314,178 @@ public class ParsingResponse {
 
         return result;
     }
-    static ChartItem getMonthGraphData(ArrayList<GraphDataModal> ArrOfGraph){
+
+    private static ChartItem getMonthGraphData(ArrayList<GraphDataModal> ArrOfGraph){
         ChartItem result = new ChartItem();
+        ArrayList<String> labels = new ArrayList<>();
+        ArrayList<String> month_labels = new ArrayList<>();
+
+        ArrayList<ValuesData> arrMonthGraphData = new ArrayList<>();
+        arrMonthGraphData.add(new ValuesData("Particle Count"));
+        arrMonthGraphData.add(new ValuesData("Allergen Count"));
+        arrMonthGraphData.add(new ValuesData("Humidity"));
+        arrMonthGraphData.add(new ValuesData("Temperature"));
+        arrMonthGraphData.add(new ValuesData("UV Index"));
+        arrMonthGraphData.add(new ValuesData("Harmful Gas"));
+        arrMonthGraphData.add(new ValuesData("Outbreak"));
+
+        for( GraphDataModal item : ArrOfGraph ){
+            Boolean isInclude = false;
+            for( String label : labels){
+                if(item.getNumWeek().equalsIgnoreCase(label))
+                {
+                    isInclude = true;
+                    break;
+                }
+            }
+            if(!isInclude)
+                labels.add(item.getNumWeek());
+        }
+        Collections.sort(labels, new Comparator<String>() {
+            @Override
+            public int compare(String lhs, String rhs) {
+                return lhs.compareToIgnoreCase(rhs);
+            }
+        });
+
+        for( String label : labels ) {
+            for (GraphDataModal item : ArrOfGraph) {
+                if (item.getNumWeek().equalsIgnoreCase(label)) {
+                    month_labels.add(item.getLabel());
+                    break;
+                }
+            }
+        }
+
+        for( ValuesData monthGraph : arrMonthGraphData){
+            monthGraph.setCount(month_labels.size());
+        }
+        String[] mStringArray = new String[month_labels.size()];
+        mStringArray = month_labels.toArray(mStringArray);
+        result.setLabel(mStringArray);
+
+        for( GraphDataModal item : ArrOfGraph ){
+            for( ValuesData monthGraph : arrMonthGraphData ){
+                if(item.getParameter().equalsIgnoreCase(monthGraph.str)){
+                    for(int k=0; k<labels.size(); k++){
+                        if( item.getNumWeek().equalsIgnoreCase(labels.get(k))){
+                            monthGraph.setfValueWithIndex(Float.parseFloat(item.getLogValue()), k);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        result.setValueParticles(arrMonthGraphData.get(0).getfValue());
+        result.setValueAllergen(arrMonthGraphData.get(1).getfValue());
+        result.setValueHumidity(arrMonthGraphData.get(2).getfValue());
+        result.setValueTemperature(arrMonthGraphData.get(3).getfValue());
+        result.setValueSunlight(arrMonthGraphData.get(4).getfValue());
+        result.setValueGas(arrMonthGraphData.get(5).getfValue());
+        result.setValueOutbreak(arrMonthGraphData.get(6).getfValue());
 
         return result;
     }
-    static ChartItem getYearGraphData(ArrayList<GraphDataModal> ArrOfGraph){
+    private static ChartItem getYearGraphData(ArrayList<GraphDataModal> ArrOfGraph){
         ChartItem result = new ChartItem();
+        ArrayList<String> year_labels = new ArrayList(Arrays.asList(new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct","Nev", "Dec"}));
 
+        ArrayList<ValuesData> arrYearGraphData = new ArrayList<>();
+        arrYearGraphData.add(new ValuesData("Particle Count"));
+        arrYearGraphData.add(new ValuesData("Allergen Count"));
+        arrYearGraphData.add(new ValuesData("Humidity"));
+        arrYearGraphData.add(new ValuesData("Temperature"));
+        arrYearGraphData.add(new ValuesData("UV Index"));
+        arrYearGraphData.add(new ValuesData("Harmful Gas"));
+        arrYearGraphData.add(new ValuesData("Outbreak"));
+
+        for( ValuesData yearGraph : arrYearGraphData){
+            yearGraph.setCount(year_labels.size());
+        }
+        String[] mStringArray = new String[year_labels.size()];
+        mStringArray = year_labels.toArray(mStringArray);
+        result.setLabel(mStringArray);
+
+        for( GraphDataModal item : ArrOfGraph ){
+            for( ValuesData yearGraph : arrYearGraphData ){
+                if(item.getParameter().equalsIgnoreCase(yearGraph.str)){
+                    for(int k=0; k<year_labels.size(); k++){
+                        if( item.getLabel().equalsIgnoreCase(year_labels.get(k))){
+                            yearGraph.setfValueWithIndex(Float.parseFloat(item.getLogValue()), k);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        result.setValueParticles(arrYearGraphData.get(0).getfValue());
+        result.setValueAllergen(arrYearGraphData.get(1).getfValue());
+        result.setValueHumidity(arrYearGraphData.get(2).getfValue());
+        result.setValueTemperature(arrYearGraphData.get(3).getfValue());
+        result.setValueSunlight(arrYearGraphData.get(4).getfValue());
+        result.setValueGas(arrYearGraphData.get(5).getfValue());
+        result.setValueOutbreak(arrYearGraphData.get(6).getfValue());
+
+        return result;
+    }
+
+    public static ArrayList parsingCitiesList(JSONArray arr)
+    {
+        ArrayList<CityModal> cityList = new ArrayList();
+        for( int i=0; i<arr.length(); i++){
+            try {
+                cityList.add( new CityModal(arr.getJSONObject(i).optString(Constant.STR_CITY), arr.getJSONObject(i).optString(Constant.STR_CITYNAME)));
+            } catch (JSONException e) {
+                _debug.e(LOG_TAG, "City List JSONException: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return cityList;
+    }
+
+    public static ArrayList<IndexModal> parsingIndexData(JSONArray arr){
+        ArrayList<IndexModal> result = new ArrayList<>();
+        try {
+            IndexModal allergyModal = new IndexModal();
+            IndexModal pollutionModal = new IndexModal();
+
+            JSONObject obj = arr.getJSONObject(0);
+            allergyModal.setIndexValue(String.valueOf(obj.optInt(Constant.STR_ALLERGYINDEX)));
+            allergyModal.setLogIntensity(obj.optString(Constant.STR_LOGINTENSITY));
+            obj = arr.getJSONObject(1);
+            pollutionModal.setIndexValue(String.valueOf(obj.optInt(Constant.STR_POLLUTIONINDEX)));
+            pollutionModal.setLogIntensity(obj.optString(Constant.STR_LOGINTENSITY));
+
+            result.add(allergyModal);
+            result.add(pollutionModal);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            _debug.e(LOG_TAG, "IndexModal JSONArray Fail: " + e.getMessage());
+            result.add( new IndexModal() );
+            result.add( new IndexModal() );
+        }
+        return result;
+    }
+
+    public static ArrayList<DataDetailsModal> parsingDataDetails(JSONArray arr){
+        ArrayList<DataDetailsModal> result = new ArrayList<>();
+        for ( int i=0; i<arr.length(); i++ ) {
+            DataDetailsModal modal = new DataDetailsModal();
+            try {
+                JSONObject obj = arr.getJSONObject(i);
+                modal.setParameter(obj.optString(Constant.STR_PARAMETER));
+                modal.setLogValue(obj.optString(Constant.STR_VALUE));
+                modal.setLogIntensity(obj.optString(Constant.STR_LOGINTENSITY));
+
+                result.add(modal);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                _debug.e(LOG_TAG, "DataDetailsModal JSONArray Fail: " + e.getMessage());
+            }
+        }
         return result;
     }
 }

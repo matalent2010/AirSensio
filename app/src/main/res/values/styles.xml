@@ -3,7 +3,15 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+
+        <item name="droppyPopupStyle">@style/customCityListPopup</item>
     </style>
+
+    <style name="customCityListPopup" parent="Droppy.DroppyPopup">
+        <item name="android:layout_width">@dimen/_200sdp</item>
+        <item name="android:layout_height">@dimen/_100sdp</item>
+    </style>
+
 
     <style name="TVTitleStyle" parent="android:Widget.TextView">
         <item name="android:layout_height">wrap_content</item>
@@ -25,7 +33,7 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
-    <style name="EVInputStyle" parent="android:Widget.EditText">
+    <style name="ETInputStyle" parent="android:Widget.EditText">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_marginLeft">@dimen/_10sdp</item>
@@ -33,7 +41,6 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="android:inputType">textPersonName</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
-        <item name="android:textStyle"></item>
         <item name="android:paddingLeft">@dimen/_8sdp</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColorHint">@color/white</item>
@@ -49,7 +56,21 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="android:inputType">textPersonName</item>
         <item name="android:textSize">22sp</item>
-        <item name="android:textStyle"></item>
+        <item name="android:paddingLeft">@dimen/_8sdp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="ETInputCenterStyle" parent="android:Widget.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginLeft">@dimen/_10sdp</item>
+        <item name="android:layout_marginRight">@dimen/_10sdp</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:inputType">textPersonName</item>
+        <item name="android:textSize">22sp</item>
         <item name="android:paddingLeft">@dimen/_8sdp</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColorHint">@color/white</item>
@@ -57,7 +78,7 @@
     </style>
 
     <style name="btn_login">
-        <item name="android:layout_height">@dimen/_50sdp</item>
+        <item name="android:layout_height">60dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_marginLeft">@dimen/_55sdp</item>
@@ -70,7 +91,7 @@
     </style>
 
     <style name="btn_register">
-        <item name="android:layout_height">@dimen/_50sdp</item>
+        <item name="android:layout_height">60dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_marginLeft">@dimen/_55sdp</item>
@@ -80,6 +101,51 @@
         <item name="android:background">@drawable/rounded_corner_white</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+
+    <style name="BS_Orange_WhiteBG" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/white</item>
+        <item name="android:textColor">@color/btnRegisterTextColor</item>
+    </style>
+
+    <style name="btn_save_settings">
+        <item name="android:theme">@style/BS_Orange_WhiteBG</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginLeft">@dimen/_10sdp</item>
+        <item name="android:layout_marginRight">@dimen/_10sdp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:typeface">serif</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColor">@color/btnRegisterTextColor</item>
+        <item name="android:background">@drawable/norounded_white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="BS_Green_WhiteBG" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/white</item>
+        <item name="android:textColor">@color/color_btn_edit</item>
+    </style>
+
+    <style name="btn_edit_info">
+        <item name="android:theme">@style/BS_Green_WhiteBG</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:typeface">serif</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColor">@color/color_btn_edit</item>
+        <item name="android:background">@drawable/norounded_white</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:drawableLeft">@drawable/ic_edit</item>
+        <item name="android:drawablePadding">15dp</item>
+        <item name="android:paddingLeft">50dp</item>
+        <item name="android:paddingRight">70dp</item>
     </style>
 
     <style name="vertical_space">
@@ -94,7 +160,7 @@
         <item name="android:layout_marginTop">10dp</item>
     </style>
 
-    <style name="chb_style1" parent="android:Widget.Holo.CheckedTextView">
+    <style name="chb_style1" parent="@android:style/Widget.CompoundButton.CheckBox">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/white</item>
@@ -103,7 +169,7 @@
         <item name="android:button">@drawable/custom_checkbox1</item>
     </style>
 
-    <style name="chb_style2" parent="android:Widget.Holo.CheckedTextView">
+    <style name="chb_style2"  parent="@android:style/Widget.CompoundButton.CheckBox">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/white</item>
@@ -113,7 +179,7 @@
         <item name="android:button">@drawable/custom_checkbox2</item>
     </style>
 
-    <style name="chb_smallstyle1" parent="android:Widget.Holo.CheckedTextView">
+    <style name="chb_smallstyle1"  parent="@android:style/Widget.CompoundButton.CheckBox">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/white</item>
@@ -123,7 +189,7 @@
         <item name="android:button">@drawable/custom_smallcheckbox1</item>
     </style>
 
-    <style name="chb_smallstyle2" parent="android:Widget.Holo.CheckedTextView">
+    <style name="chb_smallstyle2"  parent="@android:style/Widget.CompoundButton.CheckBox">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/white</item>
@@ -139,4 +205,40 @@
         <item name="android:background">@color/darkgreen</item>
         <item name="android:layout_marginTop">10dp</item>
     </style>
+
+    <style name="subtitle_statistics">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
+    <style name="textcontent_statistics">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
+    <style name="state_low">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textColor">@color/textColor_Green</item>
+        <item name="android:text">Low</item>
+    </style>
+
+    <style name="state_moderate">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textColor">@color/MenuOrange</item>
+        <item name="android:text">Moderate</item>
+    </style>
+
+    <style name="state_high">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textColor">@color/darkred</item>
+        <item name="android:text">High</item>
+    </style>
+
 </resources>

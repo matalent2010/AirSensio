@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.wondereight.airsensio.Activity.SymptomActivity;
+import com.wondereight.airsensio.Helper._Debug;
 import com.wondereight.airsensio.R;
+import com.wondereight.airsensio.UtilClass.UtilityClass;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -19,6 +21,9 @@ import butterknife.OnClick;
  */
 public class SensioFragment extends Fragment {
     private static Context _context;
+    private static final String LOG_TAG = "StatisticFragment";
+    private static _Debug _debug = new _Debug(true);
+    UtilityClass utilityClass;
 
     public SensioFragment() {
     }
@@ -34,6 +39,8 @@ public class SensioFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sensio, container, false);
         ButterKnife.bind(this, view);
+        utilityClass = new UtilityClass(_context);
+
         return view;
     }
 

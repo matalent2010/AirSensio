@@ -5,5 +5,5 @@ package com.wondereight.airsensio.Interface;
  */
 public interface ThreadCallback {
     void runSuccessCallback();
-    void runFailCallback();
+    void runFailCallback(String error);
 }

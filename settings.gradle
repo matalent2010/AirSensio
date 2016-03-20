@@ -1,1 +1,3 @@
-include ':app'
+include ':app', ':DropdownMenu', ':ChartGraph'
+project(':DropdownMenu').projectDir = new File('library/DropdownMenu')
+project(':ChartGraph').projectDir = new File('library/ChartGraph')

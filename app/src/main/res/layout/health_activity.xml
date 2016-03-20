@@ -30,7 +30,7 @@
                     android:layout_marginTop="@dimen/_20sdp"
                     android:orientation="vertical">
 
-                    <com.wondereight.airsensio.CustomView.CustomFontTextView
+                    <com.wondereight.airsensio.CustomView.CustomFontView.CustomFontTextView
                         android:text="@string/title_health"
                         style = "@style/TVTitleStyle"
                         app:textStyle="@integer/FS_light"
@@ -107,7 +107,7 @@
                         android:orientation="vertical">
                         <EditText
                             android:id="@+id/etspecify"
-                            style="@style/EVInputStyle"
+                            style="@style/ETInputStyle"
                             android:hint="@string/hint_specify"/>
 
                         <LinearLayout
@@ -133,7 +133,7 @@
                         android:orientation="vertical">
                         <EditText
                             android:id="@+id/etanotherspecify"
-                            style="@style/EVInputStyle"
+                            style="@style/ETInputStyle"
                             android:hint="@string/hint_specify"/>
 
                         <LinearLayout

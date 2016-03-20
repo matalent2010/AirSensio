@@ -69,4 +69,5 @@
 
     <!-- Profile Fragment Color-->
     <color name="textColor_gray">@color/lightblack</color>
+    <color name="color_btn_edit">@color/lightgreen</color>
 </resources>

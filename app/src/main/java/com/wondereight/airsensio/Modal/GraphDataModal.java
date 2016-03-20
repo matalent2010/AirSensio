@@ -8,6 +8,8 @@ public class GraphDataModal {
     String log_value  = "";
     String log_date = "";
     String log_time = "";
+    String label = "";
+    String num_week = "";
 
     public String getParameter() {
         return parameter;
@@ -41,5 +43,23 @@ public class GraphDataModal {
         this.log_time = log_time;
     }
 
+    public String getNumWeek()
+    {
+        return num_week;
+    }
 
+    public void setNumWeek(String numWeek)
+    {
+        this.num_week = numWeek;
+    }
+
+    public String getLabel()
+    {
+        return label;
+    }
+
+    public void setLabel(String label)
+    {
+        this.label = label;
+    }
 }

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
 import butterknife.ButterKnife;
@@ -45,6 +46,8 @@ public class SymptomActivity extends AppCompatActivity {
     @Bind({R.id.sneezing, R.id.itchyeyes, R.id.runnynose, R.id.nasal, R.id.wateryeyes, R.id.itchynose})
     List<ImageView> ivSymptoms;
 
+    @Bind(R.id.btn_close)
+    View btn_close;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,7 @@ public class SymptomActivity extends AppCompatActivity {
         setContentView(R.layout.symptom_activity);
 
         ButterKnife.bind(this);
+        btn_close.bringToFront();
         declaration();
         initialization();
     }
@@ -117,6 +121,12 @@ public class SymptomActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @OnClick(R.id.btn_close)
+    void onClickClose(){
+        finish();
+        _debug.e(LOG_TAG, "Log outbreak closed");
+    }
+
     @OnClick(R.id.btnSubmit)
     void onClickSubmit(){
         Global.GetInstance().SetStateSymptomList(symptomList);
@@ -136,11 +146,12 @@ public class SymptomActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void runFailCallback() {
+                    public void runFailCallback(final String err) {
                         SymptomActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 utilityClass.processDialogStop();
+                                utilityClass.showAlertMessage("Alert", err);
                             }
                         });
                     }
@@ -221,8 +232,8 @@ public class SymptomActivity extends AppCompatActivity {
         String str_email = userModal.getEmail();
         String str_userid = userModal.getId();
         String str_location = Global.GetInstance().GetGeolocation();
-        String str_temp = Global.GetInstance().GetCityName();
-        String str_cityid = GetCityID(Global.GetInstance().GetCityName());
+        String str_temp = Global.GetInstance().GetGeoCityName();
+        String str_cityid = Global.GetInstance().GetCityID();
         String str_deviceid = utilityClass.GetDeviceID();
         String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
 
@@ -232,6 +243,7 @@ public class SymptomActivity extends AppCompatActivity {
         params.put(Constant.STR_USERID, str_userid);
         params.put(Constant.STR_CITYID, str_cityid);
         params.put(Constant.STR_LOCATION, str_location);
+        params.put(Constant.STR_DATETIME, utilityClass.getDateTime());
         params.put(Constant.STR_SYMPTOM_1, String.valueOf(symptomList[0]));
         params.put(Constant.STR_SYMPTOM_2, String.valueOf(symptomList[1]));
         params.put(Constant.STR_SYMPTOM_3, String.valueOf(symptomList[2]));
@@ -299,9 +311,9 @@ public class SymptomActivity extends AppCompatActivity {
         });
     }
 
-    public String GetCityID(String CityName){
-        return "1";
-    }
+//    public String GetCityID(String CityName){
+//        return "1";
+//    }
 
     public Boolean isSelectedSymptom(int[] SymptomList){
         for ( int i= 0; i<6; i++){

@@ -1,15 +1,18 @@
 package com.wondereight.airsensio.UtilClass;
 
 
+import android.util.Pair;
+
 import com.wondereight.airsensio.Helper._Debug;
 
-/**
- * Created by Miguel on 02/21/2016.
- */
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ChartItem {
     private static final String LOG_TAG = "LineChartItem";
     private static _Debug _debug = new _Debug(true);
+
+
 
     private int nCount;
     private String[] strLabel;
@@ -20,6 +23,7 @@ public class ChartItem {
     private float[] fValue_Sunlight;
     private float[] fValue_Gas;
     private float[] fValue_outbreak;
+    private ValuesDataForDayOutbreak value_dayoutbreak;
 
 
     public ChartItem(){
@@ -31,6 +35,7 @@ public class ChartItem {
         fValue_Temperature = null;
         fValue_Sunlight = null;
         fValue_Gas = null;
+        value_dayoutbreak = null;
     }
 
     public ChartItem(String[] label, float[] particles, float[] allergen, float[] humidity, float[] temperature, float[] sunlight, float[] gas){
@@ -197,6 +202,13 @@ public class ChartItem {
         }
     }
 
+    public void setValueDayOutbreak(ValuesDataForDayOutbreak outbreak) {
+        this.value_dayoutbreak = outbreak;
+    }
+    public ValuesDataForDayOutbreak getValueDayOutbreak() {
+        return this.value_dayoutbreak;
+    }
+
     public String[] getLabel(){
         return strLabel;
     }
@@ -221,5 +233,6 @@ public class ChartItem {
     public float[] getValueOutbreak(){
         return fValue_outbreak;
     }
+
 
 }

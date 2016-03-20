@@ -16,10 +16,11 @@ import android.widget.Toast;
 
 import com.wondereight.airsensio.R;
 
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * Created by Miguel on 02/17/2016.
@@ -169,5 +170,25 @@ public class UtilityClass {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static float[] toPrimitive(Float[] array, float valueForNull) {
+        if (array == null) {
+            return null;
+        } else if (array.length == 0) {
+            return new float[0];
+        }
+        final float[] result = new float[array.length];
+        for (int i = 0; i < array.length; i++) {
+            Float b = array[i];
+            result[i] = (b == null ? valueForNull : b.floatValue());
+        }
+        return result;
+    }
+
+    public static String getDateTime(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String datetime = dateFormat.format(Calendar.getInstance().getTime());//String datetime = dateFormat.format(Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime());
+        return datetime;
     }
 }

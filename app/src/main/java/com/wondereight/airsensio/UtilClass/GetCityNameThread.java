@@ -59,12 +59,12 @@ public class GetCityNameThread implements Runnable {
             if (!isGPSEnabled && !isNetworkEnabled) {
                 // No network provider is enabled
                 _debug.e(LOG_TAG, "GPS Provider is not available.");
-                Global.GetInstance().SetCityName("");
-                _callback.runFailCallback();
+                Global.GetInstance().SetGoeCityName("");
+                _callback.runFailCallback("GPS Provider is not available. Please allow the permission and try again.");
             } else {
                 this.canGetLocation = true;
                 if (isNetworkEnabled) {
-                    _debug.d(LOG_TAG, "Network");
+                    _debug.d(LOG_TAG, "Network Enabled");
                     if (locationManager != null) {
                         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                         if (location != null) {
@@ -96,8 +96,8 @@ public class GetCityNameThread implements Runnable {
                 Geocoder geocoder = new Geocoder(_context, Locale.getDefault());
                 if(geocoder == null) {
                     _debug.e(LOG_TAG, "Geocoder is not created.");
-                    Global.GetInstance().SetCityName("");
-                    _callback.runFailCallback();
+                    Global.GetInstance().SetGoeCityName("");
+                    _callback.runFailCallback("Geocoder is not created.");
                     return;
                 }
                 try {
@@ -123,7 +123,7 @@ public class GetCityNameThread implements Runnable {
                     cityName = "";
                 }
                 Global.GetInstance().SetGeolocation(latitude + ", " + longitude);
-                Global.GetInstance().SetCityName(cityName);
+                Global.GetInstance().SetGoeCityName(cityName);
                 _callback.runSuccessCallback();
             }
 
@@ -131,8 +131,8 @@ public class GetCityNameThread implements Runnable {
             e.printStackTrace();
             _debug.e(LOG_TAG, e.getMessage());
             Global.GetInstance().SetGeolocation(latitude + ", " + longitude);
-            Global.GetInstance().SetCityName("");
-            _callback.runFailCallback();
+            Global.GetInstance().SetGoeCityName("");
+            _callback.runFailCallback(e.getMessage());
         }
     }
 }

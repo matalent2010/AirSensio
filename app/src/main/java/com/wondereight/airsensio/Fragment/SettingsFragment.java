@@ -18,6 +18,7 @@ import com.wondereight.airsensio.Activity.HomeActivity;
 import com.wondereight.airsensio.Activity.MainActivity;
 import com.wondereight.airsensio.CustomView.SnapBar;
 import com.wondereight.airsensio.Helper._Debug;
+import com.wondereight.airsensio.Modal.SettingsModal;
 import com.wondereight.airsensio.Modal.UserModal;
 import com.wondereight.airsensio.R;
 import com.wondereight.airsensio.UtilClass.AirSensioRestClient;
@@ -62,6 +63,7 @@ public class SettingsFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         utilityClass = ((HomeActivity)getActivity()).utilityClass;
+        setSettingsValue();
         return view;
     }
 
@@ -72,15 +74,16 @@ public class SettingsFragment extends Fragment {
 
     @OnClick(R.id.btnSaveSettings)
     public void onclickSaveSettings(){
+        SaveSettings();
         restCallSaveSettingsApi();
     }
 
-//    @OnClick(R.id.btnViewTerms)
-//    public void onclickViewTerms(){
-//        Intent intentTerms = new Intent(SettingsFragment._context, MainActivity.class);
-//        intentTerms.putExtra("Settings", true);
-//        startActivity(intentTerms);
-//    }
+    @OnClick(R.id.btnViewTerms)
+    public void onclickViewTerms(){
+        Intent intentTerms = new Intent(SettingsFragment._context, MainActivity.class);
+        intentTerms.putExtra("Settings", true);
+        startActivity(intentTerms);
+    }
 
     private boolean checkValidation() {
         boolean ret = true;
@@ -132,10 +135,10 @@ public class SettingsFragment extends Fragment {
                     utilityClass.toast(getResources().getString(R.string.email_used));
                     _debug.e(LOG_TAG, "Email Used by another account");
                 } else if (responseString.equals("3")) {
-                    utilityClass.toast(getResources().getString(R.string.device_not));
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.device_not));
                     _debug.e(LOG_TAG, "Device ID not provided");
                 } else if (responseString.equals("4")) {
-                    utilityClass.toast(getResources().getString(R.string.no_exist));
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.no_exist));
                     _debug.e(LOG_TAG, "Account Does Not Exist");
                 } else {
                     _debug.e(LOG_TAG, "Save Info Exception Error:"+responseString);
@@ -199,18 +202,12 @@ public class SettingsFragment extends Fragment {
                     _debug.d(LOG_TAG, "Sending of User info Success");
                 } else if (responseString.equals("1")) {
                     _debug.e(LOG_TAG, "Incorrect Hash");
-                } else if (responseString.equals("2")) {
-                    utilityClass.toast(getResources().getString(R.string.email_notprovided));
-                    _debug.d(LOG_TAG, "Email Not Provided");
                 } else if (responseString.equals("3")) {
-                    utilityClass.toast(getResources().getString(R.string.device_not));
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.device_not));
                     _debug.d(LOG_TAG, "Device ID not provided");
                 } else if (responseString.equals("4")) {
-                    utilityClass.toast(getResources().getString(R.string.not_sendable));
-                    _debug.d(LOG_TAG, "Unable to Send Email");
-                } else if (responseString.equals("5")) {
-                    utilityClass.toast(getResources().getString(R.string.email_noexist));
-                    _debug.e(LOG_TAG, "Email Does not exist");
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.no_exist));
+                    _debug.d(LOG_TAG, "Account Does Not Exist");
                 } else {
                     _debug.e(LOG_TAG, "Send user info Exception Error:"+responseString);
                 }
@@ -239,4 +236,17 @@ public class SettingsFragment extends Fragment {
         });
     }
 
+    private boolean SaveSettings(){
+        String user = SaveSharedPreferences.getLoginUserData(_context).getEmail();
+        SaveSharedPreferences.saveSettings(_context, user, new SettingsModal(sbAllergens.getSteps(), sbPollution.getSteps()));
+        return true;
+    }
+
+    private boolean setSettingsValue(){
+        String user = SaveSharedPreferences.getLoginUserData(_context).getEmail();
+        SettingsModal modal = SaveSharedPreferences.getSettings(_context, user);
+        sbAllergens.setSteps(modal.getAllergensValue());
+        sbPollution.setSteps(modal.getPollutionValue());
+        return true;
+    }
 }

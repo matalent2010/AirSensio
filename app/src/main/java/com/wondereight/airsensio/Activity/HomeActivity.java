@@ -31,6 +31,7 @@ import com.wondereight.airsensio.Modal.DeviceDataModal;
 import com.wondereight.airsensio.R;
 import com.wondereight.airsensio.UtilClass.AirSensioRestClient;
 import com.wondereight.airsensio.UtilClass.Constant;
+import com.wondereight.airsensio.UtilClass.Global;
 import com.wondereight.airsensio.UtilClass.ParsingResponse;
 import com.wondereight.airsensio.UtilClass.SaveSharedPreferences;
 import com.wondereight.airsensio.UtilClass.UtilityClass;
@@ -220,7 +221,7 @@ public class HomeActivity extends FragmentActivity {
         String str_deviceid = utilityClass.GetDeviceID();
         String str_email = SaveSharedPreferences.getLoginUserData(HomeActivity.this).getEmail();
         String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
-        String str_cityid =  "1"; //Global.GetInstance().GetCityName().isEmpty() ? Constant.DEFAULT_CITYNAME : Global.GetInstance().GetCityName();
+        String str_cityid =  Global.GetInstance().GetCityID();
 
         params.put(Constant.STR_USERID, str_userid);
         params.put(Constant.STR_DEVICEID, str_deviceid);

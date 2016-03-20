@@ -105,6 +105,13 @@ public class SnapBar extends SeekBar {
         return 0;
     }
 
+    public void setSteps( int steps ){
+
+        int nValue = (int)(steps * ((float)SNAP_MAX / (SNAP_STEP-1))); //getProgress();
+
+        setProgress(nValue);
+    }
+
     public void setMovingSmooth(boolean isSmooth){
         isScrollingSmooth = isSmooth;
     }

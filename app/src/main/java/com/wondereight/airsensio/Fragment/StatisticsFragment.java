@@ -2,13 +2,17 @@ package com.wondereight.airsensio.Fragment;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.db.chart.Tools;
@@ -16,11 +20,11 @@ import com.db.chart.model.LineSet;
 import com.db.chart.view.AxisController;
 import com.db.chart.view.ChartView;
 import com.db.chart.view.LineChartView;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.loopj.android.http.*;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.wondereight.airsensio.Helper._Debug;
-import com.wondereight.airsensio.Modal.DeviceDataModal;
-import com.wondereight.airsensio.Modal.GraphDataModal;
+import com.wondereight.airsensio.Modal.DataDetailsModal;
 import com.wondereight.airsensio.Modal.UserModal;
 import com.wondereight.airsensio.R;
 import com.wondereight.airsensio.UtilClass.AirSensioRestClient;
@@ -41,21 +45,32 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import cz.msebera.android.httpclient.Header;
-
-import static com.wondereight.airsensio.Fragment.StatisticsFragment.GraphStyle.DAY;
-import static com.wondereight.airsensio.Fragment.StatisticsFragment.GraphStyle.WEEK;
 
 /**
  * Created by Miguel on 02/2/2016.
  */
+
+
+
 public class StatisticsFragment extends Fragment {
+    public static final int GS_DAY = 0;
+    public static final int GS_WEEK = 1;
+    public static final int GS_MONTH = 2;
+    public static final int GS_YEAR = 3;
+
     private static Context _context;
     private static View _view;
+    private static View _mainContainer;
 
     private static final String LOG_TAG = "StatisticFragment";
     private static _Debug _debug = new _Debug(true);
     UtilityClass utilityClass;
+
+//    private android.support.v4.app.Fragment mStasticsMain;
+    private ArrayList<Boolean> stateStatistics = new ArrayList<Boolean>();
+    private int styleGraph = GS_DAY; //0:day, 1:week, 2:month, 3: year
 
     private LineChartView mChart;
 
@@ -65,41 +80,38 @@ public class StatisticsFragment extends Fragment {
     private ChartItem mYearChartItemSet;
 
     private Boolean[] loadedState = {false, false, false, false};
-
-    private final String[] mLabels= {"Jan", "Fev", "Mar", "Apr", "Jun", "May", "Jul", "Aug", "Sep"};
-    private final float[][] mValues = {{123.5f, 400.7f, 40.3f, 80f, 600.5f, 139.9f, 700f, 800.3f, 7.0f},
-            {400.5f, 222.5f, 992.5f, 129f, 40.5f, 9.5f, 50f, 800.3f, 100.8f}};
+    private ArrayList<DataDetailsModal> dataModals = new ArrayList<>();
+    private int nCallDataDetails;
+    private ViewGroup vgContainer;
 
     @Bind({R.id.tab_day, R.id.tab_week, R.id.tab_month, R.id.tab_year})
     List<TextView> tabButton;
 
-    @Bind({R.id.item_particles, R.id.item_allergen, R.id.item_humidity, R.id.item_temperature, R.id.item_sunlight, R.id.item_gas})
+    @Bind({R.id.item_particle, R.id.item_allergen, R.id.item_humidity, R.id.item_temperature, R.id.item_uvindex, R.id.item_gas})
     List<LinearLayout> items;
 
     @Bind(R.id.chartloading)
     View chartloading;
 
-    public static enum GraphStyle {
-        DAY(0),
-        WEEK(1),
-        MONTH(2),
-        YEAR(3);
-        private int type;
+    @Bind(R.id.main_page)
+    View mMainpage;
 
-        private  GraphStyle(int type) {
-            this.type = type;
-        }
-        public int getNumericType() {
-            return type;
-        }
+    @Bind(R.id.sub_page)
+    View mSubpage;
 
-        public void setNumericType(int type) {
-            this.type = type;
-        }
-    }
 
+
+    // TODO: Rename and change types of parameters
+//    private String mParam1;
+//    private String mParam2;
+
+    //    private OnFragmentInteractionListener mListener;
     public StatisticsFragment() {
+        for( int i = 0; i<6; i++)
+            stateStatistics.add(false);
         mChart = null;
+        styleGraph = GS_DAY;
+        nCallDataDetails = 0;
     }
 
     public static Fragment newInstance(Context context) {
@@ -111,10 +123,25 @@ public class StatisticsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        utilityClass = new UtilityClass(_context);
         _view = inflater.inflate(R.layout.fragment_statistics, container, false);
+
         mChart = (LineChartView) _view.findViewById(R.id.chart1);
         ButterKnife.bind(this, _view);
-        utilityClass = new UtilityClass(getContext());
+        _mainContainer = _view.findViewById(R.id.stasticsCanvas);
+        vgContainer = (ViewGroup)_view.findViewById(R.id.data_details_container);
+
+        _mainContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                _mainContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                int width = _mainContainer.getMeasuredWidth();
+                int height = _mainContainer.getMeasuredHeight();
+                mMainpage.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height));
+                //mSubpage.setLayoutParams( new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height));
+                mSubpage.setMinimumHeight(height);
+            }
+        });
 
         mDayChartItemSet = new ChartItem();
         mWeekChartItemSet = new ChartItem();
@@ -123,7 +150,8 @@ public class StatisticsFragment extends Fragment {
 
         //loadTempChartData();
         displayCurrentState();
-        loadCurrentData();
+        loadCurrentGraphData();
+        loadDataDetails();
 
         redrawGraph(_view);
 
@@ -131,68 +159,68 @@ public class StatisticsFragment extends Fragment {
     }
 
     @OnClick(R.id.tab_day)
-     public void onClickTabDay(){
-        int oldGraphStyle = Global.GetInstance().GetStyleOfGraph();
+    public void onClickTabDay(){
+        int oldGraphStyle = styleGraph;
 
-        if ( oldGraphStyle != DAY.getNumericType()){
+        if ( oldGraphStyle != GS_DAY){
             tabButton.get(oldGraphStyle).setBackgroundDrawable(getResources().getDrawable(R.drawable.itembuttonpannel));
             tabButton.get(oldGraphStyle).setTextColor(getResources().getColor(R.color.textColor_Green));
-            tabButton.get(DAY.getNumericType()).setBackgroundDrawable(getResources().getDrawable(R.drawable.itemgreenpannel));
-            tabButton.get(DAY.getNumericType()).setTextColor(getResources().getColor(R.color.textColor_White));
-            Global.GetInstance().SetStyleOfGraph(DAY.getNumericType());
-            loadCurrentData();
+            tabButton.get(GS_DAY).setBackgroundDrawable(getResources().getDrawable(R.drawable.itemgreenpannel));
+            tabButton.get(GS_DAY).setTextColor(getResources().getColor(R.color.textColor_White));
+            styleGraph = GS_DAY;
+            loadCurrentGraphData();
             redrawGraph(_view);
         }
     }
 
     @OnClick(R.id.tab_week)
     public void onClickTabWeek(){
-        int oldGraphStyle = Global.GetInstance().GetStyleOfGraph();
+        int oldGraphStyle = styleGraph;
 
-        if ( oldGraphStyle != GraphStyle.WEEK.getNumericType()){
+        if ( oldGraphStyle != GS_WEEK){
             tabButton.get(oldGraphStyle).setBackgroundDrawable(getResources().getDrawable(R.drawable.itembuttonpannel));
             tabButton.get(oldGraphStyle).setTextColor(getResources().getColor(R.color.textColor_Green));
-            tabButton.get(GraphStyle.WEEK.getNumericType()).setBackgroundDrawable(getResources().getDrawable(R.drawable.itemgreenpannel));
-            tabButton.get(GraphStyle.WEEK.getNumericType()).setTextColor(getResources().getColor(R.color.textColor_White));
-            Global.GetInstance().SetStyleOfGraph(GraphStyle.WEEK.getNumericType());
-            loadCurrentData();
+            tabButton.get(GS_WEEK).setBackgroundDrawable(getResources().getDrawable(R.drawable.itemgreenpannel));
+            tabButton.get(GS_WEEK).setTextColor(getResources().getColor(R.color.textColor_White));
+            styleGraph = GS_WEEK;
+            loadCurrentGraphData();
             redrawGraph(_view);
         }
     }
 
     @OnClick(R.id.tab_month)
     public void onClickTabMonth(){
-        int oldGraphStyle = Global.GetInstance().GetStyleOfGraph();
+        int oldGraphStyle = styleGraph;
 
-        if ( oldGraphStyle != GraphStyle.MONTH.getNumericType()){
+        if ( oldGraphStyle != GS_MONTH){
             tabButton.get(oldGraphStyle).setBackgroundDrawable(getResources().getDrawable(R.drawable.itembuttonpannel));
             tabButton.get(oldGraphStyle).setTextColor(getResources().getColor(R.color.textColor_Green));
-            tabButton.get(GraphStyle.MONTH.getNumericType()).setBackgroundDrawable(getResources().getDrawable(R.drawable.itemgreenpannel));
-            tabButton.get(GraphStyle.MONTH.getNumericType()).setTextColor(getResources().getColor(R.color.textColor_White));
-            Global.GetInstance().SetStyleOfGraph(GraphStyle.MONTH.getNumericType());
-            loadCurrentData();
+            tabButton.get(GS_MONTH).setBackgroundDrawable(getResources().getDrawable(R.drawable.itemgreenpannel));
+            tabButton.get(GS_MONTH).setTextColor(getResources().getColor(R.color.textColor_White));
+            styleGraph = GS_MONTH;
+            loadCurrentGraphData();
             redrawGraph(_view);
         }
     }
 
     @OnClick(R.id.tab_year)
     public void onClickTabYear(){
-        int oldGraphStyle = Global.GetInstance().GetStyleOfGraph();
+        int oldGraphStyle = styleGraph;
 
-        if ( oldGraphStyle != GraphStyle.YEAR.getNumericType()){
+        if ( oldGraphStyle != GS_YEAR){
             tabButton.get(oldGraphStyle).setBackgroundDrawable(getResources().getDrawable(R.drawable.itembuttonpannel));
             tabButton.get(oldGraphStyle).setTextColor(getResources().getColor(R.color.textColor_Green));
-            tabButton.get(GraphStyle.YEAR.getNumericType()).setBackgroundDrawable(getResources().getDrawable(R.drawable.itemgreenpannel));
-            tabButton.get(GraphStyle.YEAR.getNumericType()).setTextColor(getResources().getColor(R.color.textColor_White));
-            Global.GetInstance().SetStyleOfGraph(GraphStyle.YEAR.getNumericType());
-            loadCurrentData();
+            tabButton.get(GS_YEAR).setBackgroundDrawable(getResources().getDrawable(R.drawable.itemgreenpannel));
+            tabButton.get(GS_YEAR).setTextColor(getResources().getColor(R.color.textColor_White));
+            styleGraph = GS_YEAR;
+            loadCurrentGraphData();
             redrawGraph(_view);
         }
     }
 
-    @OnClick(R.id.item_particles)
+    @OnClick(R.id.item_particle)
     public void onClickParticles(){
-        ArrayList<Boolean> state = Global.GetInstance().GetStateStatistics();
+        ArrayList<Boolean> state = new ArrayList<>(stateStatistics);
         if( state.get(0) == true) {
             state.set(0, false);
             items.get(0).setBackgroundDrawable(getResources().getDrawable(R.drawable.itembuttonpannel));
@@ -200,13 +228,13 @@ public class StatisticsFragment extends Fragment {
             state.set(0, true);
             items.get(0).setBackgroundDrawable(getResources().getDrawable(R.drawable.itemgraypannel));
         }
-        Global.GetInstance().SetStateStatistics(state);
+        stateStatistics = state;
         redrawGraph(_view);
     }
 
     @OnClick(R.id.item_allergen)
     public void onClickAllergen(){
-        ArrayList<Boolean> state = Global.GetInstance().GetStateStatistics();
+        ArrayList<Boolean> state = new ArrayList<>(stateStatistics);
         if( state.get(1) == true) {
             state.set(1, false);
             items.get(1).setBackgroundDrawable(getResources().getDrawable(R.drawable.itembuttonpannel));
@@ -214,13 +242,13 @@ public class StatisticsFragment extends Fragment {
             state.set(1, true);
             items.get(1).setBackgroundDrawable(getResources().getDrawable(R.drawable.itemgraypannel));
         }
-        Global.GetInstance().SetStateStatistics(state);
+        stateStatistics = state;
         redrawGraph(_view);
     }
 
     @OnClick(R.id.item_humidity)
     public void onClickHumidity(){
-        ArrayList<Boolean> state = Global.GetInstance().GetStateStatistics();
+        ArrayList<Boolean> state = new ArrayList<>(stateStatistics);
         if( state.get(2) == true) {
             state.set(2, false);
             items.get(2).setBackgroundDrawable(getResources().getDrawable(R.drawable.itembuttonpannel));
@@ -228,13 +256,13 @@ public class StatisticsFragment extends Fragment {
             state.set(2, true);
             items.get(2).setBackgroundDrawable(getResources().getDrawable(R.drawable.itemgraypannel));
         }
-        Global.GetInstance().SetStateStatistics(state);
+        stateStatistics = state;
         redrawGraph(_view);
     }
 
     @OnClick(R.id.item_temperature)
     public void onClickTemperature(){
-        ArrayList<Boolean> state = Global.GetInstance().GetStateStatistics();
+        ArrayList<Boolean> state = new ArrayList<>(stateStatistics);
         if( state.get(3) == true) {
             state.set(3, false);
             items.get(3).setBackgroundDrawable(getResources().getDrawable(R.drawable.itembuttonpannel));
@@ -242,13 +270,13 @@ public class StatisticsFragment extends Fragment {
             state.set(3, true);
             items.get(3).setBackgroundDrawable(getResources().getDrawable(R.drawable.itemgraypannel));
         }
-        Global.GetInstance().SetStateStatistics(state);
+        stateStatistics = state;
         redrawGraph(_view);
     }
 
-    @OnClick(R.id.item_sunlight)
-    public void onClickSunlight(){
-        ArrayList<Boolean> state = Global.GetInstance().GetStateStatistics();
+    @OnClick(R.id.item_uvindex)
+    public void onClickUvIndex(){
+        ArrayList<Boolean> state = new ArrayList<>(stateStatistics);
         if( state.get(4) == true) {
             state.set(4, false);
             items.get(4).setBackgroundDrawable(getResources().getDrawable(R.drawable.itembuttonpannel));
@@ -256,13 +284,13 @@ public class StatisticsFragment extends Fragment {
             state.set(4, true);
             items.get(4).setBackgroundDrawable(getResources().getDrawable(R.drawable.itemgraypannel));
         }
-        Global.GetInstance().SetStateStatistics(state);
+        stateStatistics = state;
         redrawGraph(_view);
     }
 
     @OnClick(R.id.item_gas)
     public void onClickGas(){
-        ArrayList<Boolean> state = Global.GetInstance().GetStateStatistics();
+        ArrayList<Boolean> state = new ArrayList<>(stateStatistics);
         if( state.get(5) == true) {
             state.set(5, false);
             items.get(5).setBackgroundDrawable(getResources().getDrawable(R.drawable.itembuttonpannel));
@@ -270,67 +298,42 @@ public class StatisticsFragment extends Fragment {
             state.set(5, true);
             items.get(5).setBackgroundDrawable(getResources().getDrawable(R.drawable.itemgraypannel));
         }
-        Global.GetInstance().SetStateStatistics(state);
+        stateStatistics = state;
         redrawGraph(_view);
-    }
-
-    private void setGraph(View view){
-
-        Paint gridPaint = new Paint();
-        gridPaint.setColor(Color.parseColor("#ffffff"));
-        gridPaint.setStyle(Paint.Style.STROKE);
-        gridPaint.setAntiAlias(true);
-        gridPaint.setStrokeWidth(Tools.fromDpToPx(.75f));
-
-        LineSet dataset = new LineSet(new String[]{""}, new float[]{0});
-        mChart.addData(dataset);
-
-        // Chart
-        mChart.setBorderSpacing(Tools.fromDpToPx(15))
-                .setAxisBorderValues(0, 1000)
-                .setXLabels(AxisController.LabelPosition.OUTSIDE)
-                .setYLabels(AxisController.LabelPosition.OUTSIDE)
-                .setLabelsColor(Color.parseColor("#FFFFFF"))
-                .setGrid(ChartView.GridType.HORIZONTAL, 10, 5, gridPaint)
-                .setStep(100)
-                .setXAxis(false)
-                .setYAxis(false);
-
-        mChart.setHorizontalScrollBarEnabled(true);
-        mChart.show();
     }
 
     private void redrawGraph(View view){
         mChart.reset();
 
-        switch (Global.GetInstance().GetStyleOfGraph()){
-            case 0:   // if GraphStyle.DAY
+        switch (styleGraph){
+            case GS_DAY:   // if GraphStyle.DAY
                 drawGraphWithChartItemSet(mDayChartItemSet);
                 break;
-            case 1:   // if GraphStyle.Week
+            case GS_WEEK:   // if GraphStyle.Week
                 drawGraphWithChartItemSet(mWeekChartItemSet);
                 break;
-            case 2:   // if GraphStyle.Month
+            case GS_MONTH:   // if GraphStyle.Month
                 drawGraphWithChartItemSet(mMonthChartItemSet);
                 break;
-            case 3:   // if GraphStyle.Year
+            case GS_YEAR:   // if GraphStyle.Year
                 drawGraphWithChartItemSet(mYearChartItemSet);
                 break;
         }
 
         Paint gridPaint = new Paint();
-        gridPaint.setColor(Color.parseColor("#ffffff"));
+        gridPaint.setColor(Color.parseColor("#DDDDDD"));
         gridPaint.setStyle(Paint.Style.STROKE);
         gridPaint.setAntiAlias(true);
         gridPaint.setStrokeWidth(Tools.fromDpToPx(.75f));
+        gridPaint.setPathEffect(new DashPathEffect(new float[] {10, 10}, 0));
 
         mChart.setBorderSpacing(Tools.fromDpToPx(15))
                 .setAxisBorderValues(0, 10)//.setAxisBorderValues(0, 1000)
                 .setXLabels(AxisController.LabelPosition.OUTSIDE)
                 .setYLabels(AxisController.LabelPosition.OUTSIDE)
                 .setLabelsColor(Color.parseColor("#FFFFFF"))
-                .setGrid(ChartView.GridType.HORIZONTAL, 10, 5, gridPaint)
-                .setStep(1) //.setStep(100)
+                .setGrid(ChartView.GridType.HORIZONTAL, 2, 5, gridPaint)
+                .setStep(5) //.setStep(100)
                 .setXAxis(false)
                 .setYAxis(false);
         if( mChart.getData().isEmpty() == true)
@@ -345,71 +348,115 @@ public class StatisticsFragment extends Fragment {
     }
 
     public void drawGraphWithChartItemSet(ChartItem itemSet){
-        List<Boolean> state = Global.GetInstance().GetStateStatistics();
-        if(state.get(0) == true){   //Particles Graph
+        LineSet dataset;
+
+        if( styleGraph == GS_DAY) {  //Day Graph
             try {
-                LineSet dataset = new LineSet(itemSet.getLabel(), itemSet.getValueParticles());
+                dataset = new LineSet(itemSet.getLabel(), itemSet.getValueOutbreak());
+                dataset.setColor(Color.parseColor("#FFFFFF"))
+                        .setDotsColor(Color.parseColor("#FF0000"))
+                        .setThickness(4)
+                        .setDotsStrokeColor(Color.parseColor("#FFFFFF"))
+                        .setDotsStrokeThickness(2)
+                        .setHidden(true);
+                mChart.addData(dataset);
+                if( itemSet.getValueDayOutbreak().getPercentValue().length != 0) {
+                    dataset = new LineSet(new String[0], new float[0], itemSet.getValueDayOutbreak().getPercentValue(), itemSet.getValueDayOutbreak().getfValue());
+                    dataset.setColor(Color.parseColor("#FFFFFF"))
+                            .setDotsColor(Color.parseColor("#FF0000"))
+                            .setThickness(4)
+                            .setDotsStrokeColor(Color.parseColor("#FFFFFF"))
+                            .setDotsStrokeThickness(2);
+                    mChart.addData(dataset);
+                }
+            } catch (IllegalArgumentException e) {
+                _debug.w(LOG_TAG, "Outbreak Graph is null.");
+            }
+        } else {
+            try {
+                dataset = new LineSet(itemSet.getLabel(), itemSet.getValueOutbreak());
+                dataset.setColor(Color.parseColor("#FFFFFF"))
+                        .setDotsColor(Color.parseColor("#FF0000"))
+                        .setThickness(4)
+                        .setDotsStrokeColor(Color.parseColor("#FFFFFF"))
+                        .setDotsStrokeThickness(2);
+                if( styleGraph == GS_DAY) dataset.endAt(8); //don't show 24:00 point, if Graph style is DAY
+                mChart.addData(dataset);
+
+            } catch (IllegalArgumentException e) {
+                _debug.w(LOG_TAG, "Outbreak Graph is null.");
+            }
+        }
+        if(stateStatistics.get(0) == true){   //Particles Graph
+            try {
+                dataset = new LineSet(itemSet.getLabel(), itemSet.getValueParticles());
                 dataset.setColor(Color.parseColor("#FFFFFF"))
                         .setDotsColor(Color.parseColor("#79c143"))
                         .setThickness(4)
                         .setDotsStrokeColor(Color.parseColor("#FFFFFF"))
                         .setDotsStrokeThickness(2);
+                if( styleGraph == GS_DAY) dataset.endAt(8); //don't show 24:00 point, if Graph style is DAY
                 mChart.addData(dataset);
 
             } catch ( IllegalArgumentException e ){ _debug.w(LOG_TAG, "Particles Graph is null.");}
         }
-        if(state.get(1) == true){   //Allergen Graph
+        if(stateStatistics.get(1) == true){   //Allergen Graph
             try{
-                LineSet dataset = new LineSet(itemSet.getLabel(), itemSet.getValueAllergen());
+                dataset = new LineSet(itemSet.getLabel(), itemSet.getValueAllergen());
                 dataset.setColor(Color.parseColor("#FFFFFF"))
                         .setDotsColor(Color.parseColor("#77bb9c"))
                         .setThickness(4)
                         .setDotsStrokeColor(Color.parseColor("#FFFFFF"))
                         .setDotsStrokeThickness(2);
+                if( styleGraph == GS_DAY) dataset.endAt(8); //don't show 24:00 point, if Graph style is DAY
                 mChart.addData(dataset);
             } catch ( IllegalArgumentException e ){ _debug.w(LOG_TAG, "Allergen Graph is null.");}
         }
-        if(state.get(2) == true){   //Humidity Graph
+        if(stateStatistics.get(2) == true){   //Humidity Graph
             try {
-                LineSet dataset = new LineSet(itemSet.getLabel(), itemSet.getValueHumidity());
+                dataset = new LineSet(itemSet.getLabel(), itemSet.getValueHumidity());
                 dataset.setColor(Color.parseColor("#FFFFFF"))
                         .setDotsColor(Color.parseColor("#3e9cff"))
                         .setThickness(4)
                         .setDotsStrokeColor(Color.parseColor("#FFFFFF"))
                         .setDotsStrokeThickness(2);
+                if( styleGraph == GS_DAY) dataset.endAt(8); //don't show 24:00 point, if Graph style is DAY
                 mChart.addData(dataset);
             } catch ( IllegalArgumentException e ){ _debug.w(LOG_TAG, "Humidity Graph is null.");}
         }
-        if(state.get(3) == true){   //Temperature Graph
+        if(stateStatistics.get(3) == true){   //Temperature Graph
             try {
-                LineSet dataset = new LineSet(itemSet.getLabel(), itemSet.getValueTemperature());
+                dataset = new LineSet(itemSet.getLabel(), itemSet.getValueTemperature());
                 dataset.setColor(Color.parseColor("#FFFFFF"))
                         .setDotsColor(Color.parseColor("#8dc5f7"))
                         .setThickness(4)
                         .setDotsStrokeColor(Color.parseColor("#FFFFFF"))
                         .setDotsStrokeThickness(2);
+                if( styleGraph == GS_DAY) dataset.endAt(8); //don't show 24:00 point, if Graph style is DAY
                 mChart.addData(dataset);
             } catch ( IllegalArgumentException e ){ _debug.w(LOG_TAG, "Temperature Graph is null.");}
         }
-        if(state.get(4) == true){   //Sunlight Graph
+        if(stateStatistics.get(4) == true){   //Sunlight Graph
             try {
-                LineSet dataset = new LineSet(itemSet.getLabel(), itemSet.getValueSunlight());
+                dataset = new LineSet(itemSet.getLabel(), itemSet.getValueSunlight());
                 dataset.setColor(Color.parseColor("#FFFFFF"))
                         .setDotsColor(Color.parseColor("#f4eb49"))
                         .setThickness(4)
                         .setDotsStrokeColor(Color.parseColor("#FFFFFF"))
                         .setDotsStrokeThickness(2);
+                if( styleGraph == GS_DAY) dataset.endAt(8); //don't show 24:00 point, if Graph style is DAY
                 mChart.addData(dataset);
             } catch ( IllegalArgumentException e ){ _debug.w(LOG_TAG, "Sunlight Graph is null.");}
         }
-        if(state.get(5) == true){   //Gas Graph
+        if(stateStatistics.get(5) == true){   //Gas Graph
             try{
-                LineSet dataset = new LineSet(itemSet.getLabel(), itemSet.getValueGas());
+                dataset = new LineSet(itemSet.getLabel(), itemSet.getValueGas());
                 dataset.setColor(Color.parseColor("#FFFFFF"))
                         .setDotsColor(Color.parseColor("#990099"))
                         .setThickness(4)
                         .setDotsStrokeColor(Color.parseColor("#FFFFFF"))
                         .setDotsStrokeThickness(2);
+                if( styleGraph == GS_DAY) dataset.endAt(8); //don't show 24:00 point, if Graph style is DAY
                 mChart.addData(dataset);
             } catch ( IllegalArgumentException e ){ _debug.w(LOG_TAG, "Gas Graph is null.");}
         }
@@ -418,7 +465,7 @@ public class StatisticsFragment extends Fragment {
     private void displayCurrentState(){
 
         for ( int i=0; i<4; i++){
-            if( i == Global.GetInstance().GetStyleOfGraph() ){
+            if( i == styleGraph ){
                 tabButton.get(i).setBackgroundDrawable(getResources().getDrawable(R.drawable.itemgreenpannel));
                 tabButton.get(i).setTextColor(getResources().getColor(R.color.textColor_White));
             } else{
@@ -428,7 +475,7 @@ public class StatisticsFragment extends Fragment {
         }
 
         for ( int i=0; i<6; i++){
-            if( Global.GetInstance().GetStateStatistics().get(i) == true ){
+            if( stateStatistics.get(i) == true ){
                 items.get(i).setBackgroundDrawable(getResources().getDrawable(R.drawable.itemgraypannel));
             } else {
                 items.get(i).setBackgroundDrawable(getResources().getDrawable(R.drawable.itembuttonpannel));
@@ -472,21 +519,29 @@ public class StatisticsFragment extends Fragment {
         return ;
     }
 
-    private void loadCurrentData(){
+    private void loadCurrentGraphData(){
 
-        switch (Global.GetInstance().GetStyleOfGraph()){
-            case 0: //day
-                restCallGraphDataApi(GraphStyle.DAY);
+        switch (styleGraph){
+            case GS_DAY: //day
+                restCallGraphDataApi(GS_DAY);
                 break;
-            case 1: //week
-                restCallGraphDataApi(GraphStyle.WEEK);
+            case GS_WEEK: //week
+                restCallGraphDataApi(GS_WEEK);
                 break;
-            case 2: //month
-                restCallGraphDataApi(GraphStyle.MONTH);
+            case GS_MONTH: //month
+                restCallGraphDataApi(GS_MONTH);
                 break;
-            case 3: //year
-                restCallGraphDataApi(GraphStyle.YEAR);
+            case GS_YEAR: //year
+                restCallGraphDataApi(GS_YEAR);
                 break;
+        }
+    }
+
+    private void loadDataDetails(){
+        if( dataModals.size() == 0 ){
+            restCallGetDataDetailsApi();
+        } else {
+            drawDataDetails(dataModals);
         }
     }
 
@@ -507,25 +562,25 @@ public class StatisticsFragment extends Fragment {
         loadedState[3] = state;
     }
 
-    private String getDurationName(GraphStyle state){
+    private String getDurationName(int style){
         String result = "day";
-        switch (state){
-            case DAY:
+        switch (style){
+            case GS_DAY:
                 result = "day";
                 break;
-            case WEEK:
+            case GS_WEEK:
                 result = "week";
                 break;
-            case MONTH:
+            case GS_MONTH:
                 result = "month";
                 break;
-            case YEAR:
+            case GS_YEAR:
                 result = "year";
                 break;
         }
         return result;
     }
-    private void restCallGraphDataApi(final GraphStyle state) {
+    private void restCallGraphDataApi(final int style) {
 
         RequestParams params = new RequestParams();
         String str_userid = SaveSharedPreferences.getLoginUserData(getContext()).getId();
@@ -539,7 +594,7 @@ public class StatisticsFragment extends Fragment {
         params.put(Constant.STR_EMAIL, str_email);
         params.put(Constant.STR_CITYID, str_cityid);
         params.put(Constant.STR_HASH, str_hash);
-        params.put(Constant.STR_DURATION, getDurationName(state));
+        params.put(Constant.STR_DURATION, getDurationName(style));
 
         _debug.d(LOG_TAG, params.toString());
         // AirSensioRestClient.post(AirSensioRestClient.LOGIN, params, new AsyncHttpResponseHandler() {
@@ -562,18 +617,18 @@ public class StatisticsFragment extends Fragment {
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 // Pull out the first event on the public response
                 chartloading.setVisibility(View.GONE);
-                switch (state){
-                    case DAY:
-                        mDayChartItemSet = ParsingResponse.parsingGraphData(response, state.getNumericType());
+                switch (style) {
+                    case GS_DAY:
+                        mDayChartItemSet = ParsingResponse.parsingGraphData(response, style);
                         break;
-                    case WEEK:
-                        mWeekChartItemSet = ParsingResponse.parsingGraphData(response, state.getNumericType());
+                    case GS_WEEK:
+                        mWeekChartItemSet = ParsingResponse.parsingGraphData(response, style);
                         break;
-                    case MONTH:
-                        mMonthChartItemSet = ParsingResponse.parsingGraphData(response, state.getNumericType());
+                    case GS_MONTH:
+                        mMonthChartItemSet = ParsingResponse.parsingGraphData(response, style);
                         break;
-                    case YEAR:
-                        mYearChartItemSet = ParsingResponse.parsingGraphData(response, state.getNumericType());
+                    case GS_YEAR:
+                        mYearChartItemSet = ParsingResponse.parsingGraphData(response, style);
                         break;
                 }
                 redrawGraph(_view);
@@ -601,7 +656,7 @@ public class StatisticsFragment extends Fragment {
                     utilityClass.toast(getResources().getString(R.string.not_found));
                     _debug.d(LOG_TAG, "Device not found");
                 } else {
-                    _debug.e(LOG_TAG, "Get Device Data Error:"+responseString);
+                    _debug.e(LOG_TAG, "Get Device Data Error:" + responseString);
                 }
             }
 
@@ -609,14 +664,16 @@ public class StatisticsFragment extends Fragment {
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 chartloading.setVisibility(View.GONE);
                 utilityClass.toast(getResources().getString(R.string.check_internet));
-                if (errorResponse==null) _debug.d(LOG_TAG, "errorJSONObject: null"); else _debug.d(LOG_TAG, "errorJSONObject:" + errorResponse.toString());
+                if (errorResponse == null) _debug.d(LOG_TAG, "errorJSONObject: null");
+                else _debug.d(LOG_TAG, "errorJSONObject:" + errorResponse.toString());
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                 chartloading.setVisibility(View.GONE);
                 utilityClass.toast(getResources().getString(R.string.check_internet));
-                if (errorResponse==null) _debug.d(LOG_TAG, "errorJSONArray: null"); else _debug.d(LOG_TAG, "errorJSONArray:" + errorResponse.toString());
+                if (errorResponse == null) _debug.d(LOG_TAG, "errorJSONArray: null");
+                else _debug.d(LOG_TAG, "errorJSONArray:" + errorResponse.toString());
             }
 
             @Override
@@ -634,5 +691,124 @@ public class StatisticsFragment extends Fragment {
 
         });
     }
-}
 
+    private void restCallGetDataDetailsApi(){
+
+        RequestParams params = new RequestParams();
+        UserModal userModal = SaveSharedPreferences.getLoginUserData(getActivity());
+        String str_userid = userModal.getId();
+        String str_email = userModal.getEmail();
+        String str_deviceid = utilityClass.GetDeviceID();
+        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+        String str_cityid = Global.GetInstance().GetCityID();
+
+        params.put(Constant.STR_USERID, str_userid);
+        params.put(Constant.STR_EMAIL, str_email);
+        params.put(Constant.STR_DEVICEID, str_deviceid);
+        params.put(Constant.STR_HASH, str_hash);
+        params.put(Constant.STR_CITYID, str_cityid);
+
+        AirSensioRestClient.post(AirSensioRestClient.GET_DATA_DETAILS, params, new TextHttpResponseHandler() {   //new JsonHttpResponseHandler(false) : onSuccess(int statusCode, Header[] headers, String responseString) must be overrided.
+            @Override
+            public void onStart() {
+                // called before request is started
+                //utilityClass.processDialogStart(false);
+                _debug.d(LOG_TAG, "AirSensioRestClient.GET_ALLERGY_INDEX.onStart");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                //utilityClass.processDialogStop();
+                if (responseString == null) {
+                    _debug.e(LOG_TAG, "None response string");
+                } else if (responseString.equals("1")) {
+                    _debug.e(LOG_TAG, "Incorrect Hash");
+                } else if (responseString.equals("2")) {
+                    //utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.device_not));
+                    _debug.d(LOG_TAG, "Device ID not provided");
+                } else if (responseString.equals("3")) {
+                    //utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.userid_not));
+                    _debug.d(LOG_TAG, "User ID not provided");
+                } else if (responseString.equals("9")) {
+                    //utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.no_exist));
+                    _debug.d(LOG_TAG, "Nothing Found");
+                } else {
+                    try {
+                        dataModals = ParsingResponse.parsingDataDetails(new JSONArray(responseString));
+                        drawDataDetails(dataModals);
+
+                        _debug.d(LOG_TAG, "AirSensioRestClient.GET_ALLERGY_INDEX.Success");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        _debug.e(LOG_TAG, "Getting Index Exception Error:" + responseString);
+                    }
+                }
+                nCallDataDetails = 0;
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                //utilityClass.processDialogStop();
+                //utilityClass.toast(getResources().getString(R.string.check_internet));
+                _debug.e(LOG_TAG, "errorString: " + responseString);
+                nCallDataDetails++;
+                if( nCallDataDetails < 3 ){
+                    restCallGetDataDetailsApi();
+                } else {
+                    nCallDataDetails = 0;
+                }
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+                // called when request is retried{
+                //utilityClass.processDialogStop();
+                //utilityClass.toast(getResources().getString(R.string.try_again));
+                _debug.d(LOG_TAG, "AirSensioRestClient.GET_ALLERGY_INDEX.onRetry");
+                nCallDataDetails++;
+                if( nCallDataDetails < 3 ){
+                    restCallGetDataDetailsApi();
+                } else {
+                    nCallDataDetails = 0;
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                _debug.d(LOG_TAG, "AirSensioRestClient.GET_ALLERGY_INDEX.onFinish");
+            }
+
+        });
+    }
+
+    public void drawDataDetails(ArrayList<DataDetailsModal> arr){
+        //View item = LayoutInflater.from(getContext()).inflate(R.layout.fragment_statistics_sub, null);
+        View itemRow, leftItem, rightItem;
+        for(int i=0; i<arr.size(); i+=2 ){
+            itemRow = LayoutInflater.from(getContext()).inflate(R.layout.fragment_statistics_sub, null);
+            leftItem = itemRow.findViewById(R.id.left_item);
+            ((TextView)leftItem.findViewById(R.id.subitem_title)).setText(arr.get(i).getParameter());
+            ((TextView)leftItem.findViewById(R.id.subitem_value)).setText(arr.get(i).getLogValue());
+            if(arr.get(i).getLogIntensity().equalsIgnoreCase("low"))
+                leftItem.findViewById(R.id.low_mark).setVisibility(View.VISIBLE);
+            else if (arr.get(i).getLogIntensity().equalsIgnoreCase("moderate"))
+                leftItem.findViewById(R.id.moderate_mark).setVisibility(View.VISIBLE);
+            else if (arr.get(i).getLogIntensity().equalsIgnoreCase("high"))
+                leftItem.findViewById(R.id.high_mark).setVisibility(View.VISIBLE);
+
+            if( i+1 < arr.size() ) {
+                rightItem = itemRow.findViewById(R.id.right_item);
+                ((TextView) rightItem.findViewById(R.id.subitem_title)).setText(arr.get(i + 1).getParameter());
+                ((TextView) rightItem.findViewById(R.id.subitem_value)).setText(arr.get(i + 1).getLogValue());
+                if (arr.get(i + 1).getLogIntensity().equalsIgnoreCase("low"))
+                    rightItem.findViewById(R.id.low_mark).setVisibility(View.VISIBLE);
+                else if (arr.get(i + 1).getLogIntensity().equalsIgnoreCase("moderate"))
+                    rightItem.findViewById(R.id.moderate_mark).setVisibility(View.VISIBLE);
+                else if (arr.get(i + 1).getLogIntensity().equalsIgnoreCase("high"))
+                    rightItem.findViewById(R.id.high_mark).setVisibility(View.VISIBLE);
+            }
+            vgContainer.addView(itemRow);
+        }
+        //vgContainer.layout
+    }
+}

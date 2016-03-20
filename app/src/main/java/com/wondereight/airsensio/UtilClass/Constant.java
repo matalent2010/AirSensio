@@ -20,40 +20,8 @@ public class Constant {
     public static final int REQUEST_CAMERA = 2;
     public static final int IMAGE_CROPPED = 3;
 
-    public static String DOMAIN = "https://www.oigente.com/app/";
-
-    public static enum URL {
-
-        LOGIN("login.php"),
-        SIGNUP("signup.php"),
-
-        VIEW_PROFILE("viewprofile.php"),
-        POST_ADS("postads.php"),
-        GET_ADS("getads.php"),
-        GET_ADS_BY_CATEGORY("getads_by_category.php"),
-        FORGOT_PASSWORD("forgotpassword.php"),
-        GET_COUNTRY("getcountry.php"),
-        UPDATE_ACCOUNT("updateaccount.php"),
-        POST_CONTACT("contact.php");
-
-        private final String name;
-
-    // Constants using in App
-    private URL(String s) {
-        name = s;
-    }
-
-    public boolean equalsName(String otherName) {
-        return (otherName == null) ? false : name.equals(otherName);
-    }
-
-    public String toString() {
-        return name;
-    }
-
-}
-
-public static final String DEFAULT_CITYNAME = "London";
+    public static final String DEFAULT_CITYNAME = "London";
+    public static final String DEFAULT_CITYID = "1";
 
 // ApiRequestParams Constant
     //login_secret
@@ -75,9 +43,10 @@ public static final String DEFAULT_CITYNAME = "London";
     public static String STR_BIRTHDAY = "date_of_birth";
     public static String STR_GEOLOCATION = "geolocation";
     public static String STR_NEWSLETTER = "newsletter";
+    public static String STR_CITYFLAG = "city_not_exists";
 
     //statistics page
-    public static String STR_USERID = "user_id";    //must confirm "id" | "user_id" ?
+    public static String STR_USERID = "user_id";
     public static String STR_CITYID = "city_id";
     public static String STR_DURATION = "statistics_duration";
 
@@ -85,9 +54,6 @@ public static final String DEFAULT_CITYNAME = "London";
     public static String STR_VALUE = "log_value";
     public static String STR_DATE = "log_date";
     public static String STR_TIME = "log_time";
-
-    //public static String STR_HASH = "hash";
-    //public static String STR_DEVICEID = "device_id";
 
     //Save Info Page (Tell use your health)
     public static String STR_CONSCIOUS = "health_conscious";
@@ -109,11 +75,29 @@ public static final String DEFAULT_CITYNAME = "London";
     public static String STR_LOGDATETIME = "log_datetime";
 
     //Symptom page
-    public static String STR_LOCATION = "user_current_location ";
+    public static String STR_LOCATION = "user_current_location";
+    public static String STR_DATETIME = "current_datetime";
     public static String STR_SYMPTOM_1 = "symptom_1";
     public static String STR_SYMPTOM_2 = "symptom_2";
     public static String STR_SYMPTOM_3 = "symptom_3";
     public static String STR_SYMPTOM_4 = "symptom_4";
     public static String STR_SYMPTOM_5 = "symptom_5";
     public static String STR_SYMPTOM_6 = "symptom_6";
+
+    //LogOutbreak page
+    public static String STR_ADVICE = "advice_text";
+    public static String STR_ALLERGYINDEX = "allergy_index";
+    public static String STR_POLLUTIONINDEX = "pollution_index";
+    public static String STR_LOGINTENSITY = "log_intensity";
+
+    public static String STR_NUM_WEEK = "week";
+    public static String STR_LABEL = "label";
+
+    public static String STR_CITYNAME = "name";
+    public static String STR_CITY = "id";
+
+
+    // Send Feedback page
+    public static String STR_FEEDBACK = "feedback";
+
 }

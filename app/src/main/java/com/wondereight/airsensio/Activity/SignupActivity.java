@@ -88,8 +88,8 @@ public class SignupActivity extends AppCompatActivity {
     CheckBox chbMale;
     @Bind(R.id.chbFemale)
     CheckBox chbFemale;
-    @Bind(R.id.chbGelocation)
-    CheckBox chbGelocation;
+//    @Bind(R.id.chbGelocation)
+//    CheckBox chbGelocation;
     @Bind(R.id.chbNewsletter)
     CheckBox chbNewsletter;
 
@@ -146,7 +146,7 @@ public class SignupActivity extends AppCompatActivity {
                 utilityClass.toast(getResources().getString(R.string.check_internet));
             } else {
                 utilityClass.processDialogStart(false);
-                if (chbGelocation.isChecked()) {
+//                if (chbGelocation.isChecked()) {
                     GetCityNameThread getCityNameThread = new GetCityNameThread(SignupActivity.this, new ThreadCallback() {
 
                         @Override
@@ -161,20 +161,21 @@ public class SignupActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void runFailCallback() {
+                        public void runFailCallback(final String err) {
                             SignupActivity.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     utilityClass.processDialogStop();
+                                    utilityClass.showAlertMessage("Alert", err);
                                 }
                             });
                         }
                     });
                     new Thread(getCityNameThread).start();
-                } else {
-                    Global.GetInstance().SetCityName("");
-                    restCallSignupApi();
-                }
+//                } else {
+//                    Global.GetInstance().SetGoeCityName("");
+//                    restCallSignupApi();
+//                }
 
             }
         }
@@ -234,7 +235,7 @@ public class SignupActivity extends AppCompatActivity {
         String str_md5_pass = utilityClass.MD5(str_pass);
         String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
         String str_geolocation = Global.GetInstance().GetGeolocation();
-        String str_cityname = Global.GetInstance().GetCityName().isEmpty() ? Constant.DEFAULT_CITYNAME : Global.GetInstance().GetCityName();
+        String str_cityname = Global.GetInstance().GetGeoCityName().isEmpty() ? Constant.DEFAULT_CITYNAME : Global.GetInstance().GetGeoCityName();
 
         params.put(Constant.STR_FIRSTNAME, str_firstname);
         params.put(Constant.STR_LASTNAME, str_lastname);
@@ -247,6 +248,7 @@ public class SignupActivity extends AppCompatActivity {
         params.put(Constant.STR_NEWSLETTER, str_newsletter);
         params.put(Constant.STR_PASSWORD, str_md5_pass);
         params.put(Constant.STR_HASH, str_hash);
+        params.put(Constant.STR_CITYFLAG, str_hash);
 
         AirSensioRestClient.post(AirSensioRestClient.SIGNUP, params, new JsonHttpResponseHandler(false) {
             @Override
@@ -261,22 +263,17 @@ public class SignupActivity extends AppCompatActivity {
                 utilityClass.processDialogStop();
                 if(responseString == null){
                     _debug.e(LOG_TAG, "None response string");
-                } else if(responseString.equals("0")){
-                    utilityClass.toast(getResources().getString(R.string.register_success));
-                    //Intent HealthActivity = new Intent(SignupActivity.this, HealthActivity.class);
-                    //startActivity(HealthActivity);
-                    finish();
-                    _debug.d(LOG_TAG, "Login Success");
                 } else if(responseString.equals("1")){
 
                     _debug.e(LOG_TAG, "Incorrect Hash");
                 } else if(responseString.equals("2")){
-                    utilityClass.toast(getResources().getString(R.string.email_used));
-
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.email_used));
                     _debug.d(LOG_TAG, "Email Used by another account");
                 } else if(responseString.equals("3")){
+                    utilityClass.toast(getResources().getString(R.string.device_not));
                     _debug.e(LOG_TAG, "Device ID not provided");
                 } else if(responseString.equals("4")){
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.http_error));
                     _debug.e(LOG_TAG, "HTTP Agent Provided or Not HTTPS");
                 } else if(responseString.equals("9")){
                     utilityClass.toast(getResources().getString(R.string.try_again));

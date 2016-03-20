@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
+import com.wondereight.airsensio.Modal.SettingsModal;
 import com.wondereight.airsensio.Modal.UserModal;
 
 /**
@@ -42,6 +43,19 @@ public class SaveSharedPreferences {
 
     public static Boolean getInstallInfo(Context ctx) {
         return getSharedPreferences(ctx).getBoolean(InstallInfo, false);
+    }
+
+    public static void saveSettings(Context ctx, String user, SettingsModal settingsValue) {
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        Gson gson = new Gson();
+        editor.putString(user, gson.toJson(settingsValue));
+        editor.commit();
+    }
+
+    public static SettingsModal getSettings(Context ctx, String user) {
+        Gson gson = new Gson();
+        String json = getSharedPreferences(ctx).getString(user, new Gson().toJson(new SettingsModal()));
+        return gson.fromJson(json, SettingsModal.class);
     }
 
     public static void clearUserdata(Context ctx) {

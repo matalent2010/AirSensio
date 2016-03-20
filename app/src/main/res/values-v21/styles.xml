@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="BS_Orange_WhiteBG" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/white</item>
+        <item name="android:colorButtonNormal">@color/white</item>
+        <item name="android:textColor">@color/btnRegisterTextColor</item>
+    </style>
+
+    <style name="btn_save_settings">
+        <item name="android:theme">@style/BS_Orange_WhiteBG</item>
+        <item name="android:layout_height">70dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginLeft">@dimen/_10sdp</item>
+        <item name="android:layout_marginRight">@dimen/_10sdp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:typeface">serif</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <!--<item name="android:textColor">@color/btnRegisterTextColor</item>-->
+        <!--<item name="android:background">@drawable/norounded_white</item>-->
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="BS_Green_WhiteBG" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/white</item>
+        <item name="android:colorButtonNormal">@color/white</item>
+        <item name="android:textColor">@color/color_btn_edit</item>
+    </style>
+
+    <style name="btn_edit_info">
+        <item name="android:theme">@style/BS_Green_WhiteBG</item>
+        <item name="android:layout_height">70dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:typeface">serif</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <!--<item name="android:textColor">@color/color_btn_edit</item>-->
+        <!--<item name="android:background">@drawable/norounded_white</item>-->
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:drawableLeft">@drawable/ic_edit</item>
+        <item name="android:drawablePadding">15dp</item>
+        <item name="android:paddingLeft">50dp</item>
+        <item name="android:paddingRight">70dp</item>
+    </style>
+</resources>

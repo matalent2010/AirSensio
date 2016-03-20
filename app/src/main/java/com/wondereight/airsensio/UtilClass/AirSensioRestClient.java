@@ -18,6 +18,12 @@ public class AirSensioRestClient {
     public static final String SEND_USERINFO = "send_user_info.php";
     public static final String GET_GRAPH_DATA = "get_graph_data.php";
     public static final String LOG_OUTBREAK = "do_logoutbreak.php";
+    public static final String GET_CITYLIST = "get_cities.php";
+    public static final String GET_SAVED_INFO = "get_saved_info.php";
+    public static final String GET_ALLERGY_INDEX = "get_indexes.php";
+    public static final String GET_DATA_DETAILS = "get_data_details.php";
+    public static final String GET_ADVICE = "get_advice.php";
+    public static final String SEND_FEEDBACK = "do_send_feedback.php";
 
     private static AsyncHttpClient client = new AsyncHttpClient();
 

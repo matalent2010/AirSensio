@@ -24,6 +24,7 @@ import com.wondereight.airsensio.Modal.UserModal;
 import com.wondereight.airsensio.R;
 import com.wondereight.airsensio.UtilClass.AirSensioRestClient;
 import com.wondereight.airsensio.UtilClass.Constant;
+import com.wondereight.airsensio.UtilClass.Global;
 import com.wondereight.airsensio.UtilClass.ParsingResponse;
 import com.wondereight.airsensio.UtilClass.SaveSharedPreferences;
 import com.wondereight.airsensio.UtilClass.UtilityClass;
@@ -32,6 +33,8 @@ import com.wondereight.airsensio.UtilClass.Validation;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by Miguel on 02/2/2016.
@@ -55,6 +58,9 @@ public class LoginAcitivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         utilityClass = new UtilityClass(this);
+
+        if(isSavedUserData())
+            runAutoLogin();
     }
 
     @Override
@@ -81,15 +87,13 @@ public class LoginAcitivity extends AppCompatActivity {
 
     @OnClick(R.id.btnLogin)
     void onClickBtnLogin() {
-        //if( checkValidation() ){
+        if( checkValidation() ){
             if (!utilityClass.isInternetConnection()) {
                 utilityClass.toast(getResources().getString(R.string.check_internet));
             } else {
                 restCallLoginApi();
             }
-        //}
-//        Intent HealthActivity = new Intent(LoginAcitivity.this, HealthActivity.class);
-//        startActivity(HealthActivity);
+        }
     }
 
     @OnClick(R.id.btnForgotPass)
@@ -159,9 +163,9 @@ public class LoginAcitivity extends AppCompatActivity {
                 {
                     userModal.setPassword(etPassword.getText().toString());   //add password in UserModal
                     SaveSharedPreferences.setLoginUserData(LoginAcitivity.this, userModal);
-                    Intent HealthActivity = new Intent(LoginAcitivity.this, HealthActivity.class);
-                    startActivity(HealthActivity);
-                    //finish();
+                    Intent intent = new Intent(LoginAcitivity.this, HomeActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
             }
 
@@ -185,23 +189,23 @@ public class LoginAcitivity extends AppCompatActivity {
                     startActivity(SignupActivity);
                 } else if(responseString.equals("3")){
 
-                    utilityClass.showAlertMessage("Alert", "Your account suspended");
+                    utilityClass.showAlertMessage(getString(R.string.title_alert), getString(R.string.user_suspended));
                     _debug.d(LOG_TAG, "Account Suspended");
                 } else if(responseString.equals("4")){
 
-                    utilityClass.showAlertMessage("Alert", "You need to reset your password");
+                    utilityClass.showAlertMessage(getString(R.string.title_notice),  getString(R.string.reset_password));
                     _debug.e(LOG_TAG, "You need to reset your password");
                 } else if(responseString.equals("5")){
 
-                    utilityClass.showAlertMessage("Alert", "Device ID not provided");
+                    utilityClass.showAlertMessage(getString(R.string.title_alert), getString(R.string.device_not));
                     _debug.e(LOG_TAG, "Device ID not provided");
                 } else if(responseString.equals("6")){
 
-                    utilityClass.showAlertMessage("Alert", "HTTP Agent Provided or Not HTTPS");
-                    _debug.e(LOG_TAG, "HTTP Agent Provided or Not HTTPS");
+                    utilityClass.showAlertMessage(getString(R.string.title_alert), getString(R.string.http_error));
+                            _debug.e(LOG_TAG, "HTTP Agent Provided or Not HTTPS");
                 } else if(responseString.equals("9")){
 
-                    utilityClass.toast( "Incorrect Username or Password" );
+                    utilityClass.toast( getString(R.string.incorrect_pass) );
                     _debug.d(LOG_TAG, "Login Failed / Incorrect Username or Password");
                 } else{
                     _debug.e(LOG_TAG, "Login Exception Error:"+responseString);
@@ -280,6 +284,7 @@ public class LoginAcitivity extends AppCompatActivity {
                     utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.forgot_success));
                     _debug.e(LOG_TAG, "Send Forgot message to success");
                 } else if (responseString.equals("1")) {
+                    utilityClass.toast(getResources().getString(R.string.incorrect_hash));
                     _debug.e(LOG_TAG, "Incorrect Hash");
                 } else if (responseString.equals("2")) {
                     utilityClass.toast(getResources().getString(R.string.email_notprovided));
@@ -294,6 +299,7 @@ public class LoginAcitivity extends AppCompatActivity {
                     utilityClass.toast(getResources().getString(R.string.email_noexist));
                     _debug.e(LOG_TAG, "Email Does not exist");
                 } else {
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_alert), responseString);
                     _debug.e(LOG_TAG, "Send forgot password message Exception Error:"+responseString);
                 }
             }
@@ -318,5 +324,20 @@ public class LoginAcitivity extends AppCompatActivity {
                 utilityClass.processDialogStop();
             }
         });
+    }
+
+    public void runAutoLogin()
+    {
+        etEmail.setText(SaveSharedPreferences.getLoginUserData(this).getEmail());
+        etPassword.setText(SaveSharedPreferences.getLoginUserData(this).getPassword());
+        onClickBtnLogin();
+    }
+
+    public Boolean isSavedUserData()
+    {
+        if(!SaveSharedPreferences.getLoginUserData(this).getId().isEmpty())
+            return true;
+
+        return false;
     }
 }
