@@ -1,71 +1,73 @@
-
-<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginBottom="@dimen/_10sdp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
         <LinearLayout
-            android:id="@+id/left_item"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/subitem_title"
-                style="@style/subtitle_statistics"/>
-            <!--android:text="@string/sub_title_particular"-->
-            <TextView
-                android:id="@+id/subitem_value"
-                style="@style/textcontent_statistics"/>
-            <!--android:text="@string/content_particular"-->
-            <TextView
-                android:id="@+id/low_mark"
-                android:visibility="gone"
-                style="@style/state_low"/>
-            <TextView
-                android:id="@+id/moderate_mark"
-                android:visibility="gone"
-                style="@style/state_moderate"/>
-            <TextView
-                android:id="@+id/high_mark"
-                android:visibility="gone"
-                style="@style/state_high"/>
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/right_item"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:orientation="vertical">
-            <TextView
-                android:id="@id/subitem_title"
-                style="@style/subtitle_statistics"/>
-            <!--android:text="@string/sub_title_particular"-->
-            <TextView
-                android:id="@id/subitem_value"
-                style="@style/textcontent_statistics"/>
-            <!-- android:text="@string/content_particular" -->
-            <TextView
-                android:id="@id/low_mark"
-                android:visibility="gone"
-                style="@style/state_low"/>
-            <TextView
-                android:id="@id/moderate_mark"
-                android:visibility="gone"
-                style="@style/state_moderate"/>
-            <TextView
-                android:id="@id/high_mark"
-                android:visibility="gone"
-                style="@style/state_high"/>
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/left_item"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/subitem_title"
+                    style="@style/subtitle_statistics"/>
+                <!--android:text="@string/sub_title_particular"-->
+                <TextView
+                    android:id="@+id/subitem_value"
+                    style="@style/textcontent_statistics"/>
+                <!--android:text="@string/content_particular"-->
+                <TextView
+                    android:id="@+id/low_mark"
+                    android:visibility="gone"
+                    style="@style/state_low"/>
+                <TextView
+                    android:id="@+id/moderate_mark"
+                    android:visibility="gone"
+                    style="@style/state_moderate"/>
+                <TextView
+                    android:id="@+id/high_mark"
+                    android:visibility="gone"
+                    style="@style/state_high"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/right_item"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="10dp"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@id/subitem_title"
+                    style="@style/subtitle_statistics"/>
+                <!--android:text="@string/sub_title_particular"-->
+                <TextView
+                    android:id="@id/subitem_value"
+                    style="@style/textcontent_statistics"/>
+                <!-- android:text="@string/content_particular" -->
+                <TextView
+                    android:id="@id/low_mark"
+                    android:visibility="gone"
+                    style="@style/state_low"/>
+                <TextView
+                    android:id="@id/moderate_mark"
+                    android:visibility="gone"
+                    style="@style/state_moderate"/>
+                <TextView
+                    android:id="@id/high_mark"
+                    android:visibility="gone"
+                    style="@style/state_high"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
-
+</FrameLayout>
 <!--
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"

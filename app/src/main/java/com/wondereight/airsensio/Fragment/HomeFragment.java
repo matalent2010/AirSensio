@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment {
     @Bind(R.id.city_name)
     TextView tvCityname;
     @Bind(R.id.field_cityname)
-    RelativeLayout rlCityname;
+    LinearLayout rlCityname;
     @Bind(R.id.text_advice)
     TextView  tvAdvice;
     @Bind(R.id.allergy_index)
@@ -93,7 +93,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        ButterKnife.bind( view );
+        ButterKnife.bind( this, view );
 
         utilityClass = new UtilityClass(getContext());
 

@@ -1,45 +1,48 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.wondereight.airsensio.Fragment.SensioFragment">
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_scan"
-        android:layout_alignParentTop="true"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
-            android:gravity="center_horizontal|center_vertical">
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_scan"
+            android:layout_alignParentTop="true"
+            android:orientation="vertical">
             <LinearLayout
-                android:layout_width="@dimen/_250sdp"
-                android:layout_height="@dimen/_250sdp"
-                android:background="@drawable/bg_camera_1">
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/sensio_large"/>
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:gravity="center_horizontal|center_vertical">
+                <LinearLayout
+                    android:layout_width="@dimen/_250sdp"
+                    android:layout_height="@dimen/_250sdp"
+                    android:background="@drawable/bg_camera_1">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/sensio_large"/>
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:layout_weight="1">
-            <!--<TextView-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:layout_weight="1">
+                <!--<TextView-->
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
                 <!--android:layout_marginTop="@dimen/_10sdp"-->
                 <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
                 <!--android:textColor="@color/white"-->
                 <!--android:text="@string/str_scanning"/>-->
-            <!--<TextView-->
+                <!--<TextView-->
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
                 <!--android:layout_marginTop="@dimen/_30sdp"-->
@@ -48,25 +51,26 @@
                 <!--android:textStyle="bold"-->
                 <!--android:textColor="@color/white"-->
                 <!--android:text="@string/str_scann_qrcode"/>-->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_30sdp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/white"
-                android:text="@string/str_nodevice"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/textwhitebtn"
-                android:text="@string/btn_sensio_now"
-                android:clickable="true"
-                android:focusableInTouchMode="true"
-                android:focusable="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_30sdp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/white"
+                    android:text="@string/str_nodevice"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/textwhitebtn"
+                    android:text="@string/btn_sensio_now"
+                    android:clickable="true"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true"/>
 
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
 
-</RelativeLayout>
+    </RelativeLayout>
+</FrameLayout>
