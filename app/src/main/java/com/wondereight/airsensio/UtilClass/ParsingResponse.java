@@ -488,4 +488,29 @@ public class ParsingResponse {
         }
         return result;
     }
+
+    public static ArrayList<IndexModal> parsingSavedInfo(JSONArray arr){
+        ArrayList<IndexModal> result = new ArrayList<>();
+//        try {
+//            IndexModal allergyModal = new IndexModal();
+//            IndexModal pollutionModal = new IndexModal();
+//
+//            JSONObject obj = arr.getJSONObject(0);
+//            allergyModal.setIndexValue(String.valueOf(obj.optInt(Constant.STR_ALLERGYINDEX)));
+//            allergyModal.setLogIntensity(obj.optString(Constant.STR_LOGINTENSITY));
+//            obj = arr.getJSONObject(1);
+//            pollutionModal.setIndexValue(String.valueOf(obj.optInt(Constant.STR_POLLUTIONINDEX)));
+//            pollutionModal.setLogIntensity(obj.optString(Constant.STR_LOGINTENSITY));
+//
+//            result.add(allergyModal);
+//            result.add(pollutionModal);
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            _debug.e(LOG_TAG, "IndexModal JSONArray Fail: " + e.getMessage());
+//            result.add( new IndexModal() );
+//            result.add( new IndexModal() );
+//        }
+        return result;
+    }
 }
