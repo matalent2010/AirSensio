@@ -59,6 +59,7 @@
                     android:textColor="@color/white"
                     android:text="@string/str_nodevice"/>
                 <TextView
+                    android:id="@+id/btn_preorder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp"

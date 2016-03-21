@@ -100,4 +100,7 @@ public class Constant {
     // Send Feedback page
     public static String STR_FEEDBACK = "feedback";
 
+    // Sensio page
+    public static String URL_Wlab = "http://www.wlab.io/";
+
 }

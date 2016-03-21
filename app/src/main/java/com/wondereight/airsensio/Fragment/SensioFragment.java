@@ -2,6 +2,7 @@ package com.wondereight.airsensio.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import com.wondereight.airsensio.Activity.SymptomActivity;
 import com.wondereight.airsensio.Helper._Debug;
 import com.wondereight.airsensio.R;
+import com.wondereight.airsensio.UtilClass.Constant;
 import com.wondereight.airsensio.UtilClass.UtilityClass;
 
 import butterknife.ButterKnife;
@@ -44,4 +46,14 @@ public class SensioFragment extends Fragment {
         return view;
     }
 
+    @OnClick(R.id.btn_preorder)
+    public void onClickPreOrder(){
+        goWebsite(Constant.URL_Wlab);
+    }
+
+    private void goWebsite(String url){
+        Uri uriUrl = Uri.parse(url);
+        Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+        startActivity(launchBrowser);
+    }
 }

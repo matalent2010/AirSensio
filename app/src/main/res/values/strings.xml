@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AirSensio</string>
+    <string name="app_name">Sensio Air</string>
     <string name="action_settings">Settings</string>
 
     <!-- Common Button String-->
@@ -57,6 +57,8 @@
     <string name="btn_register">REGISTER</string>
     <string name="otherregister">Or Register with</string>
     <string name="title_activity_login_acitivity">Sign in</string>
+    <string name="not_parsing">Response Error</string>
+    <string name="msg_not_city">Outdoor Data for your city is not yet available</string>
 
     <!-- Strings related to About Health -->
     <string name="title_activity_health">Your Health</string>

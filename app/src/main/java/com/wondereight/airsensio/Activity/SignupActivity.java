@@ -67,6 +67,7 @@ public class SignupActivity extends AppCompatActivity {
 
     UtilityClass utilityClass;
     Calendar myCalendar = Calendar.getInstance();
+    UserModal userModal = null;
 
     // Declaring a Location Manager
     private LocationManager locationManager;
@@ -166,7 +167,7 @@ public class SignupActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     utilityClass.processDialogStop();
-                                    utilityClass.showAlertMessage("Alert", err);
+                                    utilityClass.showAlertMessage(getString(R.string.title_alert), err);
                                 }
                             });
                         }
@@ -229,13 +230,14 @@ public class SignupActivity extends AppCompatActivity {
         String str_gender = chbMale.isChecked() ? "Male" : "Female";
         String str_phone = etPhonenum.getText().toString();
         String str_birthday = tvBirthday.getText().toString();
-        String str_deviceid = utilityClass.GetDeviceID();
+        final String str_deviceid = utilityClass.GetDeviceID();
         String str_newsletter = chbNewsletter.isChecked() ? "1" : "0";
         String str_pass = getIntent().getExtras().getString("password");
         String str_md5_pass = utilityClass.MD5(str_pass);
         String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
         String str_geolocation = Global.GetInstance().GetGeolocation();
         String str_cityname = Global.GetInstance().GetGeoCityName().isEmpty() ? Constant.DEFAULT_CITYNAME : Global.GetInstance().GetGeoCityName();
+        if( str_cityname.equalsIgnoreCase("丹东市") ) str_cityname = "Lisbon";     //MUST Remove
 
         params.put(Constant.STR_FIRSTNAME, str_firstname);
         params.put(Constant.STR_LASTNAME, str_lastname);
@@ -244,11 +246,11 @@ public class SignupActivity extends AppCompatActivity {
         params.put(Constant.STR_PHONE, str_phone);
         params.put(Constant.STR_BIRTHDAY, str_birthday);
         params.put(Constant.STR_DEVICEID, str_deviceid);
-        params.put(Constant.STR_GEOLOCATION, "London");//str_cityname // str_geolocation
+        params.put(Constant.STR_GEOLOCATION, str_cityname); //"London" //str_cityname // str_geolocation
         params.put(Constant.STR_NEWSLETTER, str_newsletter);
         params.put(Constant.STR_PASSWORD, str_md5_pass);
         params.put(Constant.STR_HASH, str_hash);
-        params.put(Constant.STR_CITYFLAG, str_hash);
+        //params.put(Constant.STR_CITYFLAG, str_hash);
 
         AirSensioRestClient.post(AirSensioRestClient.SIGNUP, params, new JsonHttpResponseHandler(false) {
             @Override
@@ -294,15 +296,40 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 // Pull out the first event on the public response
-                utilityClass.processDialogStop();
-                UserModal userModal = ParsingResponse.parsingUserModal(response);
-                if (userModal != null);
+                String city_not_exit = "0";
+                        utilityClass.processDialogStop();
+                try {
+                    JSONObject firstEvent = response.getJSONObject(0);
+                    city_not_exit = firstEvent.optString(Constant.STR_CITYFLAG);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                userModal = ParsingResponse.parsingUserModal(response);
+                if (userModal != null)
                 {
                     userModal.setPassword(getIntent().getExtras().getString("password"));   //add password in UserModal
-                    SaveSharedPreferences.setLoginUserData(SignupActivity.this, userModal);
-                    Intent HealthActivity = new Intent(SignupActivity.this, HealthActivity.class);
-                    startActivity(HealthActivity);
-                    finish();
+                    _debug.d(LOG_TAG, "city_not_exit : " + city_not_exit);
+                    if( city_not_exit.equalsIgnoreCase("1") ){
+                        AlertDialog alertDialog;
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SignupActivity.this);
+                        alertDialogBuilder.setTitle(getString(R.string.app_name))
+                                .setMessage(getString(R.string.msg_not_city))
+                                .setCancelable(false)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                        goHealthActivity();
+                                    }
+                                });
+                        alertDialog = alertDialogBuilder.create();
+                        alertDialog.show();
+                    } else {
+                        goHealthActivity();
+                    }
+                } else {
+                    utilityClass.showAlertMessage(getString(R.string.title_alert), getString(R.string.not_parsing));
+                    _debug.e(LOG_TAG, "RESPONSE:" + response.toString());
                 }
             }
 
@@ -331,6 +358,13 @@ public class SignupActivity extends AppCompatActivity {
                 utilityClass.processDialogStop();
             }
         });
+    }
+
+    private void goHealthActivity(){
+        SaveSharedPreferences.setLoginUserData(SignupActivity.this, userModal);
+        Intent HealthActivity = new Intent(SignupActivity.this, HealthActivity.class);
+        startActivity(HealthActivity);
+        finish();
     }
 
     private boolean getGeolocation() {

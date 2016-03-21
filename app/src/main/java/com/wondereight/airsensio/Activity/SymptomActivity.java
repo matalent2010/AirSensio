@@ -151,7 +151,7 @@ public class SymptomActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 utilityClass.processDialogStop();
-                                utilityClass.showAlertMessage("Alert", err);
+                                utilityClass.showAlertMessage(getString(R.string.title_alert), err);
                             }
                         });
                     }
