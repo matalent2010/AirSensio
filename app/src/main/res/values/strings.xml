@@ -115,6 +115,8 @@
     <string name="incorrect_pass">Incorrect Username or Password</string>
     <string name="not_found">Device not found</string>
     <string name="no_exist">This account does not exist.</string>
+    <string name="no_saved_info">No Saved Info.</string>
+    <string name="nothing_found">You saved info didn\'t find.</string>
     <string name="not_sendable">Unable to Send Email</string>
     <string name="email_noexist">Email Does not exist</string>
     <string name="input_email">Please input your correct Email</string>

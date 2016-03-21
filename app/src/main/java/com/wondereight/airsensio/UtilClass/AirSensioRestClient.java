@@ -20,6 +20,7 @@ public class AirSensioRestClient {
     public static final String LOG_OUTBREAK = "do_logoutbreak.php";
     public static final String GET_CITYLIST = "get_cities.php";
     public static final String GET_SAVED_INFO = "get_saved_info.php";
+    public static final String GET_PROFILE_INFO = "get_profile_info.php";
     public static final String GET_ALLERGY_INDEX = "get_indexes.php";
     public static final String GET_DATA_DETAILS = "get_data_details.php";
     public static final String GET_ADVICE = "get_advice.php";

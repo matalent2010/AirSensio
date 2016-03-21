@@ -13,10 +13,12 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import cz.msebera.android.httpclient.Header;
 
+import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.wondereight.airsensio.Helper._Debug;
+import com.wondereight.airsensio.Modal.HealthInfoModal;
 import com.wondereight.airsensio.Modal.UserModal;
 import com.wondereight.airsensio.R;
 import com.wondereight.airsensio.UtilClass.AirSensioRestClient;
@@ -36,6 +38,9 @@ public class HealthActivity extends AppCompatActivity {
     private static final String LOG_TAG = "HealthActivity";
     private static _Debug _debug = new _Debug(true);
     UtilityClass utilityClass;
+
+    HealthInfoModal infoModal;
+    boolean havingModal = false;
 
     @Bind(R.id.chbconscious)
     CheckBox chbConscious;
@@ -63,6 +68,14 @@ public class HealthActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         utilityClass = new UtilityClass(this);
+
+        if(getIntent().getExtras() != null) {
+            String json = getIntent().getExtras().getString("HealthInfoModal");
+            infoModal = new Gson().fromJson(json, HealthInfoModal.class);
+            havingModal = true;
+
+            setViewsWithModal(infoModal);
+        }
     }
 
     @Override
@@ -96,6 +109,18 @@ public class HealthActivity extends AppCompatActivity {
                 restCallSaveInfoApi();
             }
         }
+    }
+
+    private void setViewsWithModal(HealthInfoModal modal){
+        chbConscious.setChecked(modal.getConscious());
+        chbAllergies.setChecked(modal.getAllergies());
+        chbEyes.setChecked(modal.getEyes());
+        chbNose.setChecked(modal.getNose());
+        chbLungs.setChecked(modal.getLungs());
+        etSpecify.setText(modal.getSpecify());
+        chbRespiratory.setChecked(modal.getRespiratory());
+        etAnotherApecify.setText(modal.getAnotherspecify());
+        chbPet.setChecked(modal.getPet());
     }
 
     private boolean checkValidation() {
@@ -156,9 +181,13 @@ public class HealthActivity extends AppCompatActivity {
                 if (responseString == null) {
                     _debug.e(LOG_TAG, "None response string");
                 } else if (responseString.equals("0")) {
-                    Intent HomeIntent = new Intent(HealthActivity.this, HomeActivity.class);
-                    startActivity(HomeIntent);
-                    _debug.e(LOG_TAG, "Save Info Success");
+                    if( havingModal ){
+                        finish();
+                    } else {
+                        Intent HomeIntent = new Intent(HealthActivity.this, HomeActivity.class);
+                        startActivity(HomeIntent);
+                    }
+                    _debug.d(LOG_TAG, "Save Info Success");
                 } else if (responseString.equals("1")) {
                     _debug.e(LOG_TAG, "Incorrect Hash");
                 } else if (responseString.equals("3")) {
@@ -194,4 +223,6 @@ public class HealthActivity extends AppCompatActivity {
 
         });
     }
+
+
 }

@@ -9,10 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.wondereight.airsensio.Activity.HealthActivity;
 import com.wondereight.airsensio.Activity.LoginAcitivity;
 import com.wondereight.airsensio.Helper._Debug;
+import com.wondereight.airsensio.Modal.HealthInfoModal;
 import com.wondereight.airsensio.Modal.UserModal;
 import com.wondereight.airsensio.R;
 import com.wondereight.airsensio.UtilClass.AirSensioRestClient;
@@ -41,6 +44,8 @@ public class ProfileFragment extends Fragment {
     UtilityClass utilityClass;
 
     private static int nCountCallingGetInfo = 0;
+    private static int nCountCallingProfile = 0;
+    private static boolean isLoadedProfile = false;
 
     private static FeedbackFragment feedbackdlg;
 
@@ -64,6 +69,8 @@ public class ProfileFragment extends Fragment {
 
         utilityClass = new UtilityClass(_context);
         feedbackdlg = (FeedbackFragment)FeedbackFragment.newInstance(_context);
+        if( isLoadedProfile == false)
+            restCallGetProfileInfoApi();
         return view;
     }
 
@@ -119,30 +126,28 @@ public class ProfileFragment extends Fragment {
                 if (responseString == null) {
                     _debug.e(LOG_TAG, "None response string");
                 } else if (responseString.equals("0")) {
-                    _debug.e(LOG_TAG, "Incorrect Hash");
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.no_saved_info));
+                    _debug.e(LOG_TAG, "No Saved Info");
                 } else if (responseString.equals("1")) {
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.incorrect_hash));
                     _debug.e(LOG_TAG, "Incorrect Hash");
                 } else if (responseString.equals("2")) {
-                    //utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.device_not));
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.device_not));
                     _debug.d(LOG_TAG, "Device ID not provided");
                 } else if (responseString.equals("3")) {
-                    //utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.userid_not));
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.userid_not));
                     _debug.d(LOG_TAG, "User ID not provided");
                 } else if (responseString.equals("9")) {
-                    //utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.no_exist));
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.nothing_found));
                     _debug.d(LOG_TAG, "Nothing Found");
                 } else {
                     try {
-                        ParsingResponse.parsingSavedInfo(new JSONArray(responseString));
-//                        if (indexModals.get(0).isSet()) {
-//                            tvAllergyIndex.setText(indexModals.get(0).getIndexValue());
-//                            tvAlergyIntensity.setText(indexModals.get(0).getLogIntensity());
-//                        }
-//                        if (indexModals.get(1).isSet()) {
-//                            tvPollutionIndex.setText(indexModals.get(1).getIndexValue());
-//                            tvPollutionIntensity.setText(indexModals.get(1).getLogIntensity());
-//                        }
-
+                        HealthInfoModal info = ParsingResponse.parsingSavedInfo(new JSONArray(responseString));
+                        Gson gson = new Gson();
+                        Intent intentTerms = new Intent(_context, HealthActivity.class);
+                        intentTerms.putExtra("HealthInfoModal", gson.toJson(info));
+                        startActivity(intentTerms);
+                        //utilityClass.showAlertMessage(getResources().getString(R.string.title_alert), "Saved Info : " + responseString);
                         _debug.d(LOG_TAG, "AirSensioRestClient.GET_SAVED_INFO.Success");
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -183,6 +188,97 @@ public class ProfileFragment extends Fragment {
             public void onFinish() {
                 utilityClass.processDialogStop();
                 _debug.d(LOG_TAG, "AirSensioRestClient.GET_SAVED_INFO.onFinish");
+            }
+
+        });
+    }
+
+    private void restCallGetProfileInfoApi() {
+
+        RequestParams params = new RequestParams();
+        UserModal userModal = SaveSharedPreferences.getLoginUserData(getActivity());
+        String str_userid = userModal.getId();
+        String str_email = userModal.getEmail();
+        String str_deviceid = utilityClass.GetDeviceID();
+        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+
+        params.put(Constant.STR_USERID, str_userid);
+        params.put(Constant.STR_EMAIL, str_email);
+        params.put(Constant.STR_DEVICEID, str_deviceid);
+        params.put(Constant.STR_HASH, str_hash);
+
+        AirSensioRestClient.post(AirSensioRestClient.GET_PROFILE_INFO, params, new TextHttpResponseHandler() {
+            @Override
+            public void onStart() {
+                // called before request is started
+                //utilityClass.processDialogStart(false);
+                _debug.d(LOG_TAG, "AirSensioRestClient.GET_PROFILE_INFO.onStart");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                //utilityClass.processDialogStop();
+                if (responseString == null) {
+                    _debug.e(LOG_TAG, "None response string");
+                } else if (responseString.equals("0")) {
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.no_saved_info));
+                    _debug.e(LOG_TAG, "No Saved Info");
+                } else if (responseString.equals("1")) {
+
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.incorrect_hash));
+                    _debug.e(LOG_TAG, "Incorrect Hash");
+                } else if (responseString.equals("2")) {
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.device_not));
+                    _debug.d(LOG_TAG, "Device ID not provided");
+                } else if (responseString.equals("3")) {
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.userid_not));
+                    _debug.d(LOG_TAG, "User ID not provided");
+                } else if (responseString.equals("9")) {
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.no_exist));
+                    _debug.d(LOG_TAG, "Nothing Found");
+                } else {
+                    try {
+                        ParsingResponse.parsingSavedInfo(new JSONArray(responseString));    // must be changed
+                        _debug.d(LOG_TAG, "AirSensioRestClient.GET_PROFILE_INFO.Success");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        _debug.e(LOG_TAG, "GET_PROFILE_INFO Exception Error:" + responseString);
+                    }
+                }
+                nCountCallingProfile = 0;
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                //utilityClass.processDialogStop();
+                //utilityClass.toast(getResources().getString(R.string.check_internet));
+                _debug.e(LOG_TAG, "errorString: " + responseString);
+                nCountCallingProfile++;
+                if (nCountCallingProfile < 3) {
+                    restCallGetProfileInfoApi();
+                } else {
+                    nCountCallingProfile = 0;
+                }
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+                // called when request is retried{
+                //utilityClass.processDialogStop();
+                //utilityClass.toast(getResources().getString(R.string.try_again));
+                _debug.d(LOG_TAG, "AirSensioRestClient.GET_PROFILE_INFO.onRetry");
+                nCountCallingProfile++;
+                if (nCountCallingProfile < 3) {
+                    restCallGetProfileInfoApi();
+                } else {
+                    nCountCallingProfile = 0;
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                //utilityClass.processDialogStop();
+                _debug.d(LOG_TAG, "AirSensioRestClient.GET_PROFILE_INFO.onFinish");
             }
 
         });

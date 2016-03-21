@@ -8,6 +8,7 @@ import com.wondereight.airsensio.Modal.CityModal;
 import com.wondereight.airsensio.Modal.DataDetailsModal;
 import com.wondereight.airsensio.Modal.DeviceDataModal;
 import com.wondereight.airsensio.Modal.GraphDataModal;
+import com.wondereight.airsensio.Modal.HealthInfoModal;
 import com.wondereight.airsensio.Modal.IndexModal;
 import com.wondereight.airsensio.Modal.UserModal;
 
@@ -489,28 +490,85 @@ public class ParsingResponse {
         return result;
     }
 
-    public static ArrayList<IndexModal> parsingSavedInfo(JSONArray arr){
-        ArrayList<IndexModal> result = new ArrayList<>();
-//        try {
-//            IndexModal allergyModal = new IndexModal();
-//            IndexModal pollutionModal = new IndexModal();
-//
-//            JSONObject obj = arr.getJSONObject(0);
-//            allergyModal.setIndexValue(String.valueOf(obj.optInt(Constant.STR_ALLERGYINDEX)));
-//            allergyModal.setLogIntensity(obj.optString(Constant.STR_LOGINTENSITY));
-//            obj = arr.getJSONObject(1);
-//            pollutionModal.setIndexValue(String.valueOf(obj.optInt(Constant.STR_POLLUTIONINDEX)));
-//            pollutionModal.setLogIntensity(obj.optString(Constant.STR_LOGINTENSITY));
-//
-//            result.add(allergyModal);
-//            result.add(pollutionModal);
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//            _debug.e(LOG_TAG, "IndexModal JSONArray Fail: " + e.getMessage());
-//            result.add( new IndexModal() );
-//            result.add( new IndexModal() );
-//        }
+    public static final int CONSCIOUS = 1;
+    public static final int ALLERGIES = 2;
+    public static final int EYES = 3;
+    public static final int NOSE = 4;
+    public static final int LUNGS = 5;
+    public static final int SPECIFY = 6;
+    public static final int RESPIRATORY = 7;
+    public static final int ANOTHERSPECIFY = 8;
+    public static final int PET = 9;
+
+    public static HealthInfoModal parsingSavedInfo(JSONArray arr){
+        HealthInfoModal result = new HealthInfoModal();
+        JSONObject obj = new JSONObject();
+        String fieldName;
+        String strValue;
+        try {
+            for(int i = 0; i<arr.length(); i++){
+                obj = arr.getJSONObject(i);
+                fieldName = obj.optString("field_name", "");
+                strValue = obj.optString("field_value", "");
+                switch ( getCurrentItem(fieldName) ){
+                    case CONSCIOUS:
+                        result.setConscious(strValue);
+                        break;
+                    case ALLERGIES:
+                        result.setAllergies(strValue);
+                        break;
+                    case EYES:
+                        result.setEyes(strValue);
+                        break;
+                    case NOSE:
+                        result.setNose(strValue);
+                        break;
+                    case LUNGS:
+                        result.setLungs(strValue);
+                        break;
+                    case SPECIFY:
+                        result.setSpecify(strValue);
+                        break;
+                    case RESPIRATORY:
+                        result.setRespiratory(strValue);
+                        break;
+                    case ANOTHERSPECIFY:
+                        result.setAnotherspecify(strValue);
+                        break;
+                    case PET:
+                        result.setPet(strValue);
+                        break;
+                    default:
+
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            _debug.e(LOG_TAG, "HealthInfoModal JSONArray Fail: " + e.getMessage());
+            result = new HealthInfoModal();
+        }
         return result;
+    }
+
+    private static int getCurrentItem(String strName){
+        if( strName.equalsIgnoreCase(Constant.STR_CONSCIOUS) )
+            return CONSCIOUS;
+        else if ( strName.equalsIgnoreCase(Constant.STR_HAVEALLERGIES) )
+            return ALLERGIES;
+        else if ( strName.equalsIgnoreCase(Constant.STR_EYES) )
+            return EYES;
+        else if ( strName.equalsIgnoreCase(Constant.STR_NOSE) )
+            return NOSE;
+        else if ( strName.equalsIgnoreCase(Constant.STR_LUNGS) )
+            return LUNGS;
+        else if ( strName.equalsIgnoreCase(Constant.STR_ALLERGIESOTHER) )
+            return SPECIFY;
+        else if ( strName.equalsIgnoreCase(Constant.STR_RES_DISTRESS) )
+            return RESPIRATORY;
+        else if ( strName.equalsIgnoreCase(Constant.STR_RES_OTHER) )
+            return ANOTHERSPECIFY;
+        else if ( strName.equalsIgnoreCase(Constant.STR_PET) )
+            return PET;
+        return 0;
     }
 }
