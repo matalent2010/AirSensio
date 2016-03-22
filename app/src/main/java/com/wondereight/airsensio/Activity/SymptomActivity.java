@@ -136,37 +136,6 @@ public class SymptomActivity extends AppCompatActivity {
             Intent intent = new Intent();
             setResult(RESULT_OK, intent);
             finish();
-            /*if( Global.GetInstance().GetGeolocation().isEmpty() ) {
-                GetCityNameThread getCityNameThread = new GetCityNameThread(SymptomActivity.this, new ThreadCallback() {
-
-                    @Override
-                    public void runSuccessCallback() {
-                        SymptomActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                //utilityClass.processDialogStop();
-                                restCallLogOutbreakApi();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void runFailCallback(final String err) {
-                        SymptomActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                utilityClass.processDialogStop();
-                                utilityClass.showAlertMessage(getString(R.string.title_alert), err);
-                            }
-                        });
-                    }
-                });
-                utilityClass.processDialogStart(false);
-                new Thread(getCityNameThread).start();
-            } else {
-                restCallLogOutbreakApi();
-            }*/
-
         }
         else
             utilityClass.toast(getResources().getString(R.string.select_symptom));

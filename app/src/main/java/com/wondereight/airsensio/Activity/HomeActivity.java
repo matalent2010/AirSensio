@@ -1,5 +1,6 @@
 package com.wondereight.airsensio.Activity;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -53,6 +54,7 @@ public class HomeActivity extends FragmentActivity {
     public UtilityClass utilityClass;
     private static final String LOG_TAG = "HomeActivity";
     private static _Debug _debug = new _Debug(true);
+    private static boolean preorderNow = false;
 
     @Bind(R.id.viewpager) public CustomViewPager mTabPager;
 
@@ -218,8 +220,26 @@ public class HomeActivity extends FragmentActivity {
 //    @Override
 //    public void onStop(){
 //        super.onStop();
-//        //finish();
+//        if( !isPreorderNow() ) {
+//            Intent intent = new Intent(HomeActivity.this, CloseActivity.class);
+//            //Clear all activities and start new task
+//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(intent);
+//        }
 //    }
+//
+//    @Override
+//    public void onStart(){
+//        super.onStart();
+//        setPreorderNow(false);
+//    }
+
+    public void setPreorderNow(boolean flag){
+        preorderNow = flag;
+    }
+    public boolean isPreorderNow(){
+        return preorderNow;
+    }
 
     private void restCallDeviceDataApi() {
 

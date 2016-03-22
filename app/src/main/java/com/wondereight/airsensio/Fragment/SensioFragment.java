@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.wondereight.airsensio.Activity.HomeActivity;
 import com.wondereight.airsensio.Activity.SymptomActivity;
 import com.wondereight.airsensio.Helper._Debug;
 import com.wondereight.airsensio.R;
@@ -48,6 +49,7 @@ public class SensioFragment extends Fragment {
 
     @OnClick(R.id.btn_preorder)
     public void onClickPreOrder(){
+        ((HomeActivity)getActivity()).setPreorderNow(true);
         goWebsite(Constant.URL_Wlab);
     }
 
