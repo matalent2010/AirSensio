@@ -1,6 +1,7 @@
 package com.wondereight.airsensio.Fragment;
 
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
@@ -48,12 +49,15 @@ import java.util.ArrayList;
 /**
  * Created by Miguel on 02/2/2016.
  */
+
 public class HomeFragment extends Fragment {
     private static Context _context;
     private static final String LOG_TAG = "HomeFragment";
     private static _Debug _debug = new _Debug(true);
 
     UtilityClass utilityClass;
+
+    public static final int RESULT_SYMPTOM = 1;
 
     @Bind(R.id.city_name)
     TextView tvCityname;
@@ -110,7 +114,7 @@ public class HomeFragment extends Fragment {
     @OnClick(R.id.btnPress)
     public void onClickPress(){
         Intent SymptomActivity = new Intent(_context, SymptomActivity.class);
-        _context.startActivity(SymptomActivity);
+        startActivityForResult(SymptomActivity, RESULT_SYMPTOM);
     }
 
 
@@ -118,6 +122,20 @@ public class HomeFragment extends Fragment {
     public void onClickCityname(){
         getCityList();
         isShownCityMenu = true;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case (RESULT_SYMPTOM) : {
+                if (resultCode == Activity.RESULT_OK) {
+                    //String newText = data.getStringExtra(PUBLIC_STATIC_STRING_IDENTIFIER);
+                    utilityClass.sendSymptomList( );
+                }
+                break;
+            }
+        }
     }
 
     private void getCityList(){
@@ -423,4 +441,5 @@ public class HomeFragment extends Fragment {
 
         });
     }
+
 }

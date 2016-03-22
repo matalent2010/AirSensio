@@ -214,6 +214,13 @@ public class HomeActivity extends FragmentActivity {
             curTabIndex = arg0;
         }
     }
+
+//    @Override
+//    public void onStop(){
+//        super.onStop();
+//        //finish();
+//    }
+
     private void restCallDeviceDataApi() {
 
         RequestParams params = new RequestParams();

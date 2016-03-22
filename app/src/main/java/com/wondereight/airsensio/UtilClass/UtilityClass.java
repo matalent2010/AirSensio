@@ -14,13 +14,19 @@ import android.util.Log;
 import android.widget.Toast;
 
 
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
+import com.wondereight.airsensio.Modal.RequestParamsModal;
 import com.wondereight.airsensio.R;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by Miguel on 02/17/2016.
@@ -31,11 +37,18 @@ public class UtilityClass {
     Context _context;
     private ProgressDialog pdialog;
     private AlertDialog alertDialog;
+    private ArrayList<Boolean> _symFlagList;
+    private static int _symRequestCount;
+    private static boolean _sendingNow;
+    private static Runnable _r;
 
 //Variable
 
     public UtilityClass(Context context) {
         this._context = context;
+        _symFlagList = new ArrayList<>();
+        _symRequestCount = 0;
+        _sendingNow = false;
     }
 
     public void toast(String str) {
@@ -43,9 +56,13 @@ public class UtilityClass {
     }
 
     public boolean isInternetConnection() {
+        return isInternetConnection(_context);
+    }
+
+    public static boolean isInternetConnection(Context context) {
 
         try {
-            ConnectivityManager connectivityManager = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
            /* if (connectivityManager != null)
             {
                 NetworkInfo[] info = connectivityManager.getAllNetworkInfo();
@@ -190,5 +207,128 @@ public class UtilityClass {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String datetime = dateFormat.format(Calendar.getInstance().getTime());//String datetime = dateFormat.format(Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime());
         return datetime;
+    }
+
+    public boolean isHavingSymptomList(){
+        ArrayList<RequestParamsModal> params =  SaveSharedPreferences.getSendSymptomList(_context);
+        return params.size()>0;
+    }
+
+    public boolean sendSymptomList(){
+        return sendSymptomList(null);
+    }
+
+    public boolean sendSymptomList(Runnable r){
+        if( isSendingNow() ) return false;
+        _r = r;
+        ArrayList<RequestParamsModal> params =  SaveSharedPreferences.getSendSymptomList(_context);
+        RequestParamsModal item;
+        _symFlagList.clear();
+        _symRequestCount = 0;
+        if( params.size() > 0 && isInternetConnection(_context) ) {
+            for (int i = 0; i < params.size(); i++) {
+                _sendingNow = true;
+                _symFlagList.add(true);
+                item = params.get(i);
+                restCallLogOutbreakApi(item, i);
+            }
+        } else {
+
+        }
+        return true;
+    }
+
+    public static boolean isSendingNow(){
+        return _sendingNow;
+    }
+
+    private void restCallLogOutbreakApi(RequestParamsModal modal, int tag) {
+        String LOG_TAG = "restCallLogOutbreakApi";
+        Log.d(LOG_TAG, modal.toString());
+
+        RequestParams param = new RequestParams();
+        for(int i=0; i<modal.getCount(); i++)
+            param.put(modal.getKey(i), modal.getValue(i));
+
+        TextHttpResponseHandler handler = new TextHttpResponseHandler() {
+            String LOG_TAG = "UtilityClass";
+
+            @Override
+            public void onStart() {
+                Log.d(LOG_TAG, "AirSensioRestClient.LOG_OUTBREAK.onStart");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                if (responseString == null) {
+                    Log.e(LOG_TAG, "None response string");
+                } else if (responseString.equals("0")) {
+                    int i = (int)getTag();
+                    _symFlagList.set(i,false);
+                    //finish();
+                    Log.e(LOG_TAG, "Log outbreak Success");
+                } else if (responseString.equals("1")) {
+                    int i = (int)getTag();
+                    _symFlagList.set(i,false);
+                    Log.e(LOG_TAG, "Incorrect Hash");
+                } else if (responseString.equals("2")) {
+                    int i = (int)getTag();
+                    _symFlagList.set(i,false);
+                    Log.e(LOG_TAG, "User ID Not Provided");
+                } else if (responseString.equals("3")) {
+                    Log.e(LOG_TAG, "Device ID not provided");
+                    int i = (int)getTag();
+                    _symFlagList.set(i, false);
+                } else if (responseString.equals("8")) {
+                    int i = (int)getTag();
+                    _symFlagList.set(i,false);
+                    Log.e(LOG_TAG, "You have to select at least 1 symptom");
+                } else if (responseString.equals("9")) {
+                    Log.d(LOG_TAG, "Error, Please Try Again Later");
+                } else {
+                    Log.e(LOG_TAG, "Log your outbreak Exception Error:" + responseString);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.e(LOG_TAG, "errorString: " + responseString);
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+                Log.d(LOG_TAG, "AirSensioRestClient.LOG_OUTBREAK.onRetry");
+            }
+
+            @Override
+            public void onFinish() {
+                _symRequestCount++;
+                if(_symRequestCount >= _symFlagList.size() )
+                    reSaveSymptomList();
+            }
+        };
+        handler.setTag(tag);
+
+        AirSensioRestClient.post(AirSensioRestClient.LOG_OUTBREAK, param, handler);
+    }
+
+    private boolean reSaveSymptomList(){
+        String LOG_TAG = "reSaveSymptomList";
+        ArrayList<RequestParamsModal> params =  SaveSharedPreferences.getSendSymptomList(_context);
+        ArrayList<RequestParamsModal> new_prams = new ArrayList<>();
+        Log.d(LOG_TAG, "Params Size:" + String.valueOf(params.size()) + ", symFlagList Size:"+ String.valueOf(_symFlagList.size()));
+        if( params.size() > 0 ) {
+            for (int i = 0; i < _symFlagList.size(); i++) {
+                if (_symFlagList.get(i)) {
+                    new_prams.add(params.get(i));
+                }
+            }
+        }
+        Log.d(LOG_TAG, "ReSaved Params Size:" + String.valueOf(new_prams.size()));
+        _sendingNow = false;
+        SaveSharedPreferences.saveSendSymptomList(_context, new_prams);
+        if( _r != null)
+            _r.run();
+        return true;
     }
 }

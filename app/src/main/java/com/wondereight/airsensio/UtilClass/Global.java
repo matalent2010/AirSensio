@@ -20,10 +20,13 @@ public class Global {
     private String CityName = Constant.DEFAULT_CITYNAME;
     private String CityID = Constant.DEFAULT_CITYID;
 
+    private boolean isConnected;
+
     // Select Symptom page
     private int[] StateSymptomList = new int[] {0,0,0,0,0,0};
 
     Global(){
+        isConnected = false;
     }
 
     public void init(){
@@ -98,5 +101,12 @@ public class Global {
     public ArrayList<CityModal> GetCityList()
     {
         return CitiesList;
+    }
+
+    public boolean GetNetworkState(){
+        return isConnected;
+    }
+    public void SetNetworkState(boolean state){
+        isConnected = state;
     }
 }

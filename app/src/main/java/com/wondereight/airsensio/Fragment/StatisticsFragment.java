@@ -713,7 +713,7 @@ public class StatisticsFragment extends Fragment {
             public void onStart() {
                 // called before request is started
                 //utilityClass.processDialogStart(false);
-                _debug.d(LOG_TAG, "AirSensioRestClient.GET_ALLERGY_INDEX.onStart");
+                _debug.d(LOG_TAG, "AirSensioRestClient.GET_DATA_DETAILS.onStart");
             }
 
             @Override
@@ -737,10 +737,10 @@ public class StatisticsFragment extends Fragment {
                         dataModals = ParsingResponse.parsingDataDetails(new JSONArray(responseString));
                         drawDataDetails(dataModals);
 
-                        _debug.d(LOG_TAG, "AirSensioRestClient.GET_ALLERGY_INDEX.Success");
+                        _debug.d(LOG_TAG, "AirSensioRestClient.GET_DATA_DETAILS.Success");
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        _debug.e(LOG_TAG, "Getting Index Exception Error:" + responseString);
+                        _debug.e(LOG_TAG, "GET_DATA_DETAILS Exception Error:" + responseString);
                     }
                 }
                 nCallDataDetails = 0;
@@ -764,7 +764,7 @@ public class StatisticsFragment extends Fragment {
                 // called when request is retried{
                 //utilityClass.processDialogStop();
                 //utilityClass.toast(getResources().getString(R.string.try_again));
-                _debug.d(LOG_TAG, "AirSensioRestClient.GET_ALLERGY_INDEX.onRetry");
+                _debug.d(LOG_TAG, "AirSensioRestClient.GET_DATA_DETAILS.onRetry");
                 nCallDataDetails++;
                 if( nCallDataDetails < 3 ){
                     restCallGetDataDetailsApi();

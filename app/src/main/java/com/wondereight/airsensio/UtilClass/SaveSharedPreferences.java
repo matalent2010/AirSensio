@@ -1,12 +1,22 @@
 package com.wondereight.airsensio.UtilClass;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.RequestParams;
+import com.wondereight.airsensio.Activity.MainActivity;
+import com.wondereight.airsensio.Modal.RequestParamsModal;
 import com.wondereight.airsensio.Modal.SettingsModal;
 import com.wondereight.airsensio.Modal.UserModal;
+import com.wondereight.airsensio.R;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 /**
  * Created by Miguel on 02-26-2016.
@@ -15,7 +25,11 @@ public class SaveSharedPreferences {
 
     static final String LoginUserData = "LoginUserData";
     static final String InstallInfo = "InstallInfo";
-    //
+    static final String SendSymptomList = "SymptomList";
+
+    static Context _context;
+    static RequestParamsModal _modal;
+    static final int DELAYED_LENGTH = 1000;
 
     static SharedPreferences getSharedPreferences(Context ctx) {
 
@@ -56,6 +70,39 @@ public class SaveSharedPreferences {
         Gson gson = new Gson();
         String json = getSharedPreferences(ctx).getString(user, new Gson().toJson(new SettingsModal()));
         return gson.fromJson(json, SettingsModal.class);
+    }
+
+    public static ArrayList<RequestParamsModal> getSendSymptomList(Context ctx) {
+        Gson gson = new Gson();
+        String json = getSharedPreferences(ctx).getString(SendSymptomList, new Gson().toJson(new ArrayList<>()));
+        Type type = new TypeToken<ArrayList<RequestParamsModal>>() {}.getType();
+        return gson.fromJson(json, type);
+    }
+
+    public static void saveSendSymptomList(Context ctx, ArrayList<RequestParamsModal> paramsList) {
+
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        Gson gson = new Gson();
+        editor.putString(SendSymptomList, gson.toJson(paramsList));
+        editor.commit();
+    }
+
+    public static boolean addSymptomData(Context ctx, RequestParamsModal params) {
+        _context = ctx;
+        _modal = params;
+        if( UtilityClass.isSendingNow() ){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    addSymptomData(_context, _modal);
+                }
+            }, DELAYED_LENGTH);
+        } else {
+            ArrayList<RequestParamsModal> list = getSendSymptomList(ctx);
+            list.add(params);
+            saveSendSymptomList(ctx, list);
+        }
+        return true;
     }
 
     public static void clearUserdata(Context ctx) {

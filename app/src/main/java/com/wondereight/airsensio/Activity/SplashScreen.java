@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.wondereight.airsensio.R;
+import com.wondereight.airsensio.UtilClass.Global;
+import com.wondereight.airsensio.UtilClass.UtilityClass;
 
 public class SplashScreen extends AppCompatActivity {
     /** Duration of wait **/
@@ -18,15 +20,31 @@ public class SplashScreen extends AppCompatActivity {
 
         /* New Handler to start the Menu-Activity
          * and close this Splash-Screen after some seconds.*/
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                /* Create an Intent that will start the Menu-Activity. */
-                Intent mainIntent = new Intent(SplashScreen.this, MainActivity.class);
-                SplashScreen.this.startActivity(mainIntent);
-                overridePendingTransition(R.anim.slide_fade_in,R.anim.slide_fade_out);
-                SplashScreen.this.finish();
-            }
-        }, SPLASH_DISPLAY_LENGTH);
+        Global.GetInstance().SetNetworkState(UtilityClass.isInternetConnection(SplashScreen.this));
+
+        UtilityClass utilityClass = new UtilityClass(SplashScreen.this);
+        if( utilityClass.isHavingSymptomList() ){
+            utilityClass.sendSymptomList(new Runnable() {
+                @Override
+                public void run() {
+                    goMainActivity();
+                }
+            });
+        } else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    goMainActivity();
+                }
+            }, SPLASH_DISPLAY_LENGTH);
+        }
+    }
+
+    private void goMainActivity(){
+        /* Create an Intent that will start the Menu-Activity. */
+        Intent mainIntent = new Intent(SplashScreen.this, MainActivity.class);
+        SplashScreen.this.startActivity(mainIntent);
+        overridePendingTransition(R.anim.slide_fade_in, R.anim.slide_fade_out);
+        SplashScreen.this.finish();
     }
 }

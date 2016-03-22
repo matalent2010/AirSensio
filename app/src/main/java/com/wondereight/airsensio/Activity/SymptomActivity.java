@@ -18,6 +18,7 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.wondereight.airsensio.Helper._Debug;
 import com.wondereight.airsensio.Interface.ThreadCallback;
+import com.wondereight.airsensio.Modal.RequestParamsModal;
 import com.wondereight.airsensio.Modal.UserModal;
 import com.wondereight.airsensio.R;
 import com.wondereight.airsensio.UtilClass.AirSensioRestClient;
@@ -131,7 +132,11 @@ public class SymptomActivity extends AppCompatActivity {
     void onClickSubmit(){
         Global.GetInstance().SetStateSymptomList(symptomList);
         if(isSelectedSymptom(symptomList)) {
-            if( Global.GetInstance().GetGeolocation().isEmpty() ) {
+            SaveSharedPreferences.addSymptomData(SymptomActivity.this, getParam());
+            Intent intent = new Intent();
+            setResult(RESULT_OK, intent);
+            finish();
+            /*if( Global.GetInstance().GetGeolocation().isEmpty() ) {
                 GetCityNameThread getCityNameThread = new GetCityNameThread(SymptomActivity.this, new ThreadCallback() {
 
                     @Override
@@ -160,7 +165,7 @@ public class SymptomActivity extends AppCompatActivity {
                 new Thread(getCityNameThread).start();
             } else {
                 restCallLogOutbreakApi();
-            }
+            }*/
 
         }
         else
@@ -223,33 +228,40 @@ public class SymptomActivity extends AppCompatActivity {
         ivSymptoms.get(5).setImageDrawable(sDrawable);
     }
 
-    private void restCallLogOutbreakApi() {
-
-        RequestParams params = new RequestParams();
+    private RequestParamsModal getParam(){
+        RequestParamsModal params = new RequestParamsModal();
 
         UserModal userModal = SaveSharedPreferences.getLoginUserData(SymptomActivity.this);
 
         String str_email = userModal.getEmail();
         String str_userid = userModal.getId();
-        String str_location = Global.GetInstance().GetGeolocation();
-        String str_temp = Global.GetInstance().GetGeoCityName();
+        String str_location = Global.GetInstance().GetCityName();
         String str_cityid = Global.GetInstance().GetCityID();
         String str_deviceid = utilityClass.GetDeviceID();
-        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
 
-        params.put(Constant.STR_EMAIL, str_email);
-        params.put(Constant.STR_DEVICEID, str_deviceid);
-        params.put(Constant.STR_HASH, str_hash);
-        params.put(Constant.STR_USERID, str_userid);
-        params.put(Constant.STR_CITYID, str_cityid);
-        params.put(Constant.STR_LOCATION, str_location);
-        params.put(Constant.STR_DATETIME, utilityClass.getDateTime());
-        params.put(Constant.STR_SYMPTOM_1, String.valueOf(symptomList[0]));
-        params.put(Constant.STR_SYMPTOM_2, String.valueOf(symptomList[1]));
-        params.put(Constant.STR_SYMPTOM_3, String.valueOf(symptomList[2]));
-        params.put(Constant.STR_SYMPTOM_4, String.valueOf(symptomList[3]));
-        params.put(Constant.STR_SYMPTOM_5, String.valueOf(symptomList[4]));
-        params.put(Constant.STR_SYMPTOM_6, String.valueOf(symptomList[5]));
+        params.add(Constant.STR_EMAIL, str_email);
+        params.add(Constant.STR_DEVICEID, str_deviceid);
+        params.add(Constant.STR_HASH, str_hash);
+        params.add(Constant.STR_USERID, str_userid);
+        params.add(Constant.STR_CITYID, str_cityid);
+        params.add(Constant.STR_LOCATION, str_location);
+        params.add(Constant.STR_DATETIME, UtilityClass.getDateTime());
+        params.add(Constant.STR_SYMPTOM_1, String.valueOf(symptomList[0]));
+        params.add(Constant.STR_SYMPTOM_2, String.valueOf(symptomList[1]));
+        params.add(Constant.STR_SYMPTOM_3, String.valueOf(symptomList[2]));
+        params.add(Constant.STR_SYMPTOM_4, String.valueOf(symptomList[3]));
+        params.add(Constant.STR_SYMPTOM_5, String.valueOf(symptomList[4]));
+        params.add(Constant.STR_SYMPTOM_6, String.valueOf(symptomList[5]));
+        return params;
+    }
+
+    private void restCallLogOutbreakApi() {
+
+        RequestParamsModal modal = getParam();
+        RequestParams params = new RequestParams();
+        for(int i=0; i<modal.getCount(); i++)
+            params.put(modal.getKey(i), modal.getValue(i));
 
         _debug.i(LOG_TAG, params.toString());
         // AirSensioRestClient.post(AirSensioRestClient.LOGIN, params, new AsyncHttpResponseHandler() {
