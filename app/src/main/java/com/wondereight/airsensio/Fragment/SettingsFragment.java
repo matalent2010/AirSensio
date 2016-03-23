@@ -141,6 +141,7 @@ public class SettingsFragment extends Fragment {
                     utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.no_exist));
                     _debug.e(LOG_TAG, "Account Does Not Exist");
                 } else {
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.no_exist));
                     _debug.e(LOG_TAG, "Save Info Exception Error:"+responseString);
                 }
             }
