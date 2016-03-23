@@ -241,6 +241,8 @@ public class HomeFragment extends Fragment {
             ArrayList<CityModal> cityList = Global.GetInstance().GetCityList();
             Global.GetInstance().SetCityName(cityList.get(id).getCityName());
             Global.GetInstance().SetCityID(cityList.get(id).getCityId());
+            initIndex();
+            initAdvice();
             restCallGetAdviceApi();
             restCallGetIndexApi();
             tvCityname.setText(Global.GetInstance().GetCityName());
@@ -252,6 +254,16 @@ public class HomeFragment extends Fragment {
             isShownCityMenu = false;
             //utilityClass.toast("Menu dismissed");
         }
+    }
+    private void initIndex(){
+        tvAllergyIndex.setText(Constant.DEFAULT_ALLERGY_INDEX);
+        tvAlergyIntensity.setText(Constant.DEFAULT_ALLERGY_INTENSITY);
+        tvPollutionIndex.setText(Constant.DEFAULT_POLLUTION_INDEX);
+        tvPollutionIntensity.setText(Constant.DEFAULT_POLLUTION_INTENSITY);
+    }
+
+    private void initAdvice(){
+        tvAdvice.setText(Constant.DEFAULT_ADVICE);
     }
 
     public void restCallGetAdviceApi(){

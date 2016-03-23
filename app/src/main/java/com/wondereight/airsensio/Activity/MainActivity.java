@@ -2,11 +2,13 @@ package com.wondereight.airsensio.Activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.BinderThread;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
@@ -15,11 +17,16 @@ import butterknife.OnClick;
 import com.wondereight.airsensio.R;
 import com.wondereight.airsensio.UtilClass.SaveSharedPreferences;
 
+import org.w3c.dom.Text;
+
 /**
  * Created by Miguel on 02/2/2016.
  */
 
 public class MainActivity extends AppCompatActivity {
+
+    @Bind(R.id.btnAcceptTerms)
+    TextView btnAcceptTerms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(LogninIntent);
                 finish();
             }
+        } else {
+            btnAcceptTerms.setText(getString(R.string.button_continue));
         }
     }
 

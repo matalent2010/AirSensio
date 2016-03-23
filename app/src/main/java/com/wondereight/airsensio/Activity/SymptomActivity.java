@@ -63,7 +63,10 @@ public class SymptomActivity extends AppCompatActivity {
 
     private void declaration() {
         utilityClass = new UtilityClass(SymptomActivity.this);
-        symptomList = Global.GetInstance().GetStateSymptomList();
+        //symptomList = Global.GetInstance().GetStateSymptomList();
+        symptomList = new int[6];
+        for ( int i=0; i<6; i++)
+            symptomList[i] = 0;
     }
 
     private void initialization() {
@@ -130,7 +133,7 @@ public class SymptomActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnSubmit)
     void onClickSubmit(){
-        Global.GetInstance().SetStateSymptomList(symptomList);
+        //Global.GetInstance().SetStateSymptomList(symptomList);
         if(isSelectedSymptom(symptomList)) {
             SaveSharedPreferences.addSymptomData(SymptomActivity.this, getParam());
             Intent intent = new Intent();

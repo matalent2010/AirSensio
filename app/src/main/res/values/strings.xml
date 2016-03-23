@@ -24,6 +24,7 @@
     <string name="title_terms">TERMS &amp; CONDITIONS</string>
     <string name="content_terms">Please read the followings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\nPlease read the foolwings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\nPlease read the foolwings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\nPlease read the foolwings terms before using your iOS device,. By using your iOS device, you are agreeeing to be bound by the OS terms and conditions.\n\n1. YOUR AGREEMENTS\n</string>
     <string name="button_accept">ACCEPT &amp; CONTINUE</string>
+    <string name="button_continue">CONTINUE</string>
 
     <!-- Strings related to login -->
     <string name="title_activity_login">Sign in</string>

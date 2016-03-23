@@ -23,6 +23,13 @@ public class Constant {
     public static final String DEFAULT_CITYNAME = "London";
     public static final String DEFAULT_CITYID = "1";
 
+    public static final String DEFAULT_ALLERGY_INDEX = "0";
+    public static final String DEFAULT_ALLERGY_INTENSITY = "";
+    public static final String DEFAULT_POLLUTION_INDEX = "0";
+    public static final String DEFAULT_POLLUTION_INTENSITY = "";
+
+    public static final String DEFAULT_ADVICE= "";
+
 // ApiRequestParams Constant
     //login_secret
     public static String LOGIN_SECTRET= "3sfs0a65905075158146c9710e41qdf2";
