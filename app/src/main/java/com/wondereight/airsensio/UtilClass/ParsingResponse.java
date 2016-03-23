@@ -230,32 +230,38 @@ public class ParsingResponse {
         arrWeekGraphData.add(new ValuesData("Harmful Gas"));
         arrWeekGraphData.add(new ValuesData("Outbreak"));
 
-        for( GraphDataModal item : ArrOfGraph ){
-            if(item.getParameter().equalsIgnoreCase(arrWeekGraphData.get(6).str)){  // "Outbreak"
-                break;
-            }
-            Boolean isInclude = false;
-            for(String label : labels){
-                if(item.getLogDate().equalsIgnoreCase(label)) {
-                    isInclude = true;
-                    break;
-                }
-            }
-            if(!isInclude)
-                labels.add(item.getLogDate());
-        }
-        Collections.sort(labels, new Comparator<String>() {
-            @Override
-            public int compare(String lhs, String rhs) {
-                return lhs.compareToIgnoreCase(rhs);
-            }
-        });
+//        for( GraphDataModal item : ArrOfGraph ){
+//            if(item.getParameter().equalsIgnoreCase(arrWeekGraphData.get(6).str)){  // "Outbreak"
+//                break;
+//            }
+//            Boolean isInclude = false;
+//            for(String label : labels){
+//                if(item.getLogDate().equalsIgnoreCase(label)) {
+//                    isInclude = true;
+//                    break;
+//                }
+//            }
+//            if(!isInclude)
+//                labels.add(item.getLogDate());
+//        }
+//        Collections.sort(labels, new Comparator<String>() {
+//            @Override
+//            public int compare(String lhs, String rhs) {
+//                return lhs.compareToIgnoreCase(rhs);
+//            }
+//        });
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.format(Calendar.getInstance().getTime());
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, -7);
+        for(int i = 0; i < 7; i++){
+            c.add(Calendar.DATE, +1);
+            labels.add(dateFormat.format(c.getTime()));
+        }
         for (String label : labels){
-            Calendar c = Calendar.getInstance();
             try {
-                c.setTime(format.parse(label)); // yourdate is a object of type Date
+                c.setTime(dateFormat.parse(label)); // yourdate is a object of type Date
             } catch (ParseException e) {
                 e.printStackTrace();
             }
