@@ -1,0 +1,52 @@
+{
+  "project_info": {
+    "project_id": "sensioair-1259",
+    "project_number": "680822996298",
+    "name": "SensioAir"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:680822996298:android:a16dbd851232e337",
+        "client_id": "android:com.wondereight.airsensio",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "com.wondereight.airsensio",
+          "certificate_hash": []
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "680822996298-7sc228ea4jhc1buupu2bg4fpvus9llpn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wondereight.airsensio",
+            "certificate_hash": "7D279A3BBF9A51E04B609A2924F2BC72514A0CA6"
+          }
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 2,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 1
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
+}
