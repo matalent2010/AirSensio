@@ -63,7 +63,6 @@ public class SettingsFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         utilityClass = ((HomeActivity)getActivity()).utilityClass;
-        setSettingsValue();
         return view;
     }
 
@@ -74,7 +73,6 @@ public class SettingsFragment extends Fragment {
 
     @OnClick(R.id.btnSaveSettings)
     public void onclickSaveSettings(){
-        SaveSettings();
         restCallSaveSettingsApi();
     }
 
@@ -127,6 +125,7 @@ public class SettingsFragment extends Fragment {
                 if (responseString == null) {
                     _debug.e(LOG_TAG, "None response string");
                 } else if (responseString.equals("0")) {
+                    SaveSettings();
                     utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.savingsetting_success));
                     _debug.d(LOG_TAG, "Saving Settings Success");
                 } else if (responseString.equals("1")) {
@@ -238,16 +237,33 @@ public class SettingsFragment extends Fragment {
     }
 
     private boolean SaveSettings(){
-        String user = SaveSharedPreferences.getLoginUserData(_context).getEmail();
-        SaveSharedPreferences.saveSettings(_context, user, new SettingsModal(sbAllergens.getSteps(), sbPollution.getSteps()));
+        UserModal user = SaveSharedPreferences.getLoginUserData(_context);
+        user.setThresholdAllergens(String.valueOf(sbAllergens.getSteps()));
+        user.setThresholdPollution(String.valueOf(sbPollution.getSteps()));
+        SaveSharedPreferences.setLoginUserData(_context, user);
         return true;
     }
 
     private boolean setSettingsValue(){
-        String user = SaveSharedPreferences.getLoginUserData(_context).getEmail();
-        SettingsModal modal = SaveSharedPreferences.getSettings(_context, user);
-        sbAllergens.setSteps(modal.getAllergensValue());
-        sbPollution.setSteps(modal.getPollutionValue());
+        String allergens = SaveSharedPreferences.getLoginUserData(_context).getThresholdAllergens();
+        String pollution = SaveSharedPreferences.getLoginUserData(_context).getThresholdPollution();
+        int nAllergens = Integer.valueOf(allergens);
+        int nPollution = Integer.valueOf(pollution);
+        nAllergens = nAllergens<0 ? 5 : nAllergens>10 ? 5 : nAllergens;
+        nPollution = nPollution<0 ? 5 : nPollution>10 ? 5 : nPollution;
+        sbAllergens.setSteps(nAllergens);
+        sbPollution.setSteps(nPollution);
         return true;
+    }
+
+    @Override
+    public void onResume() {
+        setSettingsValue();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 }

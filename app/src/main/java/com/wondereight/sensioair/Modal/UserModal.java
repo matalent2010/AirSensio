@@ -12,6 +12,8 @@ public class UserModal {
     private String gender = "";
     private String phone_number = "";
     private String push_notifications = "";
+    private String notification_threshold_allergens = "5";
+    private String notification_threshold_pollution = "5";
     private String birthday = "";
     private String newsletter = "";
     private String session_nbr = "";
@@ -107,6 +109,21 @@ public class UserModal {
         this.session_nbr = session_nbr;
     }
 
+    public String getThresholdAllergens() {
+        return notification_threshold_allergens;
+    }
+
+    public void setThresholdAllergens(String notification_threshold_allergens) {
+        this.notification_threshold_allergens = notification_threshold_allergens;
+    }
+
+    public String getThresholdPollution() {
+        return notification_threshold_pollution;
+    }
+
+    public void setThresholdPollution(String notification_threshold_pollution) {
+        this.notification_threshold_pollution = notification_threshold_pollution;
+    }
 //    public String getGeolocation() {
 //        return geolocation;
 //    }

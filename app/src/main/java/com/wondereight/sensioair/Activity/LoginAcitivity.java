@@ -158,6 +158,7 @@ public class LoginAcitivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 // Pull out the first event on the public response
                 utilityClass.processDialogStop();
+                _debug.d(LOG_TAG, "Login Info: " + response.toString());
                 UserModal userModal = ParsingResponse.parsingUserModal(response);
                 if (userModal != null);
                 {

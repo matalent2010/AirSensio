@@ -59,7 +59,7 @@ public class SaveSharedPreferences {
         return getSharedPreferences(ctx).getBoolean(InstallInfo, false);
     }
 
-    public static void saveSettings(Context ctx, String user, SettingsModal settingsValue) {
+/*    public static void saveSettings(Context ctx, String user, SettingsModal settingsValue) {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
         Gson gson = new Gson();
         editor.putString(user, gson.toJson(settingsValue));
@@ -70,7 +70,7 @@ public class SaveSharedPreferences {
         Gson gson = new Gson();
         String json = getSharedPreferences(ctx).getString(user, new Gson().toJson(new SettingsModal()));
         return gson.fromJson(json, SettingsModal.class);
-    }
+    }*/
 
     public static ArrayList<RequestParamsModal> getSendSymptomList(Context ctx) {
         Gson gson = new Gson();

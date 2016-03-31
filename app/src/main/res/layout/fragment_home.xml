@@ -42,6 +42,7 @@
                             android:textColor="@color/white"
                             android:textSize="26sp"
                             android:textStyle="bold"
+                            android:singleLine="true"
                             android:text="London"/>
 
                         <ImageView

@@ -48,6 +48,8 @@ public class ParsingResponse {
             userModal.setBirthday(firstEvent.optString(Constant.STR_BIRTHDAY));
             userModal.setNewsletter(firstEvent.optString(Constant.STR_NEWSLETTER));
             userModal.setSession_nbr(firstEvent.optString(Constant.STR_NBR));
+            userModal.setThresholdAllergens(firstEvent.optString(Constant.STR_THRESHOLD_ALLERGENS));
+            userModal.setThresholdPollution(firstEvent.optString(Constant.STR_THRESHOLD_POLLUTION));
 
             return userModal;
         } catch (JSONException e) {

@@ -41,6 +41,8 @@ public class Constant {
     public static String STR_HASH = "hash";
     public static String STR_NOTIFICATION = "push_notifications";
     public static String STR_NBR = "session_nbr";
+    public static String STR_THRESHOLD_ALLERGENS = "notification_threshold_allergens";
+    public static String STR_THRESHOLD_POLLUTION = "notification_threshold_pollution";
 
     //Signup Page
     public static String STR_FIRSTNAME = "firstname";

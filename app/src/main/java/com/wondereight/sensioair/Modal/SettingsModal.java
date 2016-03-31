@@ -3,6 +3,8 @@ package com.wondereight.sensioair.Modal;
 /**
  * Created by VENUSPC on 3/17/2016.
  */
+
+// now not used
 public class SettingsModal {
     private String allergens_value;
     private String pollution_value;
