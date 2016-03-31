@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/bg_tellus"
-    tools:context="com.wondereight.airsensio.Activity.HealthActivity">
+    tools:context="com.wondereight.sensioair.Activity.HealthActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
                     android:layout_marginTop="@dimen/_20sdp"
                     android:orientation="vertical">
 
-                    <com.wondereight.airsensio.CustomView.CustomFontView.CustomFontTextView
+                    <com.wondereight.sensioair.CustomView.CustomFontView.CustomFontTextView
                         android:text="@string/title_health"
                         style = "@style/TVTitleStyle"
                         app:textStyle="@integer/FS_light"

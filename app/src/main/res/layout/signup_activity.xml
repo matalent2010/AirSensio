@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_signup"
-    tools:context="com.wondereight.airsensio.Activity.SignupActivity">
+    tools:context="com.wondereight.sensioair.Activity.SignupActivity">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,7 +25,7 @@
                 android:paddingRight="@dimen/_18sdp"
                 android:orientation="vertical">
 
-                <com.wondereight.airsensio.CustomView.CustomFontView.CustomFontTextView
+                <com.wondereight.sensioair.CustomView.CustomFontView.CustomFontTextView
                     android:text="@string/title_create_account"
                     style = "@style/TVTitleStyle"
                     app:textStyle="@integer/FS_light"

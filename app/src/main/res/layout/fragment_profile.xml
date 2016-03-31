@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.wondereight.airsensio.Fragment.ProfileFragment">
+    tools:context="com.wondereight.sensioair.Fragment.ProfileFragment">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -36,7 +36,7 @@
                         android:paddingRight="@dimen/_18sdp"
                         android:orientation="vertical">
 
-                        <com.wondereight.airsensio.CustomView.CustomFontView.CustomFontTextView
+                        <com.wondereight.sensioair.CustomView.CustomFontView.CustomFontTextView
                             android:text="@string/title_profile"
                             style = "@style/TVTitleStyle"
                             app:textStyle="@integer/FS_light"

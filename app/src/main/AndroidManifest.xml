@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wondereight.airsensio" >
+    package="com.wondereight.sensioair" >
 
     <!-- To access Google+ APIs: -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -10,7 +10,12 @@
 
     <!-- [START gcm_permission] -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="com.wondereight.sensioair.permission.C2D_MESSAGE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <permission
+        android:name="com.wondereight.sensioair.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
     <!-- [END gcm_permission] -->
 
     <!--
@@ -56,14 +61,14 @@
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="com.wondereight.airsensio" />
+                <category android:name="com.wondereight.sensioair" />
             </intent-filter>
         </receiver>
         <!-- [END gcm_receiver] -->
 
         <!-- [START gcm_listener] -->
         <service
-            android:name=".gcm.MyGcmListenerService"
+            android:name=".gcm.SAGcmListenerService"
             android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -72,7 +77,7 @@
         <!-- [END gcm_listener] -->
         <!-- [START instanceId_listener] -->
         <service
-            android:name=".gcm.MyInstanceIDListenerService"
+            android:name=".gcm.SAGcmIIDListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID"/>
