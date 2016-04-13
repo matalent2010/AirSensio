@@ -2,6 +2,8 @@
     <string name="app_name">Sensio Air</string>
     <string name="action_settings">Settings</string>
 
+    <string name="facebook_app_id" translatable="false">993708130718989</string>  <!-- 1123364724382074 : test -->  <!-- 1122387414479805 : living --> <!-- 993708130718989 : client -->
+
     <!-- Common Button String-->
     <string name="Tag_Yes">Yes</string>
     <string name="Tag_No">No</string>
@@ -101,7 +103,7 @@
 
     <!-- Strings related to Settings -->
     <string name="title_settings">SETTINGS</string>
-    <string name="description_settings">Set the minimum threshold\nfor your notifications:</string>
+    <string name="description_settings">Set the sensitivity level\nfor your notifications:</string>
     <string name="btn_senddata">Send your data via Email</string>
     <string name="btn_savesettings">SAVE SETTINGS</string>
     <!--<string name=""></string>-->
@@ -138,6 +140,7 @@
     <string name="forgot_success">A new password has been sent to your email.</string>
     <string name="select_symptom">You have to select at least 1 symptom.</string>
     <string name="feedback_success">Thank You for Your Feedback.</string>
+    <string name="msg_facebook_error">Facebook login Error</string>
 
     <!--<string name="try">Please</string>-->
 
@@ -180,4 +183,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_close">CloseActivity</string>
 
+    <!-- Home Activity -->
+    <string name="titleMessage">Sensio Air</string>
 </resources>

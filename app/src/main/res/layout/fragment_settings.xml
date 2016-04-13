@@ -30,11 +30,9 @@
                     android:paddingRight="@dimen/_18sdp"
                     android:orientation="vertical">
 
-                    <com.wondereight.sensioair.CustomView.CustomFontView.CustomFontTextView
+                    <TextView
                         android:text="@string/title_settings"
-                        style = "@style/TVTitleStyle"
-                        app:textStyle="@integer/FS_light"
-                        app:font="@string/font_name_opensans"/>
+                        style = "@style/TVTitleStyle"/>
 
                 </LinearLayout>
                 <LinearLayout
@@ -47,11 +45,9 @@
                     android:paddingRight="@dimen/_30sdp"
                     android:orientation="vertical">
 
-                    <com.wondereight.sensioair.CustomView.CustomFontView.CustomFontTextView
+                    <TextView
                         android:text="@string/description_settings"
-                        style = "@style/TVContentStyle"
-                        app:textStyle="@integer/FS_light"
-                        app:font="@string/font_name_opensans"/>
+                        style = "@style/TVContentStyle"/>
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

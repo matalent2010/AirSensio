@@ -6,3 +6,4 @@
 /build
 /captures
 archive*.zip
+/library/*/build

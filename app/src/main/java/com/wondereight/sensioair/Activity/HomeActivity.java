@@ -2,19 +2,24 @@ package com.wondereight.sensioair.Activity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,6 +39,7 @@ import com.wondereight.sensioair.Fragment.SettingsFragment;
 import com.wondereight.sensioair.Fragment.StatisticsFragment;
 import com.wondereight.sensioair.Helper._Debug;
 import com.wondereight.sensioair.Modal.DeviceDataModal;
+import com.wondereight.sensioair.Modal.UserModal;
 import com.wondereight.sensioair.R;
 import com.wondereight.sensioair.UtilClass.AirSensioRestClient;
 import com.wondereight.sensioair.UtilClass.Constant;
@@ -85,6 +91,10 @@ public class HomeActivity extends FragmentActivity {
         setContentView(R.layout.home_activity);
         ButterKnife.bind(HomeActivity.this);
 
+        if( !SaveSharedPreferences.isLogedinUser(this) ) {
+            gotoLoginActivity();
+            return;
+        }
         utilityClass = new UtilityClass(HomeActivity.this);
         //restCallDeviceDataApi();
         mTabPager.setPagingEnabled(true);
@@ -125,6 +135,8 @@ public class HomeActivity extends FragmentActivity {
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService(intent);
         }
+
+        displayNotification(getIntent());
     }
 
 
@@ -148,6 +160,12 @@ public class HomeActivity extends FragmentActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent){
+        super.onNewIntent(intent);
+        displayNotification(intent);
     }
 
     @Override
@@ -277,6 +295,28 @@ public class HomeActivity extends FragmentActivity {
 //        super.onStart();
 //        setPreorderNow(false);
 //    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (Global.runningActivities == 0) {
+            // app enters foreground
+        }
+        Global.runningActivities++;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Global.runningActivities--;
+        if (Global.runningActivities == 0) {
+            // app goes to background
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     public void setPreorderNow(boolean flag){
         preorderNow = flag;
@@ -291,7 +331,7 @@ public class HomeActivity extends FragmentActivity {
         String str_userid = SaveSharedPreferences.getLoginUserData(HomeActivity.this).getId();
         String str_deviceid = utilityClass.GetDeviceID();
         String str_email = SaveSharedPreferences.getLoginUserData(HomeActivity.this).getEmail();
-        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
         String str_cityid =  Global.GetInstance().GetCityID();
 
         params.put(Constant.STR_USERID, str_userid);
@@ -385,4 +425,42 @@ public class HomeActivity extends FragmentActivity {
 
         });
     }
+
+    public void gotoLoginActivity(){
+        Intent intent = new Intent(this, LoginAcitivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    public Boolean displayNotification(Intent intent){
+        Bundle extra = intent.getExtras();
+        if( extra == null )
+            return false;
+        String msg = extra.getString(Constant.NOTI_MESSAGE);
+        intent.removeExtra(Constant.NOTI_MESSAGE);
+        setIntent(intent);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle(getString(R.string.titleMessage))
+                .setMessage(msg)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        int pid = android.os.Process.myPid();
+        android.os.Process.killProcess(pid);
+        System.exit(0);
+    }
+
 }

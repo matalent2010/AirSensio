@@ -6,19 +6,48 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookAuthorizationException;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
 import cz.msebera.android.httpclient.Header;
 
+import com.linkedin.platform.APIHelper;
+import com.linkedin.platform.LISessionManager;
+import com.linkedin.platform.errors.LIApiError;
+import com.linkedin.platform.errors.LIAuthError;
+import com.linkedin.platform.listeners.ApiListener;
+import com.linkedin.platform.listeners.ApiResponse;
+import com.linkedin.platform.listeners.AuthListener;
+import com.linkedin.platform.utils.Scope;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterAuthToken;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterAuthClient;
+import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 import com.wondereight.sensioair.Helper._Debug;
 import com.wondereight.sensioair.Modal.UserModal;
 import com.wondereight.sensioair.R;
@@ -35,6 +64,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by Miguel on 02/2/2016.
@@ -43,13 +73,36 @@ import java.util.ArrayList;
 public class LoginAcitivity extends AppCompatActivity {
     private static final String LOG_TAG = "LoginAcitivity";
     private static _Debug _debug = new _Debug(true);
-
     UtilityClass utilityClass;
+
+    private static final String host = "api.linkedin.com";
+    private static final String topCardUrl = "https://" + host + "/v1/people/~:" + "(id,email-address)";
+                                            //reference :  https://developer.linkedin.com/docs/fields/basic-profile
+    String fbEmail="", twEmail="", liEmail="";
+    String fbID="", twID="", liID="";
+    String fbToken="", twToken="", liToken="", twSecret="";
+
+    //facebook
+    CallbackManager callbackManager = null;
+    AccessToken mFacebookToken = null;
+
+    //linkedin
+    LISessionManager liSessionManager = null;
+
+    //twitter
+    private TwitterSession session;
+    TwitterAuthToken authToken;
+    TwitterAuthClient authClient;
 
     @Bind(R.id.etEmail)
     EditText etEmail;
     @Bind(R.id.etPassword)
     EditText etPassword;
+
+//    @Bind(R.id.fb_login_button)
+//    LoginButton fb_login_button;
+    @Bind(R.id.btnTwitter_login_button)
+    TwitterLoginButton btnTwitter_login_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +112,13 @@ public class LoginAcitivity extends AppCompatActivity {
 
         utilityClass = new UtilityClass(this);
 
-        if(isSavedUserData())
+        facebookLoginInit();
+        //linkedinLogininit();
+        twitterLoginInit();
+
+        if( SaveSharedPreferences.isLogedinUser(this) )
             runAutoLogin();
+
     }
 
     @Override
@@ -91,7 +149,7 @@ public class LoginAcitivity extends AppCompatActivity {
             if (!utilityClass.isInternetConnection()) {
                 utilityClass.toast(getResources().getString(R.string.check_internet));
             } else {
-                restCallLoginApi();
+                restCallLocalLoginApi();
             }
         }
     }
@@ -125,21 +183,102 @@ public class LoginAcitivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void restCallLoginApi() {
+    @OnClick(R.id.btn_facebook)
+    void onClickBtnFacebook(){
+        if (utilityClass.isInternetConnection()) {
+            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email"));
+        } else {
+            utilityClass.toast(getString(R.string.check_internet));
+        }
+    }
+
+    @OnClick(R.id.btn_linkedin)
+    void onClickLinkedin(){
+        login_Linkedin();
+    }
+
+    @OnClick(R.id.btn_twitter)
+    void onClickTwitter(){
+        if (utilityClass.isInternetConnection()) {
+            utilityClass.processDialogStart(false);
+            btnTwitter_login_button.performClick();
+        } else {
+            utilityClass.toast(getString(R.string.check_internet));
+        }
+    }
+
+    private void restCallLocalLoginApi() {
 
         RequestParams params = new RequestParams();
         String str_email = etEmail.getText().toString();
-        String str_md5_pass = utilityClass.MD5(Constant.LOGIN_SECTRET + utilityClass.MD5(etPassword.getText().toString()));
+        String str_md5_pass = UtilityClass.MD5(Constant.LOGIN_SECTRET + UtilityClass.MD5(etPassword.getText().toString()));
         String str_deviceid = utilityClass.GetDeviceID();
-        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
 
         params.put(Constant.STR_EMAIL, str_email);
         params.put(Constant.STR_PASSWORD, str_md5_pass);
         params.put(Constant.STR_DEVICEID, str_deviceid);
         params.put(Constant.STR_HASH, str_hash);
 
+        restCallLoginApi( Constant.LM_LOCAL, params );
+    }
+
+    private void restCallFacebookLoginApi( String email, String social_id, String token ) {
+
+        RequestParams params = new RequestParams();
+        String str_email = email;
+        String str_deviceid = utilityClass.GetDeviceID();
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+
+        params.put(Constant.STR_EMAIL, str_email);
+        params.put(Constant.STR_PASSWORD, "");
+        params.put(Constant.STR_DEVICEID, str_deviceid);
+        params.put(Constant.STR_HASH, str_hash);
+        params.put(Constant.STR_SOCIAL_ID, social_id);
+        params.put(Constant.STR_SOCIAL_TOKEN, token);
+
+        restCallLoginApi(Constant.LM_FACEBOOK, params);
+    }
+
+    private void restCallLinkedinLoginApi( String email, String social_id, String token ) {
+
+        RequestParams params = new RequestParams();
+        String str_email = email;
+        String str_deviceid = utilityClass.GetDeviceID();
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+
+        params.put(Constant.STR_EMAIL, str_email);
+        params.put(Constant.STR_PASSWORD, "");
+        params.put(Constant.STR_DEVICEID, str_deviceid);
+        params.put(Constant.STR_HASH, str_hash);
+        params.put(Constant.STR_SOCIAL_ID, social_id);
+        params.put(Constant.STR_SOCIAL_TOKEN, token);
+
+        restCallLoginApi(Constant.LM_LINKEDIN, params);
+    }
+
+    private void restCallTwitterLoginApi(String email, String social_id, String token, String secret) {
+
+        RequestParams params = new RequestParams();
+        String str_deviceid = utilityClass.GetDeviceID();
+        String str_hash = UtilityClass.MD5(str_deviceid + email + Constant.LOGIN_SECTRET);
+
+        params.put(Constant.STR_EMAIL, email);
+        params.put(Constant.STR_PASSWORD, "");
+        params.put(Constant.STR_DEVICEID, str_deviceid);
+        params.put(Constant.STR_HASH, str_hash);
+        params.put(Constant.STR_SOCIAL_ID, social_id);
+        params.put(Constant.STR_SOCIAL_TOKEN, token);
+        params.put(Constant.STR_SECRET_TOKEN, secret);
+
+        restCallLoginApi(Constant.LM_TWITTER, params);
+    }
+
+    private void restCallLoginApi(String loginMode, RequestParams params) {
+
+        params.put(Constant.STR_LOGIN_MODE, loginMode);
         // AirSensioRestClient.post(AirSensioRestClient.LOGIN, params, new AsyncHttpResponseHandler() {
-        AirSensioRestClient.post(AirSensioRestClient.LOGIN, params, new JsonHttpResponseHandler() {   //new JsonHttpResponseHandler(false) : onSuccess(int statusCode, Header[] headers, String responseString) must be overrided.
+        JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {   //new JsonHttpResponseHandler(false) : onSuccess(int statusCode, Header[] headers, String responseString) must be overrided.
             @Override
             public void onStart() {
                 // called before request is started
@@ -151,7 +290,7 @@ public class LoginAcitivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 // If the response is JSONObject instead of expected JSONArray
                 utilityClass.processDialogStop();
-                _debug.d(LOG_TAG, "Recieved JSONObject result");
+                _debug.e(LOG_TAG, "Recieved JSONObject result");
             }
 
             @Override
@@ -162,7 +301,13 @@ public class LoginAcitivity extends AppCompatActivity {
                 UserModal userModal = ParsingResponse.parsingUserModal(response);
                 if (userModal != null);
                 {
-                    userModal.setPassword(etPassword.getText().toString());   //add password in UserModal
+                    String loginMode = (String)getTag();
+                    if( Constant.LM_LOCAL.equalsIgnoreCase(loginMode) ) {
+                        userModal.setPassword(etPassword.getText().toString());   //add password in UserModal
+                    } else {
+                        userModal.setPassword("");   //add "" password in UserModal
+                    }
+
                     SaveSharedPreferences.setLoginUserData(LoginAcitivity.this, userModal);
                     Intent intent = new Intent(LoginAcitivity.this, HomeActivity.class);
                     startActivity(intent);
@@ -185,8 +330,24 @@ public class LoginAcitivity extends AppCompatActivity {
 
                     _debug.d(LOG_TAG, "Account Does Not Exist");
                     Intent SignupActivity = new Intent(LoginAcitivity.this, SignupActivity.class);
-                    SignupActivity.putExtra("email", etEmail.getText().toString());
-                    SignupActivity.putExtra("password", etPassword.getText().toString());
+                    String loginMode = (String)getTag();
+
+                    if( Constant.LM_LOCAL.equalsIgnoreCase(loginMode) ) {
+                        SignupActivity.putExtra("email", etEmail.getText().toString());
+                        SignupActivity.putExtra("password", etPassword.getText().toString());
+
+                    } else if ( Constant.LM_FACEBOOK.equalsIgnoreCase(loginMode) ){
+                        SignupActivity.putExtra("email", fbEmail);
+                        SignupActivity.putExtra("password", Constant.DEFAULT_PASSWORD);
+
+                    } else if ( Constant.LM_TWITTER.equalsIgnoreCase(loginMode) ){
+                        SignupActivity.putExtra("email", twEmail);
+                        SignupActivity.putExtra("password", Constant.DEFAULT_PASSWORD);
+
+                    } else if ( Constant.LM_LINKEDIN.equalsIgnoreCase(loginMode) ){
+                        SignupActivity.putExtra("email", liEmail);
+                        SignupActivity.putExtra("password", Constant.DEFAULT_PASSWORD);
+                    }
                     startActivity(SignupActivity);
                 } else if(responseString.equals("3")){
 
@@ -240,7 +401,10 @@ public class LoginAcitivity extends AppCompatActivity {
                 utilityClass.processDialogStop();
             }
 
-        });
+        };
+
+        handler.setTag(loginMode);
+        AirSensioRestClient.post(AirSensioRestClient.LOGIN, params, handler);
     }
 //    @OnClick(R.id.btnSignup)
 //    void onClickBtnSignup(){
@@ -261,7 +425,7 @@ public class LoginAcitivity extends AppCompatActivity {
         RequestParams params = new RequestParams();
         String str_email = etEmail.getText().toString();
         String str_deviceid = utilityClass.GetDeviceID();
-        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
 
         params.put(Constant.STR_EMAIL, str_email);
         params.put(Constant.STR_DEVICEID, str_deviceid);
@@ -301,7 +465,7 @@ public class LoginAcitivity extends AppCompatActivity {
                     _debug.e(LOG_TAG, "Email Does not exist");
                 } else {
                     utilityClass.showAlertMessage(getResources().getString(R.string.title_alert), responseString);
-                    _debug.e(LOG_TAG, "Send forgot password message Exception Error:"+responseString);
+                    _debug.e(LOG_TAG, "Send forgot password message Exception Error:" + responseString);
                 }
             }
 
@@ -309,7 +473,8 @@ public class LoginAcitivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 utilityClass.processDialogStop();
                 utilityClass.toast(getResources().getString(R.string.check_internet));
-                if (responseString==null) _debug.d(LOG_TAG, "errorString: null"); else _debug.d(LOG_TAG, "errorString:" + responseString.toString());
+                if (responseString == null) _debug.d(LOG_TAG, "errorString: null");
+                else _debug.d(LOG_TAG, "errorString:" + responseString);
             }
 
             @Override
@@ -329,16 +494,227 @@ public class LoginAcitivity extends AppCompatActivity {
 
     public void runAutoLogin()
     {
-        etEmail.setText(SaveSharedPreferences.getLoginUserData(this).getEmail());
-        etPassword.setText(SaveSharedPreferences.getLoginUserData(this).getPassword());
-        onClickBtnLogin();
+//        etEmail.setText(SaveSharedPreferences.getLoginUserData(this).getEmail());
+//        etPassword.setText(SaveSharedPreferences.getLoginUserData(this).getPassword());
+//        onClickBtnLogin();
+        Intent intent = new Intent(LoginAcitivity.this, HomeActivity.class);
+        startActivity(intent);
+        finish();
     }
 
-    public Boolean isSavedUserData()
-    {
-        if(!SaveSharedPreferences.getLoginUserData(this).getId().isEmpty())
-            return true;
+    public Boolean facebookLoginInit(){
+        // Initialize the SDK before executing any other operations,
+        // especially, if you're using Facebook UI elements.
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        // Other app specific specialization
+        callbackManager = CallbackManager.Factory.create();
+        // Callback registration
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
-        return false;
+            private ProfileTracker mProfileTracker;
+
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                // App code
+                mFacebookToken = loginResult.getAccessToken();
+                _debug.d(LOG_TAG, "FB Login Access Token: " + mFacebookToken.toString());
+
+                Profile profile = Profile.getCurrentProfile();
+                if (profile != null) {
+                    getFacebookProfileInfo(profile, mFacebookToken);
+                } else {
+                    mProfileTracker = new ProfileTracker() {
+                        @Override
+                        protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
+                            getFacebookProfileInfo(newProfile, mFacebookToken);
+                            mProfileTracker.stopTracking();
+                        }
+                    };
+                    mProfileTracker.startTracking();
+                }
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+                _debug.d(LOG_TAG, "Facebook Login Canceled ");
+                utilityClass.toast("FaceBook Login Canceled");
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+                if (exception instanceof FacebookAuthorizationException) {
+                    if (AccessToken.getCurrentAccessToken() != null) {
+                        LoginManager.getInstance().logOut();
+                    }
+                    utilityClass.toast("User logged in as different Facebook user");
+                    return;
+                }
+                _debug.d(LOG_TAG, "Facebook Login Error:" + exception.toString());
+                utilityClass.toast("Facebook Login Failed");
+            }
+        });
+        return true;
+    }
+
+    private void getFacebookProfileInfo(Profile profile, AccessToken token){
+        _debug.d(LOG_TAG, "FB Login Profile: ID:" + profile.getId() + "Firstname:" + profile.getFirstName() + ",    LastName: " + profile.getLastName());
+        fbID = profile.getId();
+        fbToken = token.getToken();
+        GraphRequest request = GraphRequest.newMeRequest(
+                token,
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        if (response.getError() != null) {
+                            utilityClass.processDialogStop();
+                            utilityClass.toast(getString(R.string.msg_facebook_error));
+                            _debug.e(LOG_TAG, "Facebook GraphRequest Error:" + response.getError().getErrorMessage());
+                            return;
+                        }
+                        _debug.d(LOG_TAG, "Graph JsonObj: " + response.toString());
+                        _debug.d(LOG_TAG, "Graph Response: " + object.toString());
+
+                        try {
+                            fbEmail = object.getString("email");
+                            _debug.d(LOG_TAG, "FB Login Profile: ID:" + fbID + ", Token: " + fbToken);
+                            restCallFacebookLoginApi(fbEmail, fbID, fbToken);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            utilityClass.processDialogStop();
+                            fbEmail = "";
+                            utilityClass.toast(getString(R.string.msg_facebook_error));
+                            _debug.e(LOG_TAG, "Didn't get Email");
+                        }
+
+                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,email");
+        request.setParameters(parameters);
+        utilityClass.processDialogStart(true);
+        request.executeAsync();
+    }
+
+    public Boolean twitterLoginInit(){
+        btnTwitter_login_button.setCallback(new com.twitter.sdk.android.core.Callback<TwitterSession>() {
+
+            @Override
+            public void success(Result<TwitterSession> result) {
+                // Do something with result, which provides a TwitterSession for making API calls
+
+                session = result.data;
+                authToken = session.getAuthToken();
+                _debug.d(LOG_TAG, "Twitter Success: " + result.toString());
+
+                twToken = authToken.token;
+                twSecret = authToken.secret;
+                String userName = session.getUserName();
+
+                twID = String.valueOf(session.getUserId());
+
+                _debug.d(LOG_TAG, "Twitter: " + "" + "Token :: " + twToken + " || Secret :: " + twSecret + " || " + userName + " || " + twID);
+
+                authClient = new TwitterAuthClient();
+                authClient.requestEmail(session, new com.twitter.sdk.android.core.Callback<String>() {
+                    @Override
+                    public void success(Result<String> result) {
+                        // Do something with the result, which provides the email address
+                        _debug.d(LOG_TAG, "Email Data Twitter : " + result.data);
+                        twEmail = (String) result.data;
+                        restCallTwitterLoginApi(twEmail, twID, twToken, twSecret);
+                    }
+
+                    @Override
+                    public void failure(TwitterException exception) {
+                        utilityClass.processDialogStop();
+                        utilityClass.toast("Don't get your Email with Twitter");
+                        _debug.d(LOG_TAG, "Fail Email Twitter : " + exception.toString());
+                        Twitter.getSessionManager().clearActiveSession();
+                        Twitter.logOut();
+                    }
+                });
+
+            }
+
+            @Override
+            public void failure(TwitterException exception) {
+                // Do something on failure
+                utilityClass.processDialogStop();
+                utilityClass.toast("Login failure with Twitter");
+                _debug.d(LOG_TAG, "Twitter failure : " + exception.toString());
+                Twitter.getSessionManager().clearActiveSession();
+                Twitter.logOut();
+            }
+        });
+        return true;
+    }
+
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        _debug.d(LOG_TAG, "Request Code : " + requestCode + ", Activity Result : " + resultCode + ", Intent Extra : " + data.getExtras().toString());
+        if( callbackManager != null )
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+
+        btnTwitter_login_button.onActivityResult(requestCode, resultCode, data);
+
+        if( liSessionManager != null )
+            liSessionManager.onActivityResult(this, requestCode, resultCode, data);
+    }
+
+    public void login_Linkedin(){
+
+        liSessionManager = LISessionManager.getInstance(getApplicationContext());
+        liSessionManager.init(this, buildScope(),
+                new AuthListener() {
+                    @Override
+                    public void onAuthSuccess() {
+
+                        liToken = liSessionManager.getSession().getAccessToken().getValue();
+                        _debug.d(LOG_TAG, "LinkedinLogin Success Token : " + liToken );
+
+                        utilityClass.processDialogStart(false);
+                        APIHelper apiHelper = APIHelper.getInstance(getApplicationContext());
+                        apiHelper.getRequest(LoginAcitivity.this, topCardUrl, new ApiListener() {
+                            @Override
+                            public void onApiSuccess(ApiResponse result) {
+                                try {
+                                    JSONObject response = result.getResponseDataAsJson();
+                                    liID = response.get("id").toString();
+                                    liEmail = response.get("emailAddress").toString();
+                                    _debug.d(LOG_TAG, "Linkedin ID : " + liID + ", Email : " + liEmail);
+
+                                    restCallLinkedinLoginApi(liEmail, liID, liToken);
+
+                                } catch (Exception e) {
+                                    _debug.e(LOG_TAG, e.getMessage());
+                                    utilityClass.processDialogStop();
+                                    utilityClass.toast("Loinkedin Email not found");
+                                }
+                            }
+
+                            @Override
+                            public void onApiError(LIApiError error) {
+                                _debug.e(LOG_TAG, error.toString());
+                                utilityClass.processDialogStop();
+                                utilityClass.toast("Your information not found");
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void onAuthError(LIAuthError error) {
+                        _debug.d(LOG_TAG, "LinkedinLogin failed " + error.toString());
+                        utilityClass.toast("Login Failed with Linkedin");
+                    }
+                }, true);
+    }
+
+    private static Scope buildScope() {
+        return Scope.build(Scope.R_BASICPROFILE, Scope.R_EMAILADDRESS);
     }
 }

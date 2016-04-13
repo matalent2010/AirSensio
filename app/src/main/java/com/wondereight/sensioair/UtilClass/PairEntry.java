@@ -39,7 +39,7 @@ public class PairEntry{
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int h = cal.get(Calendar.HOUR); int m = cal.get(Calendar.MINUTE); int s = cal.get(Calendar.SECOND);
-        result = (cal.get(Calendar.HOUR)*60*60 + cal.get(Calendar.MINUTE)*60 + cal.get(Calendar.SECOND))/(24*60*60.0f)*100;
+        result = (cal.get(Calendar.HOUR_OF_DAY)*60*60 + cal.get(Calendar.MINUTE)*60 + cal.get(Calendar.SECOND))/(24*60*60.0f)*100;
         return result;
     }
 }

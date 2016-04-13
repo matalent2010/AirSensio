@@ -18,7 +18,6 @@ import com.wondereight.sensioair.R;
 import com.wondereight.sensioair.UtilClass.Global;
 import com.wondereight.sensioair.UtilClass.UtilityClass;
 import com.wondereight.sensioair.gcm.SAPreferences;
-import com.wondereight.sensioair.gcm.RegistrationIntentService;
 
 public class SplashScreen extends AppCompatActivity {
     /** Duration of wait **/
@@ -55,34 +54,6 @@ public class SplashScreen extends AppCompatActivity {
             mNothingPreWork = false;
         }
 
-//        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                //mRegistrationProgressBar.setVisibility(ProgressBar.GONE);
-//                SharedPreferences sharedPreferences =
-//                        PreferenceManager.getDefaultSharedPreferences(context);
-//                boolean sentToken = sharedPreferences
-//                        .getBoolean(SAPreferences.SENT_TOKEN_TO_SERVER, false);
-//                if (sentToken) {
-//                    Log.i(LOG_TAG, getString(R.string.gcm_send_message)); //mInformationTextView.setText(getString(R.string.gcm_send_message));
-//                } else {
-//                    Log.i(LOG_TAG, getString(R.string.token_error_message)); //mInformationTextView.setText(getString(R.string.token_error_message));
-//                }
-//            }
-//        };
-        // mInformationTextView = (TextView) findViewById(R.id.informationTextView);
-
-//        if( true ) {
-//            // Registering BroadcastReceiver
-//            registerReceiver();
-//
-//            if (checkPlayServices()) {
-//                // Start IntentService to register this application with GCM.
-//                Intent intent = new Intent(this, RegistrationIntentService.class);
-//                startService(intent);
-//            }
-//            mNothingPreWork = false;
-//        }
         if ( mNothingPreWork ) {
             new Handler().postDelayed(new Runnable() {
                 @Override

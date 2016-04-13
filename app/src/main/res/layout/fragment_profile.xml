@@ -36,11 +36,9 @@
                         android:paddingRight="@dimen/_18sdp"
                         android:orientation="vertical">
 
-                        <com.wondereight.sensioair.CustomView.CustomFontView.CustomFontTextView
+                        <TextView
                             android:text="@string/title_profile"
-                            style = "@style/TVTitleStyle"
-                            app:textStyle="@integer/FS_light"
-                            app:font="@string/font_name_opensans"/>
+                            style = "@style/TVTitleStyle"/>
                     </LinearLayout>
                 </LinearLayout>
                 <LinearLayout

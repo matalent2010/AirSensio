@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-
+        <item name="android:typeface">monospace</item>
         <item name="droppyPopupStyle">@style/customCityListPopup</item>
     </style>
 
@@ -42,7 +42,6 @@
         <item name="android:inputType">textPersonName</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
         <item name="android:paddingLeft">@dimen/_8sdp</item>
-        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColorHint">@color/white</item>
         <item name="android:textColor">@color/white</item>
     </style>
@@ -57,7 +56,6 @@
         <item name="android:inputType">textPersonName</item>
         <item name="android:textSize">22sp</item>
         <item name="android:paddingLeft">@dimen/_8sdp</item>
-        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColorHint">@color/white</item>
         <item name="android:textColor">@color/white</item>
     </style>
@@ -72,7 +70,6 @@
         <item name="android:inputType">textPersonName</item>
         <item name="android:textSize">22sp</item>
         <item name="android:paddingLeft">@dimen/_8sdp</item>
-        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColorHint">@color/white</item>
         <item name="android:textColor">@color/white</item>
     </style>
@@ -83,7 +80,6 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_marginLeft">@dimen/_55sdp</item>
         <item name="android:layout_marginRight">@dimen/_55sdp</item>
-        <item name="android:typeface">serif</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@drawable/rounded_corner_green</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
@@ -96,7 +92,6 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_marginLeft">@dimen/_55sdp</item>
         <item name="android:layout_marginRight">@dimen/_55sdp</item>
-        <item name="android:typeface">serif</item>
         <item name="android:textColor">@color/btnRegisterTextColor</item>
         <item name="android:background">@drawable/rounded_corner_white</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
@@ -116,8 +111,6 @@
         <item name="android:layout_marginLeft">@dimen/_10sdp</item>
         <item name="android:layout_marginRight">@dimen/_10sdp</item>
         <item name="android:layout_gravity">center</item>
-        <item name="android:typeface">serif</item>
-        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColor">@color/btnRegisterTextColor</item>
         <item name="android:background">@drawable/norounded_white</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
@@ -131,13 +124,11 @@
 
     <style name="btn_edit_info">
         <item name="android:theme">@style/BS_Green_WhiteBG</item>
-        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_height">70dp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:gravity">center</item>
         <item name="android:minHeight">0dp</item>
         <item name="android:minWidth">0dp</item>
-        <item name="android:typeface">serif</item>
-        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColor">@color/color_btn_edit</item>
         <item name="android:background">@drawable/norounded_white</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>

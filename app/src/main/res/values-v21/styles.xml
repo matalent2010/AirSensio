@@ -14,8 +14,6 @@
         <item name="android:layout_marginLeft">@dimen/_10sdp</item>
         <item name="android:layout_marginRight">@dimen/_10sdp</item>
         <item name="android:layout_gravity">center</item>
-        <item name="android:typeface">serif</item>
-        <item name="android:fontFamily">sans-serif</item>
         <!--<item name="android:textColor">@color/btnRegisterTextColor</item>-->
         <!--<item name="android:background">@drawable/norounded_white</item>-->
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
@@ -35,8 +33,6 @@
         <item name="android:gravity">center</item>
         <item name="android:minHeight">0dp</item>
         <item name="android:minWidth">0dp</item>
-        <item name="android:typeface">serif</item>
-        <item name="android:fontFamily">sans-serif</item>
         <!--<item name="android:textColor">@color/color_btn_edit</item>-->
         <!--<item name="android:background">@drawable/norounded_white</item>-->
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>

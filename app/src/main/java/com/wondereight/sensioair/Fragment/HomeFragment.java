@@ -1,14 +1,18 @@
 package com.wondereight.sensioair.Fragment;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,6 +33,7 @@ import com.shehabic.droppy.animations.DroppyFadeInAnimation;
 import com.wondereight.sensioair.Activity.SymptomActivity;
 import com.wondereight.sensioair.Helper._Debug;
 import com.wondereight.sensioair.Modal.CityModal;
+import com.wondereight.sensioair.Modal.DataDetailsModal;
 import com.wondereight.sensioair.Modal.IndexModal;
 import com.wondereight.sensioair.Modal.UserModal;
 import com.wondereight.sensioair.R;
@@ -57,7 +62,7 @@ public class HomeFragment extends Fragment {
 
     UtilityClass utilityClass;
 
-    public static final int RESULT_SYMPTOM = 1;
+    public static final int RESULT_SYMPTOM = 101;
 
     @Bind(R.id.city_name)
     TextView tvCityname;
@@ -73,6 +78,15 @@ public class HomeFragment extends Fragment {
             TextView tvPollutionIndex;
     @Bind(R.id.pollution_intensity)
             TextView tvPollutionIntensity;
+    @Bind(R.id.logoutbreakCanvas)
+    View _mainContainer;
+    @Bind(R.id.sub_page)
+    View mSubpage;
+    @Bind(R.id.data_details_container)
+    ViewGroup vgContainer;
+
+    private ArrayList<DataDetailsModal> dataModals = new ArrayList<>();
+    private int nCallDataDetails;
 
     DroppyMenuPopup cityMenu;
     Boolean isShownCityMenu = false;
@@ -104,10 +118,25 @@ public class HomeFragment extends Fragment {
         SetIndex();
         //tvAllergyIndex.setText();
         getAdvice();
-        tvAdvice.setText(strAdvice);
+        tvAdvice.setText(Html.fromHtml(strAdvice));
+
         getCityList();
+        loadDataDetails();
+
         tvCityname.setText(Global.GetInstance().GetCityName());
         initCityMenu();
+
+        _mainContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    _mainContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+                int width = _mainContainer.getMeasuredWidth();
+                int height = _mainContainer.getMeasuredHeight();
+                mSubpage.setMinimumHeight(height);
+            }
+        });
         return view;
     }
 
@@ -276,7 +305,7 @@ public class HomeFragment extends Fragment {
         String str_userid = userModal.getId();
         String str_email = userModal.getEmail();
         String str_deviceid = utilityClass.GetDeviceID();
-        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
         String str_cityid = Global.GetInstance().GetCityID();
 
         params.put(Constant.STR_USERID, str_userid);
@@ -314,14 +343,14 @@ public class HomeFragment extends Fragment {
                         JSONArray response = new JSONArray(responseString);
                         JSONObject firstEvent = response.getJSONObject(0);
                         strAdvice = firstEvent.optString(Constant.STR_ADVICE);
-                        tvAdvice.setText(strAdvice);
-                        //tvAdvice.invalidate();
 
                         _debug.d(LOG_TAG, "AirSensioRestClient.GET_ADVICE.Success");
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        strAdvice = "";
                         _debug.e(LOG_TAG, "Getting advice text Exception Error:" + responseString);
                     }
+
+                    tvAdvice.setText(Html.fromHtml(strAdvice));
                 }
                 nCountCallingAdvice = 0;
             }
@@ -368,7 +397,7 @@ public class HomeFragment extends Fragment {
         String str_userid = userModal.getId();
         String str_email = userModal.getEmail();
         String str_deviceid = utilityClass.GetDeviceID();
-        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
         String str_cityid = Global.GetInstance().GetCityID();
 
         params.put(Constant.STR_USERID, str_userid);
@@ -412,7 +441,6 @@ public class HomeFragment extends Fragment {
                             tvPollutionIndex.setText(indexModals.get(1).getIndexValue());
                             tvPollutionIntensity.setText(indexModals.get(1).getLogIntensity());
                         }
-                        //tvAdvice.invalidate();
 
                         _debug.d(LOG_TAG, "AirSensioRestClient.GET_ALLERGY_INDEX.Success");
                     } catch (JSONException e) {
@@ -458,4 +486,130 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    private void loadDataDetails(){
+        if( dataModals.size() == 0 ){
+            restCallGetDataDetailsApi();
+        } else {
+            drawDataDetails(dataModals);
+        }
+    }
+
+    private void restCallGetDataDetailsApi(){
+
+        RequestParams params = new RequestParams();
+        UserModal userModal = SaveSharedPreferences.getLoginUserData(getActivity());
+        String str_userid = userModal.getId();
+        String str_email = userModal.getEmail();
+        String str_deviceid = utilityClass.GetDeviceID();
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+        String str_cityid = Global.GetInstance().GetCityID();
+
+        params.put(Constant.STR_USERID, str_userid);
+        params.put(Constant.STR_EMAIL, str_email);
+        params.put(Constant.STR_DEVICEID, str_deviceid);
+        params.put(Constant.STR_HASH, str_hash);
+        params.put(Constant.STR_CITYID, str_cityid);
+
+        AirSensioRestClient.post(AirSensioRestClient.GET_DATA_DETAILS, params, new TextHttpResponseHandler() {   //new JsonHttpResponseHandler(false) : onSuccess(int statusCode, Header[] headers, String responseString) must be overrided.
+            @Override
+            public void onStart() {
+                // called before request is started
+                //utilityClass.processDialogStart(false);
+                _debug.d(LOG_TAG, "AirSensioRestClient.GET_DATA_DETAILS.onStart");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                //utilityClass.processDialogStop();
+                if (responseString == null) {
+                    _debug.e(LOG_TAG, "None response string");
+                } else if (responseString.equals("1")) {
+                    _debug.e(LOG_TAG, "Incorrect Hash");
+                } else if (responseString.equals("2")) {
+                    //utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.device_not));
+                    _debug.d(LOG_TAG, "Device ID not provided");
+                } else if (responseString.equals("3")) {
+                    //utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.userid_not));
+                    _debug.d(LOG_TAG, "User ID not provided");
+                } else if (responseString.equals("9")) {
+                    //utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.no_exist));
+                    _debug.d(LOG_TAG, "Nothing Found");
+                } else {
+                    try {
+                        dataModals = ParsingResponse.parsingDataDetails(new JSONArray(responseString));
+                        drawDataDetails(dataModals);
+
+                        _debug.d(LOG_TAG, "AirSensioRestClient.GET_DATA_DETAILS.Success");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        _debug.e(LOG_TAG, "GET_DATA_DETAILS Exception Error:" + responseString);
+                    }
+                }
+                nCallDataDetails = 0;
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                //utilityClass.processDialogStop();
+                //utilityClass.toast(getResources().getString(R.string.check_internet));
+                _debug.e(LOG_TAG, "errorString: " + responseString);
+                nCallDataDetails++;
+                if( nCallDataDetails < 3 ){
+                    restCallGetDataDetailsApi();
+                } else {
+                    nCallDataDetails = 0;
+                }
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+                // called when request is retried{
+                //utilityClass.processDialogStop();
+                //utilityClass.toast(getResources().getString(R.string.try_again));
+                _debug.d(LOG_TAG, "AirSensioRestClient.GET_DATA_DETAILS.onRetry");
+                nCallDataDetails++;
+                if( nCallDataDetails < 3 ){
+                    restCallGetDataDetailsApi();
+                } else {
+                    nCallDataDetails = 0;
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                _debug.d(LOG_TAG, "AirSensioRestClient.GET_DATA_DETAILS.onFinish");
+            }
+
+        });
+    }
+
+    public void drawDataDetails(ArrayList<DataDetailsModal> arr){
+        //View item = LayoutInflater.from(getContext()).inflate(R.layout.fragment_statistics_sub, null);
+        View itemRow, leftItem, rightItem;
+        for(int i=0; i<arr.size(); i+=2 ){
+            itemRow = LayoutInflater.from(getContext()).inflate(R.layout.fragment_statistics_sub, null);
+            leftItem = itemRow.findViewById(R.id.left_item);
+            ((TextView)leftItem.findViewById(R.id.subitem_title)).setText(arr.get(i).getParameter());
+            ((TextView)leftItem.findViewById(R.id.subitem_value)).setText(arr.get(i).getLogValue());
+            if(arr.get(i).getLogIntensity().equalsIgnoreCase("low"))
+                leftItem.findViewById(R.id.low_mark).setVisibility(View.VISIBLE);
+            else if (arr.get(i).getLogIntensity().equalsIgnoreCase("moderate"))
+                leftItem.findViewById(R.id.moderate_mark).setVisibility(View.VISIBLE);
+            else if (arr.get(i).getLogIntensity().equalsIgnoreCase("high"))
+                leftItem.findViewById(R.id.high_mark).setVisibility(View.VISIBLE);
+
+            if( i+1 < arr.size() ) {
+                rightItem = itemRow.findViewById(R.id.right_item);
+                ((TextView) rightItem.findViewById(R.id.subitem_title)).setText(arr.get(i + 1).getParameter());
+                ((TextView) rightItem.findViewById(R.id.subitem_value)).setText(arr.get(i + 1).getLogValue());
+                if (arr.get(i + 1).getLogIntensity().equalsIgnoreCase("low"))
+                    rightItem.findViewById(R.id.low_mark).setVisibility(View.VISIBLE);
+                else if (arr.get(i + 1).getLogIntensity().equalsIgnoreCase("moderate"))
+                    rightItem.findViewById(R.id.moderate_mark).setVisibility(View.VISIBLE);
+                else if (arr.get(i + 1).getLogIntensity().equalsIgnoreCase("high"))
+                    rightItem.findViewById(R.id.high_mark).setVisibility(View.VISIBLE);
+            }
+            vgContainer.addView(itemRow);
+        }
+    }
 }

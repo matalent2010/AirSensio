@@ -10,9 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.google.gson.Gson;
+import com.linkedin.platform.LISessionManager;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.twitter.sdk.android.core.models.User;
 import com.wondereight.sensioair.Activity.HealthActivity;
 import com.wondereight.sensioair.Activity.LoginAcitivity;
 import com.wondereight.sensioair.Helper._Debug;
@@ -79,17 +83,29 @@ public class ProfileFragment extends Fragment {
 
     @OnClick(R.id.btnLogout)
     public void onClickLogout(){
-        SaveSharedPreferences.clearUserdata(getContext());
+        UserModal userModal = SaveSharedPreferences.getLoginUserData(getContext());
+        userModal.setLogouted(true);
+        SaveSharedPreferences.setLoginUserData(getContext(), userModal);
         Global.GetInstance().init();
+        restCallLogoutApi();
 
+        //GCM UnregisterReciever
         PreferenceManager.getDefaultSharedPreferences(getContext())
                 .edit().putBoolean(SAPreferences.REGISTER_TO_SERVER, false)
-                .commit();
+                .apply();
         GcmMain.GetInstance().unregisterReceiver(getContext());
 
-        Intent intent = new Intent(getActivity(), LoginAcitivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        try {
+            //Facebook Token logout
+            if (AccessToken.getCurrentAccessToken() != null) {
+                LoginManager.getInstance().logOut();
+            }
+        }catch (Exception e){ }
+
+        //Linkedin clear session
+        LISessionManager.getInstance(getActivity().getApplicationContext()).clearSession();
+
+        gotoLoginActivity();
     }
 
     @OnClick(R.id.btnFeedback)
@@ -107,6 +123,60 @@ public class ProfileFragment extends Fragment {
         restCallGetSavedInfoApi();
     }
 
+    private void restCallLogoutApi(){
+        RequestParams params = new RequestParams();
+        UserModal userModal = SaveSharedPreferences.getLoginUserData(getActivity());
+        String str_userid = userModal.getId();
+        String str_email = userModal.getEmail();
+        String str_deviceid = utilityClass.GetDeviceID();
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+
+        params.put(Constant.STR_USERID, str_userid);
+        params.put(Constant.STR_EMAIL, str_email);
+        params.put(Constant.STR_DEVICEID, str_deviceid);
+        params.put(Constant.STR_HASH, str_hash);
+
+        /*AirSensioRestClient.post(AirSensioRestClient.DO_LOGOUT, params, new TextHttpResponseHandler() {
+            @Override
+            public void onStart() {
+                // called before request is started
+                utilityClass.processDialogStart(false);
+                _debug.d(LOG_TAG, "AirSensioRestClient.DO_LOGOUT.onStart");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                utilityClass.processDialogStop();
+                if (responseString == null) {
+                    _debug.e(LOG_TAG, "None response string");
+                } else if (responseString.equals("0")) {
+                    SaveSharedPreferences.clearUserdata(getContext());
+                    _debug.e(LOG_TAG, "Logout Success");
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                utilityClass.processDialogStop();
+                //utilityClass.toast(getResources().getString(R.string.check_internet));
+                _debug.e(LOG_TAG, "errorString: " + responseString);
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+                // called when request is retried{
+                utilityClass.processDialogStop();
+                _debug.d(LOG_TAG, "AirSensioRestClient.DO_LOGOUT.onRetry");
+            }
+
+            @Override
+            public void onFinish() {
+                utilityClass.processDialogStop();
+                _debug.d(LOG_TAG, "AirSensioRestClient.DO_LOGOUT.onFinish");
+            }
+
+        });*/
+    }
     private void restCallGetSavedInfoApi() {
 
         RequestParams params = new RequestParams();
@@ -114,7 +184,7 @@ public class ProfileFragment extends Fragment {
         String str_userid = userModal.getId();
         String str_email = userModal.getEmail();
         String str_deviceid = utilityClass.GetDeviceID();
-        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
 
         params.put(Constant.STR_USERID, str_userid);
         params.put(Constant.STR_EMAIL, str_email);
@@ -209,7 +279,7 @@ public class ProfileFragment extends Fragment {
         String str_userid = userModal.getId();
         String str_email = userModal.getEmail();
         String str_deviceid = utilityClass.GetDeviceID();
-        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
 
         params.put(Constant.STR_USERID, str_userid);
         params.put(Constant.STR_EMAIL, str_email);
@@ -291,5 +361,11 @@ public class ProfileFragment extends Fragment {
             }
 
         });
+    }
+
+    public void gotoLoginActivity(){
+        Intent intent = new Intent(getActivity(), LoginAcitivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 }

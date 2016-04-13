@@ -1,3 +1,4 @@
-include ':app', ':DropdownMenu', ':ChartGraph'
+include ':app', ':DropdownMenu', ':ChartGraph', ':linkedin-sdk'
 project(':DropdownMenu').projectDir = new File('library/DropdownMenu')
 project(':ChartGraph').projectDir = new File('library/ChartGraph')
+project(':linkedin-sdk').projectDir = new File('library/linkedin-sdk')

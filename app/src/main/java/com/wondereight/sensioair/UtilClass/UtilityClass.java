@@ -89,9 +89,10 @@ public class UtilityClass {
             pdialog = new ProgressDialog(_context);
             pdialog.setMessage("Please Wait");
             pdialog.setIndeterminate(false);
-            pdialog.setCancelable(cancelable);
         }
-        pdialog.show();
+        pdialog.setCancelable(cancelable);
+        if( !pdialog.isShowing() )
+            pdialog.show();
 
     }
 
@@ -215,12 +216,15 @@ public class UtilityClass {
     }
 
     public boolean sendSymptomList(Runnable r){
+        String LOG_TAG = "sendSymptomList";
+        Log.d(LOG_TAG, "send list function");
         if( isSendingNow() ) return false;
         _r = r;
         ArrayList<RequestParamsModal> params =  SaveSharedPreferences.getSendSymptomList(_context);
         RequestParamsModal item;
         _symFlagList.clear();
         _symRequestCount = 0;
+        Log.d(LOG_TAG, "Size : " + params.size() + ", Connect State : " + isInternetConnection(_context));
         if( params.size() > 0 && isInternetConnection(_context) ) {
             for (int i = 0; i < params.size(); i++) {
                 _sendingNow = true;

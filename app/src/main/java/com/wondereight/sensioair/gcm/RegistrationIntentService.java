@@ -86,7 +86,7 @@ public class RegistrationIntentService extends IntentService {
             sharedPreferences.edit().putBoolean(SAPreferences.SENT_TOKEN_TO_SERVER, true).apply();
             // [END register_for_gcm]
         } catch (Exception e) {
-            Log.d(LOG_TAG, "Failed to complete token refresh", e);
+            Log.e(LOG_TAG, "Failed to complete token refresh", e);
             // If an exception happens while fetching the new token or updating our registration data
             // on a third-party server, this ensures that we'll attempt the update at a later time.
             sharedPreferences.edit().putBoolean(SAPreferences.SENT_TOKEN_TO_SERVER, false).apply();
@@ -153,7 +153,7 @@ public class RegistrationIntentService extends IntentService {
                 if (responseString == null) {
                     Log.e(LOG_TAG, "None response string");
                 } else if (responseString.equals("0")) {
-                    PreferenceManager.getDefaultSharedPreferences(RegistrationIntentService.this)
+                    PreferenceManager.getDefaultSharedPreferences(this)
                             .edit().putBoolean(SAPreferences.REGISTER_TO_SERVER, true)
                             .commit();
                     Log.d(LOG_TAG, "SEND_PUSHID to success");

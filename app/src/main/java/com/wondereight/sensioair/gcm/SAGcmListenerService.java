@@ -16,6 +16,7 @@
 
 package com.wondereight.sensioair.gcm;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -29,8 +30,10 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
+import com.wondereight.sensioair.Activity.HomeActivity;
 import com.wondereight.sensioair.Activity.LoginAcitivity;
 import com.wondereight.sensioair.R;
+import com.wondereight.sensioair.UtilClass.Constant;
 
 public class SAGcmListenerService extends GcmListenerService {
 
@@ -79,15 +82,16 @@ public class SAGcmListenerService extends GcmListenerService {
      * @param message GCM message received.
      */
     private void sendNotification(String message) {
-        Intent intent = new Intent(this, LoginAcitivity.class);
+        Intent intent = new Intent(this, HomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(Constant.NOTI_MESSAGE, message);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_CANCEL_CURRENT);
+                0);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_stat_ic_notification)
-                .setContentTitle("Sensio Air") //.setContentTitle("GCM Message")
+                .setContentTitle(getString(R.string.titleMessage)) //.setContentTitle("GCM Message")
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
@@ -97,9 +101,9 @@ public class SAGcmListenerService extends GcmListenerService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        int count = Integer.valueOf( sharedPreferences.getString(SAPreferences.COUNT_MESSAGES, "0") );
-        count++;
-        notificationManager.notify(count /* ID of notification */, notificationBuilder.build());
-        sharedPreferences.edit().putString(SAPreferences.COUNT_MESSAGES, String.valueOf(count)).apply();
+//        int count = Integer.valueOf( sharedPreferences.getString(SAPreferences.COUNT_MESSAGES, "0") );
+//        count++;
+        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());    //notificationManager.notify(count /* ID of notification */, notificationBuilder.build());
+//        sharedPreferences.edit().putString(SAPreferences.COUNT_MESSAGES, String.valueOf(count)).apply();
     }
 }

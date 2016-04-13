@@ -100,7 +100,7 @@ public class SettingsFragment extends Fragment {
         String str_userid = userModal.getId();
         String str_email = userModal.getEmail();
         String str_deviceid = utilityClass.GetDeviceID();
-        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
 
         params.put(Constant.STR_NOTI_ALLERGENS, str_noti_allergens);
         params.put(Constant.STR_NOTI_POLLUTION, str_noti_pollution);
@@ -175,7 +175,7 @@ public class SettingsFragment extends Fragment {
         String str_userid = userModal.getId();
         String str_email = userModal.getEmail();
         String str_deviceid = utilityClass.GetDeviceID();
-        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
 
         params.put(Constant.STR_USERID, str_userid);
         params.put(Constant.STR_EMAIL, str_email);
@@ -209,6 +209,7 @@ public class SettingsFragment extends Fragment {
                     utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.no_exist));
                     _debug.d(LOG_TAG, "Account Does Not Exist");
                 } else {
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.not_parsing));
                     _debug.e(LOG_TAG, "Send user info Exception Error:"+responseString);
                 }
             }

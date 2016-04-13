@@ -84,7 +84,7 @@ public class SaveSharedPreferences {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
         Gson gson = new Gson();
         editor.putString(SendSymptomList, gson.toJson(paramsList));
-        editor.commit();
+        editor.apply();
     }
 
     public static boolean addSymptomData(Context ctx, RequestParamsModal params) {
@@ -108,6 +108,14 @@ public class SaveSharedPreferences {
     public static void clearUserdata(Context ctx) {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
         editor.remove(LoginUserData);
-        editor.commit();
+        editor.apply();
+    }
+
+    public static Boolean isLogedinUser(Context ctx){
+        UserModal modal = SaveSharedPreferences.getLoginUserData(ctx);
+        if( !modal.getEmail().isEmpty() && !modal.isLogoutedUser() )
+            return true;
+
+        return false;
     }
 }

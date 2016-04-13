@@ -18,6 +18,8 @@ public class UserModal {
     private String newsletter = "";
     private String session_nbr = "";
     private String password = "";
+    private Boolean isLogouted = false;
+
 //    private String geolocation = "";
 //    private String cityname = "";
 
@@ -123,6 +125,13 @@ public class UserModal {
 
     public void setThresholdPollution(String notification_threshold_pollution) {
         this.notification_threshold_pollution = notification_threshold_pollution;
+    }
+
+    public Boolean isLogoutedUser() {
+        return isLogouted;
+    }
+    public void setLogouted( Boolean logouted ){
+        this.isLogouted = logouted;
     }
 //    public String getGeolocation() {
 //        return geolocation;

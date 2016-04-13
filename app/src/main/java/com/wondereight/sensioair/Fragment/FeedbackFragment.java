@@ -119,7 +119,7 @@ public class FeedbackFragment extends Fragment {
         String str_userid = userModal.getId();
         String str_email = userModal.getEmail();
         String str_deviceid = utilityClass.GetDeviceID();
-        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
         String str_feedback = etFeedback.getText().toString();
 
         params.put(Constant.STR_USERID, str_userid);

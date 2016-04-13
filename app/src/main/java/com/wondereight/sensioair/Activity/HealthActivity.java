@@ -70,11 +70,14 @@ public class HealthActivity extends AppCompatActivity {
         utilityClass = new UtilityClass(this);
 
         if(getIntent().getExtras() != null) {
-            String json = getIntent().getExtras().getString("HealthInfoModal");
-            infoModal = new Gson().fromJson(json, HealthInfoModal.class);
-            havingModal = true;
 
-            setViewsWithModal(infoModal);
+            try {
+                String json = getIntent().getExtras().getString("HealthInfoModal");
+                infoModal = new Gson().fromJson(json, HealthInfoModal.class);
+                havingModal = true;
+
+                setViewsWithModal(infoModal);
+            } catch (Exception ignored){ }
         }
     }
 
@@ -100,7 +103,8 @@ public class HealthActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick(R.id.btnHealthSave) void onClickBtnHealthSave(){
+    @OnClick(R.id.btnHealthSave)
+    void onClickBtnHealthSave(){
         if( checkValidation() ) {
             if (!utilityClass.isInternetConnection()) {
                 utilityClass.toast(getResources().getString(R.string.check_internet));
@@ -150,7 +154,7 @@ public class HealthActivity extends AppCompatActivity {
 
         String str_email = SaveSharedPreferences.getLoginUserData(HealthActivity.this).getEmail();
         String str_deviceid = utilityClass.GetDeviceID();
-        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
 
         params.put(Constant.STR_CONSCIOUS, str_conscious);
         params.put(Constant.STR_HAVEALLERGIES, str_allergies);
@@ -185,6 +189,7 @@ public class HealthActivity extends AppCompatActivity {
                         finish();
                     } else {
                         Intent HomeIntent = new Intent(HealthActivity.this, HomeActivity.class);
+                        HomeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(HomeIntent);
                     }
                     _debug.d(LOG_TAG, "Save Info Success");

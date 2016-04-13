@@ -25,11 +25,9 @@
                 android:paddingRight="@dimen/_18sdp"
                 android:orientation="vertical">
 
-                <com.wondereight.sensioair.CustomView.CustomFontView.CustomFontTextView
+                <TextView
                     android:text="@string/title_create_account"
-                    style = "@style/TVTitleStyle"
-                    app:textStyle="@integer/FS_light"
-                    app:font="@string/font_name_opensans"/>
+                    style = "@style/TVTitleStyle"/>
 
             </LinearLayout>
 
@@ -201,6 +199,7 @@
                     android:layout_marginRight="@dimen/_90sdp"
                     android:orientation="horizontal">
                     <LinearLayout
+                        android:id="@+id/btn_facebook"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -212,6 +211,7 @@
                             android:src="@drawable/ic_fb"/>
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/btn_linkedin"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -222,6 +222,7 @@
                             android:src="@drawable/ic_in"/>
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/btn_twitter"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -231,6 +232,25 @@
                             android:layout_height="@dimen/_24sdp"
                             android:src="@drawable/ic_tw"/>
                     </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <!--<com.facebook.login.widget.LoginButton-->
+                    <!--android:id="@+id/fb_login_button"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="center_horizontal"-->
+                    <!--android:layout_marginTop="30dp"-->
+                    <!--android:layout_marginBottom="30dp" />-->
+
+                    <com.twitter.sdk.android.core.identity.TwitterLoginButton
+                        android:id="@+id/btnTwitter_login_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
             </LinearLayout>
 

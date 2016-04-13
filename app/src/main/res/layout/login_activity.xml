@@ -26,7 +26,7 @@
                 android:paddingRight="@dimen/_18sdp"
                 android:orientation="horizontal">
 
-                <com.wondereight.sensioair.CustomView.CustomFontView.CustomFontTextView
+                <TextView
                     android:id="@+id/btnForgotPass"
                     android:text="@string/action_forgot_password"
                     android:layout_width="wrap_content"
@@ -34,8 +34,7 @@
                     android:clickable="true"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textColor="@color/darkgreen"
-                    app:font="@string/font_name_opensans"/>
+                    android:textColor="@color/darkgreen"/>
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -67,11 +66,11 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.3"/>
+                        android:layout_weight="3"/>
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.4">
+                        android:layout_weight="4">
                         <ImageView android:src="@drawable/air_sensio_logo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -82,10 +81,10 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.3"/>
+                        android:layout_weight="3"/>
                 </LinearLayout>
 
-                <com.wondereight.sensioair.CustomView.CustomFontView.CustomFontTextView
+                <TextView
                     android:text="@string/description_login"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -93,10 +92,7 @@
                     android:gravity="center"
                     android:layout_marginTop="20dp"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/DescriptionTextColor"
-                    app:textStyle="@integer/FS_semibold"
-                    app:font="@string/font_name_opensans"
-                    android:editable="false" />
+                    android:textColor="@color/DescriptionTextColor" />
             </LinearLayout>
 
             <LinearLayout
@@ -109,7 +105,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:layout_marginBottom="@dimen/_10sdp"
-                android:layout_gravity="bottom"
                 android:orientation="vertical">
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -139,7 +134,6 @@
                             android:layout_marginLeft="10dp"
                             android:textSize="22sp"
                             android:textStyle="bold"
-                            android:fontFamily="sans-serif"
                             android:textColorHint="@color/darkgreen"
                             android:textColor="@color/darkgreen"/>
                     </LinearLayout>
@@ -175,7 +169,6 @@
                             android:layout_marginLeft="10dp"
                             android:textSize="22sp"
                             android:textStyle="bold"
-                            android:fontFamily="sans-serif"
                             android:textColorHint="@color/darkgreen"
                             android:textColor="@color/darkgreen"/>
                     </LinearLayout>
@@ -186,7 +179,6 @@
                 <Button
                     android:id="@+id/btnLogin"
                     style="@style/btn_login"
-                    android:fontFamily="sans-serif"
                     android:layout_marginTop="@dimen/_16sdp"
                     android:text="@string/action_sign_in_short" />
                 <LinearLayout
@@ -235,6 +227,7 @@
                     android:layout_marginRight="@dimen/_90sdp"
                     android:orientation="horizontal">
                     <LinearLayout
+                        android:id="@+id/btn_facebook"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -246,6 +239,7 @@
                             android:src="@drawable/ic_fb"/>
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/btn_linkedin"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -256,6 +250,7 @@
                             android:src="@drawable/ic_in"/>
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/btn_twitter"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -265,6 +260,25 @@
                             android:layout_height="@dimen/_24sdp"
                             android:src="@drawable/ic_tw"/>
                     </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <!--<com.facebook.login.widget.LoginButton-->
+                        <!--android:id="@+id/fb_login_button"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center_horizontal"-->
+                        <!--android:layout_marginTop="30dp"-->
+                        <!--android:layout_marginBottom="30dp" />-->
+
+                    <com.twitter.sdk.android.core.identity.TwitterLoginButton
+                        android:id="@+id/btnTwitter_login_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -282,6 +296,7 @@
                 android:gravity="center">
                 <TextView
                     android:text="@string/description_license"
+                    android:gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"

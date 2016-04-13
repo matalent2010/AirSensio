@@ -35,12 +35,10 @@ tools:context=".Activity.SymptomActivity">
                         android:paddingRight="@dimen/_18sdp"
                         android:orientation="vertical">
 
-                        <com.wondereight.sensioair.CustomView.CustomFontView.CustomFontTextView
+                        <TextView
                             android:text="@string/title_symptom"
                             style = "@style/TVTitleStyle"
-                            android:textColor="@color/SymptomTextColor"
-                            app:textStyle="@integer/FS_light"
-                            app:font="@string/font_name_opensans"/>
+                            android:textColor="@color/SymptomTextColor"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -48,15 +46,13 @@ tools:context=".Activity.SymptomActivity">
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <com.wondereight.sensioair.CustomView.CustomFontView.CustomFontTextView
+                        <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textAppearance="?android:attr/textAppearanceMedium"
                             android:text="@string/description_symptom"
-                            android:textColor="@color/SymptomTextColor"
-                            app:textStyle="@integer/FS_light"
-                            app:font="@string/font_name_opensans"/>
+                            android:textColor="@color/SymptomTextColor"/>
 
                     </LinearLayout>
 

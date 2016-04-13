@@ -1,9 +1,11 @@
 package com.wondereight.sensioair.Fragment;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -63,7 +65,6 @@ public class StatisticsFragment extends Fragment {
 
     private static Context _context;
     private static View _view;
-    private static View _mainContainer;
 
     private static final String LOG_TAG = "StatisticFragment";
     private static _Debug _debug = new _Debug(true);
@@ -81,9 +82,6 @@ public class StatisticsFragment extends Fragment {
     private ChartItem mYearChartItemSet;
 
     private Boolean[] loadedState = {false, false, false, false};
-    private ArrayList<DataDetailsModal> dataModals = new ArrayList<>();
-    private int nCallDataDetails;
-    private ViewGroup vgContainer;
 
     @Bind({R.id.tab_day, R.id.tab_week, R.id.tab_month, R.id.tab_year})
     List<TextView> tabButton;
@@ -94,25 +92,12 @@ public class StatisticsFragment extends Fragment {
     @Bind(R.id.chartloading)
     View chartloading;
 
-    @Bind(R.id.main_page)
-    View mMainpage;
-
-    @Bind(R.id.sub_page)
-    View mSubpage;
-
-
-
-    // TODO: Rename and change types of parameters
-//    private String mParam1;
-//    private String mParam2;
-
     //    private OnFragmentInteractionListener mListener;
     public StatisticsFragment() {
         for( int i = 0; i<6; i++)
             stateStatistics.add(false);
         mChart = null;
         styleGraph = GS_DAY;
-        nCallDataDetails = 0;
     }
 
     public static Fragment newInstance(Context context) {
@@ -129,20 +114,6 @@ public class StatisticsFragment extends Fragment {
 
         mChart = (LineChartView) _view.findViewById(R.id.chart1);
         ButterKnife.bind(this, _view);
-        _mainContainer = _view.findViewById(R.id.stasticsCanvas);
-        vgContainer = (ViewGroup)_view.findViewById(R.id.data_details_container);
-
-        _mainContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                _mainContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                int width = _mainContainer.getMeasuredWidth();
-                int height = _mainContainer.getMeasuredHeight();
-                mMainpage.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height));
-                //mSubpage.setLayoutParams( new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height));
-                mSubpage.setMinimumHeight(height);
-            }
-        });
 
         mDayChartItemSet = new ChartItem();
         mWeekChartItemSet = new ChartItem();
@@ -152,7 +123,6 @@ public class StatisticsFragment extends Fragment {
         //loadTempChartData();
         displayCurrentState();
         loadCurrentGraphData();
-        loadDataDetails();
 
         redrawGraph(_view);
 
@@ -538,14 +508,6 @@ public class StatisticsFragment extends Fragment {
         }
     }
 
-    private void loadDataDetails(){
-        if( dataModals.size() == 0 ){
-            restCallGetDataDetailsApi();
-        } else {
-            drawDataDetails(dataModals);
-        }
-    }
-
     private Boolean isloaded(int StateStatiscs){
         return loadedState[StateStatiscs];
     }
@@ -587,7 +549,7 @@ public class StatisticsFragment extends Fragment {
         String str_userid = SaveSharedPreferences.getLoginUserData(getContext()).getId();
         String str_deviceid = utilityClass.GetDeviceID(); //"DAE24875-8366-4692-8B15-BA8C6634B691";
         String str_email = SaveSharedPreferences.getLoginUserData(getContext()).getEmail();
-        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
         String str_cityid =  "1"; //Global.GetInstance().GetCityName().isEmpty() ? Constant.DEFAULT_CITYNAME : Global.GetInstance().GetCityName();
 
         params.put(Constant.STR_USERID, str_userid);
@@ -691,125 +653,5 @@ public class StatisticsFragment extends Fragment {
             }
 
         });
-    }
-
-    private void restCallGetDataDetailsApi(){
-
-        RequestParams params = new RequestParams();
-        UserModal userModal = SaveSharedPreferences.getLoginUserData(getActivity());
-        String str_userid = userModal.getId();
-        String str_email = userModal.getEmail();
-        String str_deviceid = utilityClass.GetDeviceID();
-        String str_hash = utilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
-        String str_cityid = Global.GetInstance().GetCityID();
-
-        params.put(Constant.STR_USERID, str_userid);
-        params.put(Constant.STR_EMAIL, str_email);
-        params.put(Constant.STR_DEVICEID, str_deviceid);
-        params.put(Constant.STR_HASH, str_hash);
-        params.put(Constant.STR_CITYID, str_cityid);
-
-        AirSensioRestClient.post(AirSensioRestClient.GET_DATA_DETAILS, params, new TextHttpResponseHandler() {   //new JsonHttpResponseHandler(false) : onSuccess(int statusCode, Header[] headers, String responseString) must be overrided.
-            @Override
-            public void onStart() {
-                // called before request is started
-                //utilityClass.processDialogStart(false);
-                _debug.d(LOG_TAG, "AirSensioRestClient.GET_DATA_DETAILS.onStart");
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                //utilityClass.processDialogStop();
-                if (responseString == null) {
-                    _debug.e(LOG_TAG, "None response string");
-                } else if (responseString.equals("1")) {
-                    _debug.e(LOG_TAG, "Incorrect Hash");
-                } else if (responseString.equals("2")) {
-                    //utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.device_not));
-                    _debug.d(LOG_TAG, "Device ID not provided");
-                } else if (responseString.equals("3")) {
-                    //utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.userid_not));
-                    _debug.d(LOG_TAG, "User ID not provided");
-                } else if (responseString.equals("9")) {
-                    //utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.no_exist));
-                    _debug.d(LOG_TAG, "Nothing Found");
-                } else {
-                    try {
-                        dataModals = ParsingResponse.parsingDataDetails(new JSONArray(responseString));
-                        drawDataDetails(dataModals);
-
-                        _debug.d(LOG_TAG, "AirSensioRestClient.GET_DATA_DETAILS.Success");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        _debug.e(LOG_TAG, "GET_DATA_DETAILS Exception Error:" + responseString);
-                    }
-                }
-                nCallDataDetails = 0;
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                //utilityClass.processDialogStop();
-                //utilityClass.toast(getResources().getString(R.string.check_internet));
-                _debug.e(LOG_TAG, "errorString: " + responseString);
-                nCallDataDetails++;
-                if( nCallDataDetails < 3 ){
-                    restCallGetDataDetailsApi();
-                } else {
-                    nCallDataDetails = 0;
-                }
-            }
-
-            @Override
-            public void onRetry(int retryNo) {
-                // called when request is retried{
-                //utilityClass.processDialogStop();
-                //utilityClass.toast(getResources().getString(R.string.try_again));
-                _debug.d(LOG_TAG, "AirSensioRestClient.GET_DATA_DETAILS.onRetry");
-                nCallDataDetails++;
-                if( nCallDataDetails < 3 ){
-                    restCallGetDataDetailsApi();
-                } else {
-                    nCallDataDetails = 0;
-                }
-            }
-
-            @Override
-            public void onFinish() {
-                _debug.d(LOG_TAG, "AirSensioRestClient.GET_DATA_DETAILS.onFinish");
-            }
-
-        });
-    }
-
-    public void drawDataDetails(ArrayList<DataDetailsModal> arr){
-        //View item = LayoutInflater.from(getContext()).inflate(R.layout.fragment_statistics_sub, null);
-        View itemRow, leftItem, rightItem;
-        for(int i=0; i<arr.size(); i+=2 ){
-            itemRow = LayoutInflater.from(getContext()).inflate(R.layout.fragment_statistics_sub, null);
-            leftItem = itemRow.findViewById(R.id.left_item);
-            ((TextView)leftItem.findViewById(R.id.subitem_title)).setText(arr.get(i).getParameter());
-            ((TextView)leftItem.findViewById(R.id.subitem_value)).setText(arr.get(i).getLogValue());
-            if(arr.get(i).getLogIntensity().equalsIgnoreCase("low"))
-                leftItem.findViewById(R.id.low_mark).setVisibility(View.VISIBLE);
-            else if (arr.get(i).getLogIntensity().equalsIgnoreCase("moderate"))
-                leftItem.findViewById(R.id.moderate_mark).setVisibility(View.VISIBLE);
-            else if (arr.get(i).getLogIntensity().equalsIgnoreCase("high"))
-                leftItem.findViewById(R.id.high_mark).setVisibility(View.VISIBLE);
-
-            if( i+1 < arr.size() ) {
-                rightItem = itemRow.findViewById(R.id.right_item);
-                ((TextView) rightItem.findViewById(R.id.subitem_title)).setText(arr.get(i + 1).getParameter());
-                ((TextView) rightItem.findViewById(R.id.subitem_value)).setText(arr.get(i + 1).getLogValue());
-                if (arr.get(i + 1).getLogIntensity().equalsIgnoreCase("low"))
-                    rightItem.findViewById(R.id.low_mark).setVisibility(View.VISIBLE);
-                else if (arr.get(i + 1).getLogIntensity().equalsIgnoreCase("moderate"))
-                    rightItem.findViewById(R.id.moderate_mark).setVisibility(View.VISIBLE);
-                else if (arr.get(i + 1).getLogIntensity().equalsIgnoreCase("high"))
-                    rightItem.findViewById(R.id.high_mark).setVisibility(View.VISIBLE);
-            }
-            vgContainer.addView(itemRow);
-        }
-        //vgContainer.layout
     }
 }

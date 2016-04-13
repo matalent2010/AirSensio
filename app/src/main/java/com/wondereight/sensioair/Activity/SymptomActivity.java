@@ -24,7 +24,6 @@ import com.wondereight.sensioair.Modal.UserModal;
 import com.wondereight.sensioair.R;
 import com.wondereight.sensioair.UtilClass.AirSensioRestClient;
 import com.wondereight.sensioair.UtilClass.Constant;
-import com.wondereight.sensioair.UtilClass.GetCityNameThread;
 import com.wondereight.sensioair.UtilClass.Global;
 import com.wondereight.sensioair.UtilClass.SaveSharedPreferences;
 import com.wondereight.sensioair.UtilClass.UtilityClass;
@@ -128,6 +127,8 @@ public class SymptomActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_close)
     void onClickClose(){
+        Intent intent = new Intent();
+        setResult(RESULT_CANCELED, intent);
         finish();
         _debug.e(LOG_TAG, "Log outbreak closed");
     }

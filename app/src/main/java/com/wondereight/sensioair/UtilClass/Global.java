@@ -12,6 +12,8 @@ import java.util.ArrayList;
 public class Global {
     private static Global mInstance = null;
 
+    public static int runningActivities = 0;
+
     // Signup | Signin page
     private String GeoCityName = "";
     private String Geolocation = "";    //not use now

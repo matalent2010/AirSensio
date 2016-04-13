@@ -94,7 +94,7 @@ public class ParsingResponse {
                 item.setNumWeek(obj_item.optString(Constant.STR_NUM_WEEK));
                 item.setLabel(obj_item.optString(Constant.STR_LABEL));
                 graphDataArray.add(item);
-                _debug.d(LOG_TAG, "GraphStyle(" + String.valueOf(state) + ") Data " + i + " : " + obj_item.toString());
+                _debug.v(LOG_TAG, "GraphStyle(" + String.valueOf(state) + ") Data " + i + " : " + obj_item.toString());
             } catch (Exception e) {
                 _debug.e(LOG_TAG, "(" + String.valueOf(i) + ")th item of Response JsonArray : " + e.toString());
             }

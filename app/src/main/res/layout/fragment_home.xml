@@ -5,6 +5,7 @@
     tools:context="com.wondereight.sensioair.Fragment.HomeFragment">
 
     <RelativeLayout
+        android:id="@+id/logoutbreakCanvas"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -243,9 +244,22 @@
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/whitegray"
                         android:text=""/>
-                    <!-- "Well it looks like all is fine, remember to always allow plaenty of sun in  ventilate your home everyday."-->
+                    <!-- android:text="Well it looks like all is fine, remember to always allow plaenty of sun in  ventilate your home everyday."-->
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/sub_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:id="@+id/data_details_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="@dimen/_30sdp"
+                        android:orientation="vertical">
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </RelativeLayout>
