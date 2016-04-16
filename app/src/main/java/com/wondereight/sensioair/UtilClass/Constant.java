@@ -127,4 +127,12 @@ public class Constant {
 
     //Push notification Message
     public static final String NOTI_MESSAGE = "message";
+
+    // Tutorial
+    public static final String INTRO_ID_1 = "1/6";
+    public static final String INTRO_ID_2 = "2/6";
+    public static final String INTRO_ID_3 = "3/6";
+    public static final String INTRO_ID_4 = "4/6";
+    public static final String INTRO_ID_5 = "5/6";
+    public static final String INTRO_ID_6 = "6/6";
 }

@@ -223,8 +223,8 @@
                         android:textColor="@color/white"
                         android:text="@string/btn_logout"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:drawableLeft="@drawable/ic_power"
                         android:drawablePadding="10dp"/>
+                    <!-- android:drawableLeft="@drawable/ic_power" -->
                 </LinearLayout>
                 <LinearLayout
                     style="@style/vertical_space"

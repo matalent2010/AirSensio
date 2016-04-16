@@ -20,6 +20,12 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
+import co.mobiwise.materialintro.animation.MaterialIntroListener;
+import co.mobiwise.materialintro.prefs.PreferencesManager;
+import co.mobiwise.materialintro.shape.ArrowType;
+import co.mobiwise.materialintro.shape.Focus;
+import co.mobiwise.materialintro.shape.FocusGravity;
+import co.mobiwise.materialintro.view.MaterialIntroView;
 import cz.msebera.android.httpclient.Header;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -31,6 +37,7 @@ import com.shehabic.droppy.DroppyMenuItem;
 import com.shehabic.droppy.DroppyMenuPopup;
 import com.shehabic.droppy.animations.DroppyFadeInAnimation;
 import com.wondereight.sensioair.Activity.SymptomActivity;
+import com.wondereight.sensioair.Adapter.ViewPagerAdapter;
 import com.wondereight.sensioair.Helper._Debug;
 import com.wondereight.sensioair.Modal.CityModal;
 import com.wondereight.sensioair.Modal.DataDetailsModal;
@@ -55,7 +62,7 @@ import java.util.ArrayList;
  * Created by Miguel on 02/2/2016.
  */
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements MaterialIntroListener {
     private static Context _context;
     private static final String LOG_TAG = "HomeFragment";
     private static _Debug _debug = new _Debug(true);
@@ -79,11 +86,11 @@ public class HomeFragment extends Fragment {
     @Bind(R.id.pollution_intensity)
             TextView tvPollutionIntensity;
     @Bind(R.id.logoutbreakCanvas)
-    View _mainContainer;
+            View _mainContainer;
     @Bind(R.id.sub_page)
-    View mSubpage;
+            View mSubpage;
     @Bind(R.id.data_details_container)
-    ViewGroup vgContainer;
+            ViewGroup vgContainer;
 
     private ArrayList<DataDetailsModal> dataModals = new ArrayList<>();
     private int nCallDataDetails;
@@ -115,7 +122,7 @@ public class HomeFragment extends Fragment {
 
         utilityClass = new UtilityClass(getContext());
 
-        SetIndex();
+        setIndex();
         //tvAllergyIndex.setText();
         getAdvice();
         tvAdvice.setText(Html.fromHtml(strAdvice));
@@ -131,12 +138,16 @@ public class HomeFragment extends Fragment {
             public void onGlobalLayout() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     _mainContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    _mainContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 }
                 int width = _mainContainer.getMeasuredWidth();
                 int height = _mainContainer.getMeasuredHeight();
                 mSubpage.setMinimumHeight(height);
             }
         });
+
+
         return view;
     }
 
@@ -178,7 +189,7 @@ public class HomeFragment extends Fragment {
             restCallGetAdviceApi();
     }
 
-    private void SetIndex(){
+    private void setIndex(){
         if( indexModals.get(0).isSet() ){
             tvAllergyIndex.setText(indexModals.get(0).getIndexValue());
             tvAlergyIntensity.setText(indexModals.get(0).getLogIntensity());
@@ -259,6 +270,18 @@ public class HomeFragment extends Fragment {
         cityMenu = droppyBuilder.build();
     }
 
+    @Override
+    public void onUserClicked(String materialIntroViewId) {
+        _debug.d(LOG_TAG, "pressed " + materialIntroViewId);
+        if(materialIntroViewId == Constant.INTRO_ID_1){
+            View btnPress = getView().findViewById(R.id.btnPress);
+            if( btnPress != null) {
+                new PreferencesManager(getContext()).reset(Constant.INTRO_ID_2);
+                showIntro(btnPress, Constant.INTRO_ID_2, getString(R.string.tutorial_home_press), ArrowType.AT_RED);
+            }
+        }
+    }
+
     class CityMenuCallback implements DroppyMenuPopup.OnDismissCallback, DroppyClickCallbackInterface
     {
 
@@ -288,6 +311,7 @@ public class HomeFragment extends Fragment {
             //utilityClass.toast("Menu dismissed");
         }
     }
+
     private void initIndex(){
         tvAllergyIndex.setText(Constant.DEFAULT_ALLERGY_INDEX);
         tvAlergyIntensity.setText(Constant.DEFAULT_ALLERGY_INTENSITY);
@@ -611,5 +635,37 @@ public class HomeFragment extends Fragment {
             }
             vgContainer.addView(itemRow);
         }
+    }
+
+
+    public void drawHomeTutorial(){
+        //Show intro
+
+        View viewEnvir = getView().findViewById(R.id.city_environment);
+        if( viewEnvir != null ){
+            new PreferencesManager(getContext()).reset(Constant.INTRO_ID_1);
+            showIntro(viewEnvir, Constant.INTRO_ID_1, getString(R.string.tutorial_home_index), ArrowType.AT_NORMAL);
+        }
+    }
+
+    private void showIntro(View view, String usageId, String text, ArrowType type){
+
+        new MaterialIntroView.Builder(getActivity())
+                .setMaskColor(0x70000000)
+                .setTextColor(0xFF3F9CFF)
+                .enableDotAnimation(false)
+                .setFocusGravity(FocusGravity.CENTER)
+                .setFocusType(Focus.MINIMUM)
+                .setDelayMillis(200)
+                .enableFadeAnimation(true)
+                .performClick(true)
+                .setListener(this)
+                .setArrowType(type)
+                .setInfoText(text)
+                .enableInfoIDText(true)     //Info ID text appear
+                .enableIcon(false)
+                .setTarget(view)
+                .setUsageId(usageId) //THIS SHOULD BE UNIQUE ID
+                .show();
     }
 }

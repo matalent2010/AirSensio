@@ -185,4 +185,13 @@
 
     <!-- Home Activity -->
     <string name="titleMessage">Sensio Air</string>
+    
+    <!-- Tutorial String -->
+    <string name="tutorial_home_index">Welcom!\nSensio tells you about the environment in your city.</string>
+    <string name="tutorial_home_press">Here you can log your allergies and respiratory symptoms.(Tap the red button)</string>
+    <string name="tutorial_home_press_2">With our smart algorithms and board of doctors, Sensio gives you daily advices on how to deal with the outdoor pollution and improve the air at home.</string>
+    <string name="tutorial_statisticss">Sensio helps you understand your symptoms by linking them to your environment.</string>
+    <string name="tutorial_sensio">By scanning the QR Code on the back of the device, Sensio Air monitors the health of your home and tells you all about pollution, allergens, dust, mold and so much more.</string>
+    <string name="tutorial_sensio_scanning">Want to kknow more about the Air at home? you can Order Sensio Air Home Edition.</string>
+    <string name="tutorial_sympotom">Here you can tap repetitevely to record your symtpom. (Try it!).</string>
 </resources>

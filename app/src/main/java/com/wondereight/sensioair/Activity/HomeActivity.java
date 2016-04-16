@@ -1,5 +1,6 @@
 package com.wondereight.sensioair.Activity;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,6 +27,12 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
+import co.mobiwise.materialintro.MaterialIntroConfiguration;
+import co.mobiwise.materialintro.prefs.PreferencesManager;
+import co.mobiwise.materialintro.shape.ArrowType;
+import co.mobiwise.materialintro.shape.Focus;
+import co.mobiwise.materialintro.shape.FocusGravity;
+import co.mobiwise.materialintro.view.MaterialIntroView;
 import cz.msebera.android.httpclient.Header;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -84,6 +91,14 @@ public class HomeActivity extends FragmentActivity {
     @Bind(R.id.ivitemtext_profile) public TextView mBtnProfileText;
     @Bind(R.id.ivitem_settings) public ImageView mBtnSettingsImage;
     @Bind(R.id.ivitemtext_settings) public TextView mBtnSettingsText;
+
+
+    private final String INTRO_1 = "1/6";
+    private final String INTRO_2 = "2/6";
+    private final String INTRO_3 = "3/6";
+    private final String INTRO_4 = "4/6";
+    private final String INTRO_5 = "5/6";
+    private final String INTRO_6 = "6/6";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -251,6 +266,9 @@ public class HomeActivity extends FragmentActivity {
                     sDrawablePressed = ContextCompat.getDrawable(getBaseContext(), R.drawable.btn_home_s);
                     mBtnHomeImage.setImageDrawable(sDrawablePressed);
                     mBtnHomeText.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.BottomMenuTextColor_s));
+
+                    drawHomeTutorial();
+
                     break;
                 case 1:
                     sDrawablePressed = ContextCompat.getDrawable(getBaseContext(), R.drawable.btn_statistics_s);
@@ -461,6 +479,12 @@ public class HomeActivity extends FragmentActivity {
         int pid = android.os.Process.myPid();
         android.os.Process.killProcess(pid);
         System.exit(0);
+    }
+
+    public void drawHomeTutorial(){
+        //Show intro
+        HomeFragment homeFragment = (HomeFragment)((ViewPagerAdapter)mTabPager.getAdapter()).getItem(0);
+        homeFragment.drawHomeTutorial();
     }
 
 }
