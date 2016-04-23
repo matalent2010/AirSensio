@@ -1,9 +1,11 @@
 package com.wondereight.sensioair.CustomView;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.Log;
+import android.util.LongSparseArray;
 import android.util.SparseArray;
 
 import java.lang.reflect.Field;
@@ -156,12 +158,14 @@ public class FontsOverride {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     protected static void setTypeFaceDefaults(Typeface normal, Typeface bold, Typeface italic, Typeface boldItalic, int typefaceIndex) throws NoSuchFieldException, IllegalAccessException {
         Field typeFacesField = Typeface.class.getDeclaredField("sTypefaceCache");
         typeFacesField.setAccessible(true);
 
-        SparseArray<SparseArray<Typeface>> sTypefaceCacheLocal = new SparseArray<SparseArray<Typeface>>(3);
+        LongSparseArray<SparseArray<Typeface>> sTypefaceCacheLocal = new LongSparseArray<SparseArray<Typeface>>(3);
         typeFacesField.get(sTypefaceCacheLocal);
+        Log.d("sTaypefaceCache", sTypefaceCacheLocal.toString());
 
         SparseArray<Typeface> newValues = new SparseArray<Typeface>(4);
         newValues.put(Typeface.NORMAL, normal);

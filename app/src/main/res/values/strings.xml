@@ -59,6 +59,7 @@
     <string name="hint_firstname">First name</string>
     <string name="hint_lastname">Last name</string>
     <string name="hint_phonenum">Phone Number</string>
+    <string name="hint_countrycode">Code</string>
     <string name="hint_birthday">Date of birth</string>
     <string name="hint_gender">Gender</string>
     <string name="chb_male">Male</string>
@@ -105,7 +106,7 @@
     <string name="title_settings">SETTINGS</string>
     <string name="description_settings">Set the sensitivity level\nfor your notifications:</string>
     <string name="btn_senddata">Send your data via Email</string>
-    <string name="btn_savesettings">SAVE SETTINGS</string>
+    <string name="btn_savesettings">Save settings</string>
     <!--<string name=""></string>-->
 
     <!-- Strings of Alert -->
@@ -141,6 +142,7 @@
     <string name="select_symptom">You have to select at least 1 symptom.</string>
     <string name="feedback_success">Thank You for Your Feedback.</string>
     <string name="msg_facebook_error">Facebook login Error</string>
+    <string name="not_saved_info">Saving your information failed.</string>
 
     <!--<string name="try">Please</string>-->
 
@@ -156,9 +158,9 @@
     <string name="profile_item2">I have nose allergies</string>
     <string name="profile_item3">I don\'t respiratory distress</string>
     <string name="profile_item4">I have a pet at home</string>
-    <string name="btn_editinfo">EDIT INFO</string>
-    <string name="btn_feedback">Give Us Your Feedback</string>
-    <string name="btn_logout">LOG OUT</string>
+    <string name="btn_editinfo">Edit info</string>
+    <string name="btn_feedback">Give us your feedback</string>
+    <string name="btn_logout">Log out</string>
     <string name="label_finddoctor">FINDE A DOCTOR\nNEAR YOU</string>
     <string name="btn_chemist">Register as a Chemist or Physician</string>
 
@@ -187,11 +189,13 @@
     <string name="titleMessage">Sensio Air</string>
     
     <!-- Tutorial String -->
-    <string name="tutorial_home_index">Welcom!\nSensio tells you about the environment in your city.</string>
+    <string name="tutorial_home_index">Welcome!\nSensio tells you about the environment in your city.</string>
     <string name="tutorial_home_press">Here you can log your allergies and respiratory symptoms.(Tap the red button)</string>
     <string name="tutorial_home_press_2">With our smart algorithms and board of doctors, Sensio gives you daily advices on how to deal with the outdoor pollution and improve the air at home.</string>
     <string name="tutorial_statisticss">Sensio helps you understand your symptoms by linking them to your environment.</string>
-    <string name="tutorial_sensio">By scanning the QR Code on the back of the device, Sensio Air monitors the health of your home and tells you all about pollution, allergens, dust, mold and so much more.</string>
-    <string name="tutorial_sensio_scanning">Want to kknow more about the Air at home? you can Order Sensio Air Home Edition.</string>
+    <string name="tutorial_sensio_scanning">By scanning the QR Code on the back of the device, Sensio Air monitors the health of your home and tells you all about pollution, allergens, dust, mold and so much more.</string>
+    <string name="tutorial_sensio">Want to know more about the Air at home? You can order Sensio Air Home Edition.</string>
     <string name="tutorial_sympotom">Here you can tap repetitevely to record your symtpom. (Try it!).</string>
+
+    <string name="test_string">This is TEST String.<u>Pre-order</u> it <b>now</b>!</string>
 </resources>

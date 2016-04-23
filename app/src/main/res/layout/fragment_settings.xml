@@ -217,7 +217,7 @@
                         android:gravity="center"
                         android:textSize="18sp"
                         android:textColor="@color/textwhitebtn"
-                        android:text="View Terms &amp; Conditions"/>
+                        android:text="View terms &amp; conditions"/>
                 </LinearLayout>
 
                 <LinearLayout

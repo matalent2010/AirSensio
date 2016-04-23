@@ -27,12 +27,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
-import co.mobiwise.materialintro.MaterialIntroConfiguration;
-import co.mobiwise.materialintro.prefs.PreferencesManager;
-import co.mobiwise.materialintro.shape.ArrowType;
-import co.mobiwise.materialintro.shape.Focus;
-import co.mobiwise.materialintro.shape.FocusGravity;
-import co.mobiwise.materialintro.view.MaterialIntroView;
 import cz.msebera.android.httpclient.Header;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -106,7 +100,7 @@ public class HomeActivity extends FragmentActivity {
         setContentView(R.layout.home_activity);
         ButterKnife.bind(HomeActivity.this);
 
-        if( !SaveSharedPreferences.isLogedinUser(this) ) {
+        if( Global.GetInstance().GetUserModal() == null ) {
             gotoLoginActivity();
             return;
         }
@@ -152,6 +146,13 @@ public class HomeActivity extends FragmentActivity {
         }
 
         displayNotification(getIntent());
+
+        new android.os.Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                drawHomeTutorial();
+            }
+        }, 200);
     }
 
 
@@ -266,19 +267,34 @@ public class HomeActivity extends FragmentActivity {
                     sDrawablePressed = ContextCompat.getDrawable(getBaseContext(), R.drawable.btn_home_s);
                     mBtnHomeImage.setImageDrawable(sDrawablePressed);
                     mBtnHomeText.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.BottomMenuTextColor_s));
-
-                    drawHomeTutorial();
-
+                    new android.os.Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            drawHomeTutorial();
+                        }
+                    }, 100);
                     break;
                 case 1:
                     sDrawablePressed = ContextCompat.getDrawable(getBaseContext(), R.drawable.btn_statistics_s);
                     mBtnStatisticsImage.setImageDrawable(sDrawablePressed);
                     mBtnStatisticsText.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.BottomMenuTextColor_s));
+                    new android.os.Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            drawStatTutorial();
+                        }
+                    }, 100);
                     break;
                 case 2:
                     sDrawablePressed = ContextCompat.getDrawable(getBaseContext(), R.drawable.btn_sensio_s);
                     mBtnSensioImage.setImageDrawable(sDrawablePressed);
                     mBtnSensioText.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.BottomMenuTextColor_s));
+                    new android.os.Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            drawSensioTutorial();
+                        }
+                    }, 300);
                     break;
                 case 3:
                     sDrawablePressed = ContextCompat.getDrawable(getBaseContext(), R.drawable.btn_profile_s);
@@ -331,11 +347,6 @@ public class HomeActivity extends FragmentActivity {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
     public void setPreorderNow(boolean flag){
         preorderNow = flag;
     }
@@ -346,9 +357,9 @@ public class HomeActivity extends FragmentActivity {
     private void restCallDeviceDataApi() {
 
         RequestParams params = new RequestParams();
-        String str_userid = SaveSharedPreferences.getLoginUserData(HomeActivity.this).getId();
+        String str_userid = Global.GetInstance().GetUserModal().getId();
         String str_deviceid = utilityClass.GetDeviceID();
-        String str_email = SaveSharedPreferences.getLoginUserData(HomeActivity.this).getEmail();
+        String str_email = Global.GetInstance().GetUserModal().getEmail();
         String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
         String str_cityid =  Global.GetInstance().GetCityID();
 
@@ -451,6 +462,8 @@ public class HomeActivity extends FragmentActivity {
     }
 
     public Boolean displayNotification(Intent intent){
+        if( intent == null )
+            return false;
         Bundle extra = intent.getExtras();
         if( extra == null )
             return false;
@@ -485,6 +498,16 @@ public class HomeActivity extends FragmentActivity {
         //Show intro
         HomeFragment homeFragment = (HomeFragment)((ViewPagerAdapter)mTabPager.getAdapter()).getItem(0);
         homeFragment.drawHomeTutorial();
+    }
+
+    public void drawStatTutorial(){
+        StatisticsFragment statFragment = (StatisticsFragment)((ViewPagerAdapter)mTabPager.getAdapter()).getItem(1);
+        statFragment.drawStatTutorial();
+    }
+
+    public void drawSensioTutorial(){
+        SensioFragment sensioFragment = (SensioFragment)((ViewPagerAdapter)mTabPager.getAdapter()).getItem(2);
+        sensioFragment.drawSensioTutorial();
     }
 
 }

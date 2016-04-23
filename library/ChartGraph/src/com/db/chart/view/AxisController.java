@@ -66,6 +66,9 @@ public abstract class AxisController{
     /** Number of labels */
     int nLabels;
 
+    /** Number of labels */
+    ArrayList<String> setOfLabels;
+
     /** none/inside/outside */
     LabelPosition labelsPositioning;
 
@@ -115,7 +118,7 @@ public abstract class AxisController{
 
 
     AxisController(ChartView chartview) {
-
+        setOfLabels = new ArrayList<>();
         chartView = chartview;
         reset();
     }
@@ -131,7 +134,6 @@ public abstract class AxisController{
      *
      */
     void init() {
-
         defineLabels();
     }
 
@@ -185,6 +187,7 @@ public abstract class AxisController{
         labelsStaticPos = 0;
         labelsPositioning = LabelPosition.OUTSIDE;
         labelFormat = new DecimalFormat();
+        labelsValues = new ArrayList<>();
         axisPosition = 0;
         minLabelValue = 0;
         maxLabelValue = 0;
@@ -246,6 +249,10 @@ public abstract class AxisController{
     }
 
 
+    public void setLabelsManual(ArrayList<String> labels){
+        setOfLabels.clear();
+        setOfLabels.addAll(labels);
+    }
 
     /**
      * Get labels from values calculated before.
@@ -257,6 +264,9 @@ public abstract class AxisController{
         ArrayList<String> result = new ArrayList<>(size);
         for(int i = 0; i < size; i++)
             result.add(labelFormat.format(labelsValues.get(i)));
+        for(int i = 0; i < Math.min(setOfLabels.size(), size); i++)
+            result.set(i, setOfLabels.get(i));
+
         return result;
     }
 

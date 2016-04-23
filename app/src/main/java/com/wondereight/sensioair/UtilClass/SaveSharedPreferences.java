@@ -31,7 +31,7 @@ public class SaveSharedPreferences {
     static RequestParamsModal _modal;
     static final int DELAYED_LENGTH = 1000;
 
-    static SharedPreferences getSharedPreferences(Context ctx) {
+    private static SharedPreferences getSharedPreferences(Context ctx) {
 
         return PreferenceManager.getDefaultSharedPreferences(ctx);
     }
@@ -40,7 +40,7 @@ public class SaveSharedPreferences {
         Gson gson = new Gson();
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
         editor.putString(LoginUserData, gson.toJson(userModal));
-        editor.commit();
+        editor.apply();
     }
 
     public static UserModal getLoginUserData(Context ctx) {
@@ -52,7 +52,7 @@ public class SaveSharedPreferences {
     public static void setInstallInfo(Context ctx, Boolean installed) {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
         editor.putBoolean(InstallInfo, installed);
-        editor.commit();
+        editor.apply();
     }
 
     public static Boolean getInstallInfo(Context ctx) {

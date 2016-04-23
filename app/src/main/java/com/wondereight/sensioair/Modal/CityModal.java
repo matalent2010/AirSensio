@@ -1,7 +1,6 @@
 package com.wondereight.sensioair.Modal;
 
-
-public class CityModal
+public class CityModal extends Object
 {
 
     private String city_id;
@@ -31,5 +30,10 @@ public class CityModal
     public void setCityName(String name)
     {
         this.city_name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "{ID: " + city_id + ", City:" + city_name + "}";
     }
 }

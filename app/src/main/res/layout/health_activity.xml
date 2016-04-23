@@ -51,15 +51,14 @@
                         <CheckBox
                             style="@style/chb_style2"
                             android:text="@string/chb_conscious"
-                            android:id="@+id/chbconscious"
-                            android:checked="true"/>
+                            android:id="@+id/chbconscious"/>
                         <CheckBox
                             style="@style/chb_style2"
                             android:text="@string/chb_allergies"
                             android:id="@+id/chballergies"/>
                     </LinearLayout>
 
-                    <LinearLayout
+                    <!--<LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -96,7 +95,7 @@
                                 android:text="@string/chb_lungs"
                                 android:id="@+id/chblungs"/>
                         </LinearLayout>
-                    </LinearLayout>
+                    </LinearLayout>-->
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -121,8 +120,7 @@
                         <CheckBox
                             style="@style/chb_style2"
                             android:text="@string/chb_respiratory"
-                            android:id="@+id/chbrespiratory"
-                            android:checked="true"/>
+                            android:id="@+id/chbrespiratory"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -147,8 +145,7 @@
                         <CheckBox
                             style="@style/chb_style2"
                             android:text="@string/chb_pet"
-                            android:id="@+id/chbpet"
-                            android:checked="true"/>
+                            android:id="@+id/chbpet"/>
                     </LinearLayout>
                 </LinearLayout>
 

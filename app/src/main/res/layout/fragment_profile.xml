@@ -20,14 +20,12 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:orientation="vertical">
-                <LinearLayout
-                    style="@style/vertical_space"
-                    android:layout_weight="1"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_30sdp"
                     android:orientation="vertical">
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -42,35 +40,13 @@
                     </LinearLayout>
                 </LinearLayout>
                 <LinearLayout
-                    style="@style/vertical_space"
-                    android:layout_weight="1"/>
-                <LinearLayout
+                    android:id="@+id/profile_canvas"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_50sdp"
-                    android:layout_marginRight="@dimen/_50sdp"
+                    android:layout_marginLeft="@dimen/_40sdp"
+                    android:layout_marginRight="@dimen/_40sdp"
                     android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="10dp"
-                        android:orientation="horizontal">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_horizontal"
-                            android:layout_marginRight="5dp"
-                            android:textColor="@color/white"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="\u2022"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/profile_item1"
-                            android:textColor="@color/white"
-                            android:textAppearance="?android:attr/textAppearanceMedium"/>
-                    </LinearLayout>
-                    <LinearLayout
+                    <!--<LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="10dp"
@@ -149,30 +125,25 @@
                             android:text="@string/profile_item4"
                             android:textColor="@color/white"
                             android:textAppearance="?android:attr/textAppearanceMedium"/>
-                    </LinearLayout>
+                    </LinearLayout>-->
                 </LinearLayout>
-                <LinearLayout
-                    style="@style/vertical_space"
-                    android:layout_weight="3"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:orientation="vertical">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginBottom="@dimen/_15sdp"
                     android:layout_marginLeft="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:orientation="vertical">
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_16sdp">
+                        android:layout_height="wrap_content">
                         <Button
                             android:id="@+id/btnEditInfo"
                             style="@style/btn_edit_info"
@@ -208,7 +179,6 @@
                     android:gravity="center"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:layout_marginBottom="@dimen/_5sdp"
-                    android:layout_marginRight="20dp"
                     android:orientation="vertical">
 
                     <Button

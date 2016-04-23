@@ -209,7 +209,7 @@ public class ParsingResponse {
         result.setValueAllergen(arrDayGraphData.get(1).getfValue());
         result.setValueHumidity(arrDayGraphData.get(2).getfValue());
         result.setValueTemperature(arrDayGraphData.get(3).getfValue());
-        result.setValueSunlight(arrDayGraphData.get(4).getfValue());
+        result.setValueUvIndex(arrDayGraphData.get(4).getfValue());
         result.setValueGas(arrDayGraphData.get(5).getfValue());
         result.setValueOutbreak(arrDayGraphData.get(6).getfValue());
 
@@ -317,7 +317,7 @@ public class ParsingResponse {
         result.setValueAllergen(arrWeekGraphData.get(1).getfValue());
         result.setValueHumidity(arrWeekGraphData.get(2).getfValue());
         result.setValueTemperature(arrWeekGraphData.get(3).getfValue());
-        result.setValueSunlight(arrWeekGraphData.get(4).getfValue());
+        result.setValueUvIndex(arrWeekGraphData.get(4).getfValue());
         result.setValueGas(arrWeekGraphData.get(5).getfValue());
         result.setValueOutbreak(arrWeekGraphData.get(6).getfValue());
 
@@ -390,7 +390,7 @@ public class ParsingResponse {
         result.setValueAllergen(arrMonthGraphData.get(1).getfValue());
         result.setValueHumidity(arrMonthGraphData.get(2).getfValue());
         result.setValueTemperature(arrMonthGraphData.get(3).getfValue());
-        result.setValueSunlight(arrMonthGraphData.get(4).getfValue());
+        result.setValueUvIndex(arrMonthGraphData.get(4).getfValue());
         result.setValueGas(arrMonthGraphData.get(5).getfValue());
         result.setValueOutbreak(arrMonthGraphData.get(6).getfValue());
 
@@ -433,14 +433,14 @@ public class ParsingResponse {
         result.setValueAllergen(arrYearGraphData.get(1).getfValue());
         result.setValueHumidity(arrYearGraphData.get(2).getfValue());
         result.setValueTemperature(arrYearGraphData.get(3).getfValue());
-        result.setValueSunlight(arrYearGraphData.get(4).getfValue());
+        result.setValueUvIndex(arrYearGraphData.get(4).getfValue());
         result.setValueGas(arrYearGraphData.get(5).getfValue());
         result.setValueOutbreak(arrYearGraphData.get(6).getfValue());
 
         return result;
     }
 
-    public static ArrayList parsingCitiesList(JSONArray arr)
+    public static ArrayList<CityModal> parsingCitiesList(JSONArray arr)
     {
         ArrayList<CityModal> cityList = new ArrayList();
         for( int i=0; i<arr.length(); i++){
@@ -481,20 +481,31 @@ public class ParsingResponse {
 
     public static ArrayList<DataDetailsModal> parsingDataDetails(JSONArray arr){
         ArrayList<DataDetailsModal> result = new ArrayList<>();
+        _debug.d(LOG_TAG, "Data details count: " + arr.length());
         for ( int i=0; i<arr.length(); i++ ) {
             DataDetailsModal modal = new DataDetailsModal();
             try {
                 JSONObject obj = arr.getJSONObject(i);
+                modal.setCategory(obj.optString(Constant.STR_CATEGORY));
+                modal.setCategoryColor(obj.optString(Constant.STR_CATEGORY_COLOR));
                 modal.setParameter(obj.optString(Constant.STR_PARAMETER));
                 modal.setLogValue(obj.optString(Constant.STR_VALUE));
+                modal.setLogUnit(obj.optString(Constant.STR_LOGUNIT));
                 modal.setLogIntensity(obj.optString(Constant.STR_LOGINTENSITY));
 
                 result.add(modal);
+                _debug.v(LOG_TAG, obj.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
                 _debug.e(LOG_TAG, "DataDetailsModal JSONArray Fail: " + e.getMessage());
             }
         }
+        Collections.sort(result, new Comparator<DataDetailsModal>() {
+            @Override
+            public int compare(DataDetailsModal lhs, DataDetailsModal rhs) {
+                return lhs.getCategory().compareToIgnoreCase(rhs.getCategory());
+            }
+        });
         return result;
     }
 
@@ -510,7 +521,7 @@ public class ParsingResponse {
 
     public static HealthInfoModal parsingSavedInfo(JSONArray arr){
         HealthInfoModal result = new HealthInfoModal();
-        JSONObject obj = new JSONObject();
+        JSONObject obj;
         String fieldName;
         String strValue;
         try {
@@ -525,15 +536,15 @@ public class ParsingResponse {
                     case ALLERGIES:
                         result.setAllergies(strValue);
                         break;
-                    case EYES:
-                        result.setEyes(strValue);
-                        break;
-                    case NOSE:
-                        result.setNose(strValue);
-                        break;
-                    case LUNGS:
-                        result.setLungs(strValue);
-                        break;
+//                    case EYES:
+//                        result.setEyes(strValue);
+//                        break;
+//                    case NOSE:
+//                        result.setNose(strValue);
+//                        break;
+//                    case LUNGS:
+//                        result.setLungs(strValue);
+//                        break;
                     case SPECIFY:
                         result.setSpecify(strValue);
                         break;
@@ -578,5 +589,22 @@ public class ParsingResponse {
         else if ( strName.equalsIgnoreCase(Constant.STR_PET) )
             return PET;
         return 0;
+    }
+
+    public static ArrayList<String> parsingProfileInfo(JSONArray arr){
+        ArrayList<String> result = new ArrayList<>();
+        JSONObject obj;
+        String description;
+        for(int i = 0; i<arr.length(); i++){
+            try {
+                obj = arr.getJSONObject(i);
+                description = obj.optString("description", "");
+                if( !description.isEmpty() )
+                    result.add(description);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
     }
 }

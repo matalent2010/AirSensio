@@ -223,8 +223,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_20sdp"
-                    android:layout_marginLeft="@dimen/_90sdp"
-                    android:layout_marginRight="@dimen/_90sdp"
+                    android:layout_marginLeft="@dimen/_60sdp"
+                    android:layout_marginRight="@dimen/_60sdp"
                     android:orientation="horizontal">
                     <LinearLayout
                         android:id="@+id/btn_facebook"

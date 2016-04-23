@@ -23,12 +23,17 @@ import com.wondereight.sensioair.Modal.UserModal;
 import com.wondereight.sensioair.R;
 import com.wondereight.sensioair.UtilClass.AirSensioRestClient;
 import com.wondereight.sensioair.UtilClass.Constant;
+import com.wondereight.sensioair.UtilClass.Global;
+import com.wondereight.sensioair.UtilClass.ParsingResponse;
 import com.wondereight.sensioair.UtilClass.SaveSharedPreferences;
 import com.wondereight.sensioair.UtilClass.UtilityClass;
 import com.wondereight.sensioair.UtilClass.Validation;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by Miguel on 02/2/2016.
@@ -41,17 +46,18 @@ public class HealthActivity extends AppCompatActivity {
 
     HealthInfoModal infoModal;
     boolean havingModal = false;
+    private static int nCountCallingProfile = 0;
 
     @Bind(R.id.chbconscious)
     CheckBox chbConscious;
     @Bind(R.id.chballergies)
     CheckBox chbAllergies;
-    @Bind(R.id.chbeyes)
-    CheckBox chbEyes;
-    @Bind(R.id.chbnose)
-    CheckBox chbNose;
-    @Bind(R.id.chblungs)
-    CheckBox chbLungs;
+//    @Bind(R.id.chbeyes)       //removed by Habib 4/19
+//    CheckBox chbEyes;
+//    @Bind(R.id.chbnose)
+//    CheckBox chbNose;
+//    @Bind(R.id.chblungs)
+//    CheckBox chbLungs;
     @Bind(R.id.etspecify)
     EditText etSpecify;
     @Bind(R.id.chbrespiratory)
@@ -118,9 +124,9 @@ public class HealthActivity extends AppCompatActivity {
     private void setViewsWithModal(HealthInfoModal modal){
         chbConscious.setChecked(modal.getConscious());
         chbAllergies.setChecked(modal.getAllergies());
-        chbEyes.setChecked(modal.getEyes());
-        chbNose.setChecked(modal.getNose());
-        chbLungs.setChecked(modal.getLungs());
+//        chbEyes.setChecked(modal.getEyes());
+//        chbNose.setChecked(modal.getNose());
+//        chbLungs.setChecked(modal.getLungs());
         etSpecify.setText(modal.getSpecify());
         chbRespiratory.setChecked(modal.getRespiratory());
         etAnotherApecify.setText(modal.getAnotherspecify());
@@ -142,9 +148,9 @@ public class HealthActivity extends AppCompatActivity {
 
         String str_conscious = chbConscious.isChecked() ? "1" : "0";
         String str_allergies = chbAllergies.isChecked() ? "1" : "0";
-        String str_eyes = chbEyes.isChecked() ? "1" : "0";
-        String str_nose = chbNose.isChecked() ? "1" : "0";
-        String str_lungs = chbLungs.isChecked() ? "1" : "0";
+//        String str_eyes = chbEyes.isChecked() ? "1" : "0";
+//        String str_nose = chbNose.isChecked() ? "1" : "0";
+//        String str_lungs = chbLungs.isChecked() ? "1" : "0";
         String str_specify = etSpecify.getText().toString();
         String str_respiratory = chbRespiratory.isChecked() ? "1" : "0";
         String str_anotherspecify = etAnotherApecify.getText().toString();
@@ -152,15 +158,15 @@ public class HealthActivity extends AppCompatActivity {
 
 
 
-        String str_email = SaveSharedPreferences.getLoginUserData(HealthActivity.this).getEmail();
+        String str_email = Global.GetInstance().GetUserModal().getEmail();
         String str_deviceid = utilityClass.GetDeviceID();
         String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
 
         params.put(Constant.STR_CONSCIOUS, str_conscious);
         params.put(Constant.STR_HAVEALLERGIES, str_allergies);
-        params.put(Constant.STR_EYES, str_eyes);
-        params.put(Constant.STR_NOSE, str_nose);
-        params.put(Constant.STR_LUNGS, str_lungs);
+//        params.put(Constant.STR_EYES, str_eyes);
+//        params.put(Constant.STR_NOSE, str_nose);
+//        params.put(Constant.STR_LUNGS, str_lungs);
         params.put(Constant.STR_ALLERGIESOTHER, str_specify);
         params.put(Constant.STR_RES_DISTRESS, str_respiratory);
         params.put(Constant.STR_RES_OTHER, str_anotherspecify);
@@ -186,7 +192,7 @@ public class HealthActivity extends AppCompatActivity {
                     _debug.e(LOG_TAG, "None response string");
                 } else if (responseString.equals("0")) {
                     if( havingModal ){
-                        finish();
+                        restCallGetProfileInfoApi();
                     } else {
                         Intent HomeIntent = new Intent(HealthActivity.this, HomeActivity.class);
                         HomeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -229,5 +235,104 @@ public class HealthActivity extends AppCompatActivity {
         });
     }
 
+    public void goBack(int result){
+        Intent intent = new Intent();
+        setResult(result, intent);
+        finish();
+    }
+    private void restCallGetProfileInfoApi() {
 
+        RequestParams params = new RequestParams();
+        UserModal userModal = Global.GetInstance().GetUserModal();
+        String str_userid = userModal.getId();
+        String str_email = userModal.getEmail();
+        String str_deviceid = utilityClass.GetDeviceID();
+        String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
+
+        params.put(Constant.STR_USERID, str_userid);
+        params.put(Constant.STR_EMAIL, str_email);
+        params.put(Constant.STR_DEVICEID, str_deviceid);
+        params.put(Constant.STR_HASH, str_hash);
+
+        AirSensioRestClient.post(AirSensioRestClient.GET_PROFILE_INFO, params, new TextHttpResponseHandler() {
+            @Override
+            public void onStart() {
+                // called before request is started
+                utilityClass.processDialogStart(false);
+                _debug.d(LOG_TAG, "AirSensioRestClient.GET_PROFILE_INFO.onStart");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                utilityClass.processDialogStop();
+                if (responseString == null) {
+                    _debug.e(LOG_TAG, "None response string");
+                } else if (responseString.equals("0")) {
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.no_saved_info));
+                    _debug.e(LOG_TAG, "No Saved Info");
+                } else if (responseString.equals("1")) {
+
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.incorrect_hash));
+                    _debug.e(LOG_TAG, "Incorrect Hash");
+                } else if (responseString.equals("2")) {
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.device_not));
+                    _debug.d(LOG_TAG, "Device ID not provided");
+                } else if (responseString.equals("3")) {
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.userid_not));
+                    _debug.d(LOG_TAG, "User ID not provided");
+                } else if (responseString.equals("9")) {
+                    utilityClass.showAlertMessage(getResources().getString(R.string.title_notice), getResources().getString(R.string.no_exist));
+                    _debug.d(LOG_TAG, "Nothing Found");
+                } else {
+                    try {
+                        ArrayList<String> profile = ParsingResponse.parsingProfileInfo(new JSONArray(responseString));
+                        Global.GetInstance().SetProfileInfo(profile);
+                        _debug.d(LOG_TAG, "AirSensioRestClient.GET_PROFILE_INFO.Success");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        _debug.e(LOG_TAG, "GET_PROFILE_INFO Exception Error:" + responseString);
+
+                        Global.GetInstance().SetProfileInfo(new ArrayList<String>());
+                    }
+
+                    goBack(RESULT_OK);
+                }
+                Global.GetInstance().SetProfileLoadState(true);
+                nCountCallingProfile = 0;
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                //utilityClass.processDialogStop();
+                //utilityClass.toast(getResources().getString(R.string.check_internet));
+                _debug.e(LOG_TAG, "errorString: " + responseString);
+                nCountCallingProfile++;
+                if (nCountCallingProfile < 3) {
+                    restCallGetProfileInfoApi();
+                } else {
+                    nCountCallingProfile = 0;
+                }
+            }
+
+            @Override
+            public void onRetry(int retryNo) {
+                // called when request is retried{
+                //utilityClass.toast(getResources().getString(R.string.try_again));
+                _debug.d(LOG_TAG, "AirSensioRestClient.GET_PROFILE_INFO.onRetry");
+                nCountCallingProfile++;
+                if (nCountCallingProfile < 3) {
+                    restCallGetProfileInfoApi();
+                } else {
+                    nCountCallingProfile = 0;
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                utilityClass.processDialogStop();
+                _debug.d(LOG_TAG, "AirSensioRestClient.GET_PROFILE_INFO.onFinish");
+            }
+
+        });
+    }
 }

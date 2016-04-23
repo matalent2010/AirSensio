@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
@@ -70,17 +71,20 @@ public class UtilityClass {
                 if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
                     // connected to wifi
                     //Toast.makeText(context, activeNetwork.getTypeName(), Toast.LENGTH_SHORT).show();
+                    Log.i("Network State:", "wifi enabled");
                     return true;
                 } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
                     // connected to the mobile provider's data plan
                     //Toast.makeText(context, activeNetwork.getTypeName(), Toast.LENGTH_SHORT).show();
+                    Log.i("Network State:", "mobile enabled");
                     return true;
                 }
             }
+            Log.i("Network State:", "no enabled");
             return false;
 
         } catch (Exception e) {
-            Log.e("Network Check Error", e.toString());
+            Log.i("Network Check Error:", e.toString());
             return false;
         }
     }
@@ -331,5 +335,25 @@ public class UtilityClass {
         if( _r != null)
             _r.run();
         return true;
+    }
+
+
+    public static String getExtraString(Intent data){
+        String result = "";
+        if( data == null )
+            return result;
+        Bundle bundle = data.getExtras();
+
+        if( bundle != null ){
+            for (String key : bundle.keySet()) {
+                Object value = bundle.get(key);
+                try {
+                    assert value != null;
+                    result += String.format("%s %s (%s)", key,
+                            value.toString(), value.getClass().getName());
+                } catch ( Exception ignored) {}
+            }
+        }
+        return result;
     }
 }

@@ -1165,6 +1165,17 @@ public abstract class ChartView extends RelativeLayout{
 
 
 	/**
+	 * Set Y labels and respective axis.
+	 *
+	 * @param labels   Y-axis labels set
+	 * @return {@link com.db.chart.view.ChartView} self-reference.
+	 */
+	public ChartView setYLabelsManual(ArrayList<String> labels){
+		verController.setLabelsManual(labels);
+		return this;
+	}
+
+	/**
 	 * Show/Hide X labels and respective axis.
 	 *
 	 * @param position   NONE - No labels

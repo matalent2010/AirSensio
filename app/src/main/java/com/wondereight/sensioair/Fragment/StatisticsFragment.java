@@ -26,6 +26,7 @@ import com.db.chart.view.LineChartView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.wondereight.sensioair.Activity.HomeActivity;
 import com.wondereight.sensioair.Helper._Debug;
 import com.wondereight.sensioair.Modal.DataDetailsModal;
 import com.wondereight.sensioair.Modal.UserModal;
@@ -43,12 +44,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EmptyStackException;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTouch;
+import co.mobiwise.materialintro.animation.MaterialIntroListener;
+import co.mobiwise.materialintro.prefs.PreferencesManager;
+import co.mobiwise.materialintro.shape.ArrowType;
+import co.mobiwise.materialintro.shape.Focus;
+import co.mobiwise.materialintro.shape.FocusGravity;
+import co.mobiwise.materialintro.view.MaterialIntroView;
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -57,7 +66,7 @@ import cz.msebera.android.httpclient.Header;
 
 
 
-public class StatisticsFragment extends Fragment {
+public class StatisticsFragment extends Fragment implements MaterialIntroListener {
     public static final int GS_DAY = 0;
     public static final int GS_WEEK = 1;
     public static final int GS_MONTH = 2;
@@ -305,9 +314,10 @@ public class StatisticsFragment extends Fragment {
                 .setLabelsColor(Color.parseColor("#FFFFFF"))
                 .setGrid(ChartView.GridType.HORIZONTAL, 2, 5, gridPaint)
                 .setStep(5) //.setStep(100)
+                .setYLabelsManual(new ArrayList<>(Arrays.asList(new String[]{"Low", "Med", "High"})))
                 .setXAxis(false)
                 .setYAxis(false);
-        if( mChart.getData().isEmpty() == true)
+        if( mChart.getData().isEmpty() )
         {
             LineSet dataset = new LineSet(new String[]{""}, new float[]{0});
             mChart.addData(dataset);
@@ -407,9 +417,9 @@ public class StatisticsFragment extends Fragment {
                 mChart.addData(dataset);
             } catch ( IllegalArgumentException e ){ _debug.w(LOG_TAG, "Temperature Graph is null.");}
         }
-        if(stateStatistics.get(4) == true){   //Sunlight Graph
+        if(stateStatistics.get(4) == true){   //UV index Graph
             try {
-                dataset = new LineSet(itemSet.getLabel(), itemSet.getValueSunlight());
+                dataset = new LineSet(itemSet.getLabel(), itemSet.getValueUvIndex());
                 dataset.setColor(Color.parseColor("#FFFFFF"))
                         .setDotsColor(Color.parseColor("#f4eb49"))
                         .setThickness(4)
@@ -417,7 +427,7 @@ public class StatisticsFragment extends Fragment {
                         .setDotsStrokeThickness(2);
                 if( styleGraph == GS_DAY) dataset.endAt(8); //don't show 24:00 point, if Graph style is DAY
                 mChart.addData(dataset);
-            } catch ( IllegalArgumentException e ){ _debug.w(LOG_TAG, "Sunlight Graph is null.");}
+            } catch ( IllegalArgumentException e ){ _debug.w(LOG_TAG, "UV index Graph is null.");}
         }
         if(stateStatistics.get(5) == true){   //Gas Graph
             try{
@@ -460,7 +470,7 @@ public class StatisticsFragment extends Fragment {
         mDayChartItemSet.setValueAllergen(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
         mDayChartItemSet.setValueHumidity(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
         mDayChartItemSet.setValueTemperature(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
-        mDayChartItemSet.setValueSunlight(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
+        mDayChartItemSet.setValueUvIndex(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
         mDayChartItemSet.setValueGas(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
 
         mWeekChartItemSet.setLabel(new String[]{"16", "17", "18", "19"});
@@ -468,7 +478,7 @@ public class StatisticsFragment extends Fragment {
         mWeekChartItemSet.setValueAllergen(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
         mWeekChartItemSet.setValueHumidity(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
         mWeekChartItemSet.setValueTemperature(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
-        mWeekChartItemSet.setValueSunlight(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
+        mWeekChartItemSet.setValueUvIndex(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
         mWeekChartItemSet.setValueGas(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
 
         mMonthChartItemSet.setLabel(new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"});
@@ -476,7 +486,7 @@ public class StatisticsFragment extends Fragment {
         mMonthChartItemSet.setValueAllergen(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
         mMonthChartItemSet.setValueHumidity(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
         mMonthChartItemSet.setValueTemperature(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
-        mMonthChartItemSet.setValueSunlight(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
+        mMonthChartItemSet.setValueUvIndex(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
         mMonthChartItemSet.setValueGas(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
 
         mYearChartItemSet.setLabel(new String[]{"2015", "2016", "2017"});
@@ -484,7 +494,7 @@ public class StatisticsFragment extends Fragment {
         mYearChartItemSet.setValueAllergen(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
         mYearChartItemSet.setValueHumidity(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
         mYearChartItemSet.setValueTemperature(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
-        mYearChartItemSet.setValueSunlight(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
+        mYearChartItemSet.setValueUvIndex(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
         mYearChartItemSet.setValueGas(new float[]{(float) (Math.random() * 10), (float) (Math.random() * 10), (float) (Math.random() * 10)});
 
         return ;
@@ -546,9 +556,10 @@ public class StatisticsFragment extends Fragment {
     private void restCallGraphDataApi(final int style) {
 
         RequestParams params = new RequestParams();
-        String str_userid = SaveSharedPreferences.getLoginUserData(getContext()).getId();
-        String str_deviceid = utilityClass.GetDeviceID(); //"DAE24875-8366-4692-8B15-BA8C6634B691";
-        String str_email = SaveSharedPreferences.getLoginUserData(getContext()).getEmail();
+        String str_userid, str_deviceid, str_email;
+        str_userid = Global.GetInstance().GetUserModal().getId();
+        str_deviceid = utilityClass.GetDeviceID(); //"DAE24875-8366-4692-8B15-BA8C6634B691";
+        str_email = Global.GetInstance().GetUserModal().getEmail();
         String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
         String str_cityid =  "1"; //Global.GetInstance().GetCityName().isEmpty() ? Constant.DEFAULT_CITYNAME : Global.GetInstance().GetCityName();
 
@@ -565,42 +576,49 @@ public class StatisticsFragment extends Fragment {
             @Override
             public void onStart() {
                 // called before request is started
-                chartloading.setVisibility(View.VISIBLE);
+                try {
+                    chartloading.setVisibility(View.VISIBLE);
+                } catch ( Exception ignore ){}
                 _debug.d(LOG_TAG, "AirSensioRestClient.onStart(GET_GRAPH_DATA)");
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 // If the response is JSONObject instead of expected JSONArray
-                chartloading.setVisibility(View.GONE);
+                try {
+                    chartloading.setVisibility(View.GONE);
+                } catch ( Exception ignore ){}
                 _debug.d(LOG_TAG, "Recieved JSONObject result");
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 // Pull out the first event on the public response
-                chartloading.setVisibility(View.GONE);
-                switch (style) {
-                    case GS_DAY:
-                        mDayChartItemSet = ParsingResponse.parsingGraphData(response, style);
-                        break;
-                    case GS_WEEK:
-                        mWeekChartItemSet = ParsingResponse.parsingGraphData(response, style);
-                        break;
-                    case GS_MONTH:
-                        mMonthChartItemSet = ParsingResponse.parsingGraphData(response, style);
-                        break;
-                    case GS_YEAR:
-                        mYearChartItemSet = ParsingResponse.parsingGraphData(response, style);
-                        break;
-                }
-                redrawGraph(_view);
+                try {
+                    chartloading.setVisibility(View.GONE);
+                    switch (style) {
+                        case GS_DAY:
+                            mDayChartItemSet = ParsingResponse.parsingGraphData(response, style);
+                            break;
+                        case GS_WEEK:
+                            mWeekChartItemSet = ParsingResponse.parsingGraphData(response, style);
+                            break;
+                        case GS_MONTH:
+                            mMonthChartItemSet = ParsingResponse.parsingGraphData(response, style);
+                            break;
+                        case GS_YEAR:
+                            mYearChartItemSet = ParsingResponse.parsingGraphData(response, style);
+                            break;
+                    }
+                    redrawGraph(_view);
+                } catch ( Exception ignore ){}
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
-                chartloading.setVisibility(View.GONE);
+                try {
+                    chartloading.setVisibility(View.GONE);
+                } catch ( Exception ignore ){}
                 if (responseString == null) {
 
                     _debug.e(LOG_TAG, "None response string");
@@ -616,7 +634,7 @@ public class StatisticsFragment extends Fragment {
                     _debug.d(LOG_TAG, "User ID not provided");
                 } else if (responseString.equals("9")) {
 
-                    utilityClass.toast(getResources().getString(R.string.not_found));
+                    utilityClass.toast(getString(R.string.not_found));
                     _debug.d(LOG_TAG, "Device not found");
                 } else {
                     _debug.e(LOG_TAG, "Get Device Data Error:" + responseString);
@@ -625,16 +643,20 @@ public class StatisticsFragment extends Fragment {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                chartloading.setVisibility(View.GONE);
-                utilityClass.toast(getResources().getString(R.string.check_internet));
+                try {
+                    chartloading.setVisibility(View.GONE);
+                    utilityClass.toast(getString(R.string.check_internet));
+                } catch ( Exception ignore ){}
                 if (errorResponse == null) _debug.d(LOG_TAG, "errorJSONObject: null");
                 else _debug.d(LOG_TAG, "errorJSONObject:" + errorResponse.toString());
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                chartloading.setVisibility(View.GONE);
-                utilityClass.toast(getResources().getString(R.string.check_internet));
+                try {
+                    chartloading.setVisibility(View.GONE);
+                    utilityClass.toast(getString(R.string.check_internet));
+                } catch ( Exception ignore ){}
                 if (errorResponse == null) _debug.d(LOG_TAG, "errorJSONArray: null");
                 else _debug.d(LOG_TAG, "errorJSONArray:" + errorResponse.toString());
             }
@@ -642,16 +664,67 @@ public class StatisticsFragment extends Fragment {
             @Override
             public void onRetry(int retryNo) {
                 // called when request is retried{
-                chartloading.setVisibility(View.GONE);
-                utilityClass.toast(getResources().getString(R.string.try_again));
+                try {
+                    chartloading.setVisibility(View.GONE);
+                    utilityClass.toast(getString(R.string.try_again));
+                } catch ( Exception ignore ){}
                 _debug.d(LOG_TAG, "AirSensioRestClient.GET_GRAPH_DATA.onRetry");
             }
 
             @Override
             public void onFinish() {
-                chartloading.setVisibility(View.GONE);
+                try {
+                    chartloading.setVisibility(View.GONE);
+                } catch ( Exception ignore ){}
             }
 
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        _debug.d(LOG_TAG, "StatisticsFragment destroyed.");
+        AirSensioRestClient.cancelRequest(getContext());
+        super.onDestroy();
+    }
+
+    public void drawStatTutorial(){
+        drawStatTutorial(mChart);
+    }
+
+    public void drawStatTutorial(View viewEnvir){
+        //Show intro
+        if( viewEnvir != null ){
+            //new PreferencesManager(getContext()).reset(Constant.INTRO_ID_4);
+            showIntro(viewEnvir, Constant.INTRO_ID_4, getString(R.string.tutorial_statisticss), ArrowType.AT_NORMAL);
+        }
+    }
+
+    private void showIntro(View view, String usageId, String text, ArrowType type){
+
+        new MaterialIntroView.Builder(getActivity())
+                .setMaskColor(0x70000000)
+                .setTextColor(0xFF3F9CFF)
+                .enableDotAnimation(false)
+                .setFocusGravity(FocusGravity.CENTER)
+                .setFocusType(Focus.MINIMUM)
+                .setDelayMillis(200)
+                .enableFadeAnimation(true)
+                .performClick(true)
+                .setListener(this)
+                .setArrowType(type)
+                .setInfoText(text)
+                .enableInfoIDText(true)     //Info ID text appear
+                .enableIcon(false)
+                .setTarget(view)
+                .setUsageId(usageId) //THIS SHOULD BE UNIQUE ID
+                .show();
+    }
+
+    @Override
+    public void onUserClicked(String materialIntroViewId) {
+        if( materialIntroViewId == Constant.INTRO_ID_4 ){
+            ((HomeActivity)getActivity()).mTabPager.setCurrentItem(2);
+        }
     }
 }

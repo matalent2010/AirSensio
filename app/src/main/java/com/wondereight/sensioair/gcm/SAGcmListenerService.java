@@ -99,11 +99,10 @@ public class SAGcmListenerService extends GcmListenerService {
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 //        int count = Integer.valueOf( sharedPreferences.getString(SAPreferences.COUNT_MESSAGES, "0") );
-//        count++;
+//        sharedPreferences.edit().putString(SAPreferences.COUNT_MESSAGES, String.valueOf(count+1)).apply();
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());    //notificationManager.notify(count /* ID of notification */, notificationBuilder.build());
-//        sharedPreferences.edit().putString(SAPreferences.COUNT_MESSAGES, String.valueOf(count)).apply();
     }
 }

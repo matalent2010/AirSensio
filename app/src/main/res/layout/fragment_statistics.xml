@@ -333,7 +333,7 @@
                         android:layout_marginLeft="@dimen/_8sdp"
                         android:gravity="center"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Your outbreaks"
+                        android:text="Your symptoms"
                         android:textColor="@color/black"/>
 
                 </LinearLayout>
@@ -357,8 +357,10 @@
                             android:id="@+id/chart1"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="20dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
                             android:layout_marginRight="20dp"
+                            android:layout_marginEnd="20dp"
                             android:layout_marginBottom="15dp"
                             chart:chart_axisColor="#30547d99"
                             chart:chart_typeface="OpenSans-Regular.ttf"/>

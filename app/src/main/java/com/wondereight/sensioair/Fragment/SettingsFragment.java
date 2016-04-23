@@ -23,6 +23,7 @@ import com.wondereight.sensioair.Modal.UserModal;
 import com.wondereight.sensioair.R;
 import com.wondereight.sensioair.UtilClass.AirSensioRestClient;
 import com.wondereight.sensioair.UtilClass.Constant;
+import com.wondereight.sensioair.UtilClass.Global;
 import com.wondereight.sensioair.UtilClass.SaveSharedPreferences;
 import com.wondereight.sensioair.UtilClass.UtilityClass;
 
@@ -83,6 +84,13 @@ public class SettingsFragment extends Fragment {
         startActivity(intentTerms);
     }
 
+    @Override
+    public void onDestroy() {
+        _debug.d(LOG_TAG, "StatisticsFragment destroyed.");
+        AirSensioRestClient.cancelRequest(getContext());
+        super.onDestroy();
+    }
+
     private boolean checkValidation() {
         boolean ret = true;
 
@@ -94,7 +102,7 @@ public class SettingsFragment extends Fragment {
     private void restCallSaveSettingsApi() {
 
         RequestParams params = new RequestParams();
-        UserModal userModal = SaveSharedPreferences.getLoginUserData(getActivity());
+        UserModal userModal = Global.GetInstance().GetUserModal();
         String str_noti_allergens = String.valueOf(sbAllergens.getSteps());
         String str_noti_pollution = String.valueOf(sbPollution.getSteps());
         String str_userid = userModal.getId();
@@ -171,7 +179,7 @@ public class SettingsFragment extends Fragment {
     private void restCallSendUserinfoApi() {
 
         RequestParams params = new RequestParams();
-        UserModal userModal = SaveSharedPreferences.getLoginUserData(getActivity());
+        UserModal userModal = Global.GetInstance().GetUserModal();
         String str_userid = userModal.getId();
         String str_email = userModal.getEmail();
         String str_deviceid = utilityClass.GetDeviceID();
@@ -238,16 +246,16 @@ public class SettingsFragment extends Fragment {
     }
 
     private boolean SaveSettings(){
-        UserModal user = SaveSharedPreferences.getLoginUserData(_context);
+        UserModal user = Global.GetInstance().GetUserModal();
         user.setThresholdAllergens(String.valueOf(sbAllergens.getSteps()));
         user.setThresholdPollution(String.valueOf(sbPollution.getSteps()));
-        SaveSharedPreferences.setLoginUserData(_context, user);
+        Global.GetInstance().SaveUserModal(_context, user);
         return true;
     }
 
     private boolean setSettingsValue(){
-        String allergens = SaveSharedPreferences.getLoginUserData(_context).getThresholdAllergens();
-        String pollution = SaveSharedPreferences.getLoginUserData(_context).getThresholdPollution();
+        String allergens = Global.GetInstance().GetUserModal().getThresholdAllergens();
+        String pollution = Global.GetInstance().GetUserModal().getThresholdPollution();
         int nAllergens = Integer.valueOf(allergens);
         int nPollution = Integer.valueOf(pollution);
         nAllergens = nAllergens<0 ? 5 : nAllergens>10 ? 5 : nAllergens;

@@ -44,7 +44,7 @@ public class PhoneNumberInput extends PhoneNumberFormattingTextWatcher {
         //what matters are the phone digits beneath the mask, so we always work with a raw string with only digits
         String phone = string.replaceAll("[^\\d]", "");
 
-        //if the text was just edited, :afterTextChanged is called another time... so we need to verify the flag of edition
+/*        //if the text was just edited, :afterTextChanged is called another time... so we need to verify the flag of edition
         //if the flag is false, this is a original user-typed entry. so we go on and do some magic
         if (!editedFlag) {
 
@@ -72,6 +72,6 @@ public class PhoneNumberInput extends PhoneNumberFormattingTextWatcher {
             // We just edited the field, ignoring this cicle of the watcher and getting ready for the next
         } else {
             editedFlag = false;
-        }
+        }*/
     }
 }

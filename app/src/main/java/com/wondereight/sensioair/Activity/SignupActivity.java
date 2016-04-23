@@ -14,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
 import android.util.Log;
 import android.view.Menu;
@@ -130,6 +131,8 @@ public class SignupActivity extends AppCompatActivity {
     EditText etLastName;
     @Bind(R.id.etPhonenum)
     EditText etPhonenum;
+    @Bind(R.id.etCountryCode)
+    EditText etCountryCode;
     @Bind(R.id.tvBirthday)
     TextView tvBirthday;
     @Bind(R.id.chbMale)
@@ -153,6 +156,7 @@ public class SignupActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         etPhonenum.addTextChangedListener(new PhoneNumberInput(etPhonenum));
+        etCountryCode.addTextChangedListener(new PhoneNumberInput(etCountryCode));
 
         utilityClass = new UtilityClass(this);
 
@@ -310,7 +314,7 @@ public class SignupActivity extends AppCompatActivity {
         String str_lastname = etLastName.getText().toString();
         String str_email = mEmail;
         String str_gender = chbMale.isChecked() ? "Male" : "Female";
-        String str_phone = etPhonenum.getText().toString();
+        String str_phone = "+" + etCountryCode.getText().toString() + etPhonenum.getText().toString();
         String str_birthday = tvBirthday.getText().toString();
         final String str_deviceid = utilityClass.GetDeviceID();
         String str_newsletter = chbNewsletter.isChecked() ? "1" : "0";
@@ -334,6 +338,7 @@ public class SignupActivity extends AppCompatActivity {
         params.put(Constant.STR_HASH, str_hash);
         //params.put(Constant.STR_CITYFLAG, str_hash);
 
+        _debug.d(LOG_TAG, params.toString());
         AirSensioRestClient.post(AirSensioRestClient.SIGNUP, params, new JsonHttpResponseHandler(false) {
             @Override
             public void onStart() {
@@ -443,7 +448,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private void goHealthActivity(){
-        SaveSharedPreferences.setLoginUserData(SignupActivity.this, userModal);
+        Global.GetInstance().SaveUserModal(SignupActivity.this, userModal);
         Intent HealthActivity = new Intent(SignupActivity.this, HealthActivity.class);
         startActivity(HealthActivity);
         finish();
@@ -598,6 +603,10 @@ public class SignupActivity extends AppCompatActivity {
 
         btnTwitter_login_button.onActivityResult(requestCode, resultCode, data);
 
+        if( liSessionManager == null) {
+            liSessionManager = LISessionManager.getInstance(getApplicationContext());
+            _debug.e(LOG_TAG, "after liSessionManager.init() liSessionManager is null!");
+        }
         if( liSessionManager != null )
             liSessionManager.onActivityResult(this, requestCode, resultCode, data);
     }

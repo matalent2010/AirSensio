@@ -1,6 +1,10 @@
 package com.wondereight.sensioair.UtilClass;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.wondereight.sensioair.Modal.CityModal;
+import com.wondereight.sensioair.Modal.UserModal;
 import com.wondereight.sensioair.R;
 
 import java.util.ArrayList;
@@ -14,30 +18,39 @@ public class Global {
 
     public static int runningActivities = 0;
 
+    private UserModal UserModal = null;
+
     // Signup | Signin page
     private String GeoCityName = "";
     private String Geolocation = "";    //not use now
 
-    private ArrayList<CityModal> CitiesList = new ArrayList();
+    private ArrayList<CityModal> CitiesList = new ArrayList<>();
     private String CityName = Constant.DEFAULT_CITYNAME;
     private String CityID = Constant.DEFAULT_CITYID;
 
-    private boolean isConnected;
+    private boolean isOnlineMode;
+
+    private boolean isLoadedProfile = false;
+    private ArrayList<String> strProfile = new ArrayList<>();
 
     // Select Symptom page
     private int[] StateSymptomList = new int[] {0,0,0,0,0,0};
 
     Global(){
-        isConnected = false;
+        isOnlineMode = false;
     }
 
     public void init(){
+        UserModal = null;
         GeoCityName = "";
         Geolocation = "";    //not use now
 
         CitiesList.clear();
         CityName = Constant.DEFAULT_CITYNAME;
         CityID = Constant.DEFAULT_CITYID;
+
+        isLoadedProfile = false;
+        strProfile.clear();
 
         for( int i = 0; i<6; i++) {
             StateSymptomList[i] =0;
@@ -48,6 +61,25 @@ public class Global {
         if (mInstance == null)
             mInstance = new Global();
         return mInstance;
+    }
+
+    public Boolean SetUserModalFromShared(Context context){
+        if ( SaveSharedPreferences.isLogedinUser(context) ) {
+            UserModal = SaveSharedPreferences.getLoginUserData(context);
+            return true;
+        } else {
+            UserModal = null;
+            return false;
+        }
+    }
+
+    public UserModal GetUserModal() {
+        return UserModal;
+    }
+
+    public void SaveUserModal(Context context, UserModal userModal) {
+        SaveSharedPreferences.setLoginUserData(context, userModal);
+        this.UserModal = userModal;
     }
 
     public String GetGeoCityName(){
@@ -105,10 +137,25 @@ public class Global {
         return CitiesList;
     }
 
-    public boolean GetNetworkState(){
-        return isConnected;
+    public boolean IsOnlineMode(){
+        return isOnlineMode;
     }
-    public void SetNetworkState(boolean state){
-        isConnected = state;
+    public void SetOnlineMode(boolean state){
+        isOnlineMode = state;
+    }
+
+
+    public boolean GetProfileLoadState(){
+        return isLoadedProfile;
+    }
+    public void SetProfileLoadState(boolean state){
+        isLoadedProfile = state;
+    }
+
+    public ArrayList<String> GetProfileInfo(){
+        return strProfile;
+    }
+    public void SetProfileInfo(ArrayList<String> info){
+        strProfile = info;
     }
 }

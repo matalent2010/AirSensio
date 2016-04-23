@@ -41,17 +41,19 @@ public class SplashScreen extends AppCompatActivity {
 
         /* New Handler to start the Menu-Activity
          * and close this Splash-Screen after some seconds.*/
-        Global.GetInstance().SetNetworkState(UtilityClass.isInternetConnection(SplashScreen.this));
+        Global.GetInstance().SetOnlineMode(UtilityClass.isInternetConnection(SplashScreen.this));
 
-        utilityClass = new UtilityClass(SplashScreen.this);
-        if( utilityClass.isHavingSymptomList() ){
-            utilityClass.sendSymptomList(new Runnable() {
-                @Override
-                public void run() {
-                    goMainActivity();
-                }
-            });
-            mNothingPreWork = false;
+        if( Global.GetInstance().IsOnlineMode() ) {
+            utilityClass = new UtilityClass(SplashScreen.this);
+            if (utilityClass.isHavingSymptomList()) {
+                utilityClass.sendSymptomList(new Runnable() {
+                    @Override
+                    public void run() {
+                        goMainActivity();
+                    }
+                });
+                mNothingPreWork = false;
+            }
         }
 
         if ( mNothingPreWork ) {

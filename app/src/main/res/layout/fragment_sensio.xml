@@ -24,6 +24,7 @@
                     android:layout_height="@dimen/_250sdp"
                     android:background="@drawable/bg_camera_1">
                     <ImageView
+                        android:id="@+id/scan_view"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:src="@drawable/sensio_large"/>
@@ -51,24 +52,35 @@
                 <!--android:textStyle="bold"-->
                 <!--android:textColor="@color/white"-->
                 <!--android:text="@string/str_scann_qrcode"/>-->
-                <TextView
+                <LinearLayout
+                    android:id="@+id/preorder_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_30sdp"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/white"
-                    android:text="@string/str_nodevice"/>
-                <TextView
-                    android:id="@+id/btn_preorder"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/textwhitebtn"
-                    android:text="@string/btn_sensio_now"
-                    android:clickable="true"
-                    android:focusableInTouchMode="true"
-                    android:focusable="true"/>
+                    android:orientation="vertical"
+                    android:layout_marginTop="@dimen/_30sdp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/white"
+                        android:textStyle="italic"
+                        android:text="@string/str_nodevice"/>
+                    <TextView
+                        android:id="@+id/btn_preorder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/textwhitebtn"
+                        android:textStyle="italic"
+                        android:text="@string/btn_sensio_now"
+                        android:clickable="true"
+                        android:focusableInTouchMode="true"
+                        android:focusable="true"/>
+                </LinearLayout>
+
 
             </LinearLayout>
         </LinearLayout>

@@ -1,5 +1,6 @@
 package com.wondereight.sensioair.Fragment;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
@@ -9,9 +10,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.gson.Gson;
 import com.linkedin.platform.LISessionManager;
 import com.loopj.android.http.RequestParams;
@@ -35,6 +38,8 @@ import com.wondereight.sensioair.gcm.SAPreferences;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.ArrayList;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
@@ -52,12 +57,15 @@ public class ProfileFragment extends Fragment {
 
     private static int nCountCallingGetInfo = 0;
     private static int nCountCallingProfile = 0;
-    private static boolean isLoadedProfile = false;
+
+    public static final int RESULT_SAVEDPROFILE = 102;
 
     private static FeedbackFragment feedbackdlg;
 
     @Bind(R.id.feedback_container)
     View vContainer;
+    @Bind(R.id.profile_canvas)
+    ViewGroup vgProfileCanvas;
 
     public ProfileFragment() {
     }
@@ -76,18 +84,20 @@ public class ProfileFragment extends Fragment {
 
         utilityClass = new UtilityClass(_context);
         feedbackdlg = (FeedbackFragment)FeedbackFragment.newInstance(_context);
-        if( isLoadedProfile == false)
+        if( !Global.GetInstance().GetProfileLoadState() )
             restCallGetProfileInfoApi();
+        else
+            displayProfileInfo();
         return view;
     }
 
     @OnClick(R.id.btnLogout)
     public void onClickLogout(){
-        UserModal userModal = SaveSharedPreferences.getLoginUserData(getContext());
+        UserModal userModal = Global.GetInstance().GetUserModal();
         userModal.setLogouted(true);
-        SaveSharedPreferences.setLoginUserData(getContext(), userModal);
-        Global.GetInstance().init();
         restCallLogoutApi();
+        Global.GetInstance().SaveUserModal(getContext(), userModal);
+        Global.GetInstance().init();
 
         //GCM UnregisterReciever
         PreferenceManager.getDefaultSharedPreferences(getContext())
@@ -123,9 +133,31 @@ public class ProfileFragment extends Fragment {
         restCallGetSavedInfoApi();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case (RESULT_SAVEDPROFILE) : {
+                if (resultCode == Activity.RESULT_OK) {
+                    displayProfileInfo();
+                } else {
+                    utilityClass.showAlertMessage(getString(R.string.title_alert), getString(R.string.not_saved_info));
+                }
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        _debug.d(LOG_TAG, "ProfileFragment destroyed.");
+        AirSensioRestClient.cancelRequest(getContext());
+        super.onDestroy();
+    }
+
     private void restCallLogoutApi(){
         RequestParams params = new RequestParams();
-        UserModal userModal = SaveSharedPreferences.getLoginUserData(getActivity());
+        UserModal userModal = Global.GetInstance().GetUserModal();
         String str_userid = userModal.getId();
         String str_email = userModal.getEmail();
         String str_deviceid = utilityClass.GetDeviceID();
@@ -180,7 +212,7 @@ public class ProfileFragment extends Fragment {
     private void restCallGetSavedInfoApi() {
 
         RequestParams params = new RequestParams();
-        UserModal userModal = SaveSharedPreferences.getLoginUserData(getActivity());
+        UserModal userModal = Global.GetInstance().GetUserModal();
         String str_userid = userModal.getId();
         String str_email = userModal.getEmail();
         String str_deviceid = utilityClass.GetDeviceID();
@@ -225,7 +257,7 @@ public class ProfileFragment extends Fragment {
                         Gson gson = new Gson();
                         Intent intentTerms = new Intent(_context, HealthActivity.class);
                         intentTerms.putExtra("HealthInfoModal", gson.toJson(info));
-                        startActivity(intentTerms);
+                        startActivityForResult(intentTerms, RESULT_SAVEDPROFILE);
                         //utilityClass.showAlertMessage(getResources().getString(R.string.title_alert), "Saved Info : " + responseString);
                         _debug.d(LOG_TAG, "AirSensioRestClient.GET_SAVED_INFO.Success");
                     } catch (JSONException e) {
@@ -275,7 +307,10 @@ public class ProfileFragment extends Fragment {
     private void restCallGetProfileInfoApi() {
 
         RequestParams params = new RequestParams();
-        UserModal userModal = SaveSharedPreferences.getLoginUserData(getActivity());
+        UserModal userModal;
+        try {
+            userModal = Global.GetInstance().GetUserModal();
+        } catch (Exception e){ return; }
         String str_userid = userModal.getId();
         String str_email = userModal.getEmail();
         String str_deviceid = utilityClass.GetDeviceID();
@@ -317,13 +352,18 @@ public class ProfileFragment extends Fragment {
                     _debug.d(LOG_TAG, "Nothing Found");
                 } else {
                     try {
-                        ParsingResponse.parsingSavedInfo(new JSONArray(responseString));    // must be changed
+                        ArrayList<String> profile = ParsingResponse.parsingProfileInfo(new JSONArray(responseString));
+                        Global.GetInstance().SetProfileInfo(profile);
                         _debug.d(LOG_TAG, "AirSensioRestClient.GET_PROFILE_INFO.Success");
                     } catch (JSONException e) {
                         e.printStackTrace();
                         _debug.e(LOG_TAG, "GET_PROFILE_INFO Exception Error:" + responseString);
+
+                        Global.GetInstance().SetProfileInfo(new ArrayList<String>());
                     }
                 }
+                Global.GetInstance().SetProfileLoadState(true);
+                displayProfileInfo();
                 nCountCallingProfile = 0;
             }
 
@@ -367,5 +407,21 @@ public class ProfileFragment extends Fragment {
         Intent intent = new Intent(getActivity(), LoginAcitivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+    public void displayProfileInfo(){
+        ArrayList<String> infos = Global.GetInstance().GetProfileInfo();
+        View infoItem;
+        TextView infoItemText;
+
+        try {
+            vgProfileCanvas.removeAllViewsInLayout();
+            for (String info : infos) {
+                infoItem = LayoutInflater.from(getContext()).inflate(R.layout.profile_item, null);
+                infoItemText = (TextView) infoItem.findViewById(R.id.profile_item_text);
+                infoItemText.setText(info);
+                vgProfileCanvas.addView(infoItem);
+            }
+        } catch (Exception ignored){}
     }
 }

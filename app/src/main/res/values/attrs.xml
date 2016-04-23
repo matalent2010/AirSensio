@@ -4,4 +4,9 @@
         <attr name="font" format="string"/>
         <attr name="textStyle" format="integer"/>
     </declare-styleable>
+
+    <declare-styleable name="Circle4stateButton">
+        <attr name="cb_color" format="color" />
+        <attr name="cb_pressedRingWidth" format="dimension" />
+    </declare-styleable>
 </resources>

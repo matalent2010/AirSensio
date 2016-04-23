@@ -20,7 +20,7 @@ public class ChartItem {
     private float[] fValue_Allergen;
     private float[] fValue_Humidity;
     private float[] fValue_Temperature;
-    private float[] fValue_Sunlight;
+    private float[] fValue_UVindex;
     private float[] fValue_Gas;
     private float[] fValue_outbreak;
     private ValuesDataForDayOutbreak value_dayoutbreak;
@@ -33,12 +33,12 @@ public class ChartItem {
         fValue_Allergen = null;
         fValue_Humidity = null;
         fValue_Temperature = null;
-        fValue_Sunlight = null;
+        fValue_UVindex = null;
         fValue_Gas = null;
         value_dayoutbreak = null;
     }
 
-    public ChartItem(String[] label, float[] particles, float[] allergen, float[] humidity, float[] temperature, float[] sunlight, float[] gas){
+    public ChartItem(String[] label, float[] particles, float[] allergen, float[] humidity, float[] temperature, float[] uvIndex, float[] gas){
         nCount = label.length;
         strLabel = new String[nCount];
 
@@ -49,7 +49,7 @@ public class ChartItem {
         setValueAllergen(allergen);
         setValueHumidity(humidity);
         setValueTemperature(temperature);
-        setValueSunlight(sunlight);
+        setValueUvIndex(uvIndex);
         setValueGas(gas);
     }
 
@@ -142,22 +142,22 @@ public class ChartItem {
         }
     }
 
-    public void setValueSunlight(float[] sunlight){
+    public void setValueUvIndex(float[] uvIndex){
 
-        fValue_Sunlight = new float[nCount];
-        if ( nCount > sunlight.length )
+        fValue_UVindex = new float[nCount];
+        if ( nCount > uvIndex.length )
         {
-            for (int i = 0; i < sunlight.length; i++) {
-                fValue_Sunlight[i] = sunlight[i];
+            for (int i = 0; i < uvIndex.length; i++) {
+                fValue_UVindex[i] = uvIndex[i];
             }
-            for (int i=sunlight.length; i<nCount; i++){
-                fValue_Sunlight[i] = 0;
+            for (int i=uvIndex.length; i<nCount; i++){
+                fValue_UVindex[i] = 0;
             }
-            _debug.e(LOG_TAG, "The length of sunlight Values list is less than X-Axis values");
+            _debug.e(LOG_TAG, "The length of uvIndex Values list is less than X-Axis values");
 
         } else {
             for (int i = 0; i < nCount; i++) {
-                fValue_Sunlight[i] = sunlight[i];
+                fValue_UVindex[i] = uvIndex[i];
             }
         }
     }
@@ -224,8 +224,8 @@ public class ChartItem {
     public float[] getValueTemperature(){
         return fValue_Temperature;
     }
-    public float[] getValueSunlight(){
-        return fValue_Sunlight;
+    public float[] getValueUvIndex(){
+        return fValue_UVindex;
     }
     public float[] getValueGas(){
         return fValue_Gas;

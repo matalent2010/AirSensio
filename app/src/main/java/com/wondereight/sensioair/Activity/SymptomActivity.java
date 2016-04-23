@@ -13,6 +13,12 @@ import android.widget.ImageView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
+import co.mobiwise.materialintro.animation.MaterialIntroListener;
+import co.mobiwise.materialintro.prefs.PreferencesManager;
+import co.mobiwise.materialintro.shape.ArrowType;
+import co.mobiwise.materialintro.shape.Focus;
+import co.mobiwise.materialintro.shape.FocusGravity;
+import co.mobiwise.materialintro.view.MaterialIntroView;
 import cz.msebera.android.httpclient.Header;
 
 import com.loopj.android.http.RequestParams;
@@ -34,7 +40,7 @@ import java.util.List;
  * Created by Miguel on 02/2/2016.
  */
 
-public class SymptomActivity extends AppCompatActivity {
+public class SymptomActivity extends AppCompatActivity implements MaterialIntroListener {
 
     private static final String LOG_TAG = "SymptomActivity";
     private static _Debug _debug = new _Debug(true);
@@ -59,6 +65,13 @@ public class SymptomActivity extends AppCompatActivity {
         btn_close.bringToFront();
         declaration();
         initialization();
+
+        new android.os.Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                drawSymptomTutorial();
+            }
+        }, 100);
     }
 
     private void declaration() {
@@ -205,7 +218,7 @@ public class SymptomActivity extends AppCompatActivity {
     private RequestParamsModal getParam(){
         RequestParamsModal params = new RequestParamsModal();
 
-        UserModal userModal = SaveSharedPreferences.getLoginUserData(SymptomActivity.this);
+        UserModal userModal = Global.GetInstance().GetUserModal();
 
         String str_email = userModal.getEmail();
         String str_userid = userModal.getId();
@@ -309,4 +322,46 @@ public class SymptomActivity extends AppCompatActivity {
         return false;
     }
 
+    public void drawSymptomTutorial(){
+        //Show intro
+        View viewEnvir = ivSymptoms.get(5);
+        if( viewEnvir != null ){
+            //new PreferencesManager(this).reset(Constant.INTRO_ID_3);
+            showIntro(viewEnvir, Constant.INTRO_ID_3, getString(R.string.tutorial_sympotom), ArrowType.AT_RED);
+        }
+    }
+
+    private void showIntro(View view, String usageId, String text, ArrowType type){
+
+        new MaterialIntroView.Builder(this)
+                .setMaskColor(0x70000000)
+                .setTextColor(0xFF3F9CFF)
+                .enableDotAnimation(false)
+                .setFocusGravity(FocusGravity.CENTER)
+                .setFocusType(Focus.MINIMUM)
+                .setDelayMillis(200)
+                .enableFadeAnimation(true)
+                .performClick(true)
+                .setListener(this)
+                .setArrowType(type)
+                .setInfoText(text)
+                .enableInfoIDText(true)     //Info ID text appear
+                .enableIcon(false)
+                .setTarget(view)
+                .setUsageId(usageId) //THIS SHOULD BE UNIQUE ID
+                .show();
+    }
+
+    @Override
+    public void onUserClicked(String materialIntroViewId) {
+        _debug.d(LOG_TAG, "pressed " + materialIntroViewId);
+
+        if(materialIntroViewId == Constant.INTRO_ID_3){
+            Intent intent = new Intent();
+            intent.putExtra(Constant.TUTORIAL, true);
+            setResult(RESULT_CANCELED, intent);
+            finish();
+            _debug.e(LOG_TAG, "Log outbreak closed by tutorial");;
+        }
+    }
 }

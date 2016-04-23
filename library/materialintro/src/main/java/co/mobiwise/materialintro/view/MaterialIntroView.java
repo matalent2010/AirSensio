@@ -538,19 +538,25 @@ public class MaterialIntroView extends RelativeLayout {
                 if (arrowView.getParent() != null)
                     ((ViewGroup) arrowView.getParent()).removeView(arrowView);
 
-                RelativeLayout.LayoutParams arrowViewLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                arrowViewLayoutParams.height = Utils.dpToPx(Constants.DEFAULT_ARROW_HEIGHT);
-                arrowViewLayoutParams.width = Utils.dpToPx(Constants.DEFAULT_ARROW_WIDTH);
-                arrowViewLayoutParams.setMargins(
-                        circleShape.getPoint().x - circleShape.getRadius() + padding*2 - arrowView.getWidth(),   // - arrowViewLayoutParams.width + padding*2
-                        circleShape.getPoint().y - (arrowViewLayoutParams.height / 2),
-                        0,
-                        0);
-                Log.e("Arrow","X : " + circleShape.getPoint().x + ", Radius : " + circleShape.getRadius() + ", padding : " + padding);
                 if( arrowType == ArrowType.AT_RED )
                     arrowView.setImageResource(R.drawable.red_arrow);
                 else if( arrowType == ArrowType.AT_BLUE )
                     arrowView.setImageResource(R.drawable.blue_arrow);
+
+                RelativeLayout.LayoutParams arrowViewLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                arrowViewLayoutParams.height = Utils.dpToPx(Constants.DEFAULT_ARROW_HEIGHT);
+                arrowViewLayoutParams.width = Utils.dpToPx(Constants.DEFAULT_ARROW_WIDTH);
+                int x = circleShape.getPoint().x - circleShape.getRadius() + padding*4 - arrowViewLayoutParams.width;
+                int y = circleShape.getPoint().y - (arrowViewLayoutParams.height / 2);
+                x = x < 0 ? 0 : x;
+                arrowViewLayoutParams.setMargins(
+                        x,   // - arrowViewLayoutParams.width + padding*2
+                        y,
+                        0,
+                        0);
+                Log.e("Arrow","X : " + circleShape.getPoint().x + ", Radius : " + circleShape.getRadius() + ", padding : " + padding + ", Arrow Width: " + arrowViewLayoutParams.width);
+                Log.e("Arrow", "MarginLeft: " + x + ", MaginTop: + " + y);
+
 
                 arrowView.setLayoutParams(arrowViewLayoutParams);
                 arrowView.postInvalidate();

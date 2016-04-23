@@ -80,17 +80,56 @@
                     android:layout_marginLeft="@dimen/_40sdp"
                     android:layout_marginRight="@dimen/_40sdp"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:orientation="vertical">
-                    <EditText
-                        android:id="@+id/etPhonenum"
-                        style="@style/ETInputCenterStyle"
-                        android:inputType="phone"
-                        android:lines="1"
-                        android:maxLength="14"
-                        android:hint="@string/hint_phonenum"/>
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="@dimen/_70sdp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:background="@color/transparent"
+                                android:textSize="22sp"
+                                android:textColor="@color/white"
+                                android:lines="1"
+                                android:text="+"/>
+                            <EditText
+                                android:id="@+id/etCountryCode"
+                                style="@style/ETInputCenterStyle"
+                                android:inputType="number"
+                                android:lines="1"
+                                android:maxLength="3"
+                                android:hint="@string/hint_countrycode"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            style="@style/whiteLineLayout"/>
+                    </LinearLayout>
 
                     <LinearLayout
-                        style="@style/whiteLineLayout"/>
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:orientation="vertical">
+
+                        <EditText
+                            android:id="@+id/etPhonenum"
+                            style="@style/ETInputCenterStyle"
+                            android:inputType="phone"
+                            android:lines="1"
+                            android:maxLength="14"
+                            android:hint="@string/hint_phonenum"/>
+                        <LinearLayout
+                            style="@style/whiteLineLayout"/>
+
+                    </LinearLayout>
+
+
                 </LinearLayout>
 
                 <LinearLayout

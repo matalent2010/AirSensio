@@ -110,6 +110,16 @@ public class Constant {
     public static final String STR_POLLUTIONINDEX = "pollution_index";
     public static final String STR_LOGINTENSITY = "log_intensity";
 
+    public static final String STR_CATEGORY = "category_name";
+    public static final String STR_CATEGORY_COLOR = "category_color";
+    public static final String STR_LOGUNIT = "log_unit";
+    public static final String CATEGORY_ALLERGEN = "Allergen Count";
+    public static final String CATEGORY_HARMFUL = "Harmful Gas";
+    public static final String CATEGORY_PARTICLE = "Particle Count";
+    public static final String CATEGORY_TEMPERATUR = "Temperature & Humidity";
+    public static final String CATEGORY_UXINDEX = "UV Index";
+    public static final String CATEGORY_HUMIDITY = "";
+
     public static final String STR_NUM_WEEK = "week";
     public static final String STR_LABEL = "label";
 
@@ -128,7 +138,13 @@ public class Constant {
     //Push notification Message
     public static final String NOTI_MESSAGE = "message";
 
+    //Network ChangeReceiver
+    public static final String NETWORKSTATUS = "network status changed";
+
     // Tutorial
+    public static final int RESULT_SYMPTOM = 101;
+
+    public static final String TUTORIAL = "tutorial";
     public static final String INTRO_ID_1 = "1/6";
     public static final String INTRO_ID_2 = "2/6";
     public static final String INTRO_ID_3 = "3/6";

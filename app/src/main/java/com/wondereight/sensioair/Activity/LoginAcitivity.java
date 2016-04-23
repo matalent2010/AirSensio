@@ -75,8 +75,8 @@ public class LoginAcitivity extends AppCompatActivity {
     private static _Debug _debug = new _Debug(true);
     UtilityClass utilityClass;
 
-    private static final String host = "api.linkedin.com";
-    private static final String topCardUrl = "https://" + host + "/v1/people/~:" + "(id,email-address)";
+    private static final String linkedhost = "api.linkedin.com";
+    private static final String topCardUrl = "https://" + linkedhost + "/v1/people/~:" + "(id,email-address)";
                                             //reference :  https://developer.linkedin.com/docs/fields/basic-profile
     String fbEmail="", twEmail="", liEmail="";
     String fbID="", twID="", liID="";
@@ -116,7 +116,7 @@ public class LoginAcitivity extends AppCompatActivity {
         //linkedinLogininit();
         twitterLoginInit();
 
-        if( SaveSharedPreferences.isLogedinUser(this) )
+        if( Global.GetInstance().SetUserModalFromShared(this) )
             runAutoLogin();
 
     }
@@ -199,8 +199,8 @@ public class LoginAcitivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_twitter)
     void onClickTwitter(){
+        _debug.i("Twitter clicked", "Clicked");
         if (utilityClass.isInternetConnection()) {
-            utilityClass.processDialogStart(false);
             btnTwitter_login_button.performClick();
         } else {
             utilityClass.toast(getString(R.string.check_internet));
@@ -308,7 +308,7 @@ public class LoginAcitivity extends AppCompatActivity {
                         userModal.setPassword("");   //add "" password in UserModal
                     }
 
-                    SaveSharedPreferences.setLoginUserData(LoginAcitivity.this, userModal);
+                    Global.GetInstance().SaveUserModal(LoginAcitivity.this, userModal);
                     Intent intent = new Intent(LoginAcitivity.this, HomeActivity.class);
                     startActivity(intent);
                     finish();
@@ -629,7 +629,6 @@ public class LoginAcitivity extends AppCompatActivity {
 
                     @Override
                     public void failure(TwitterException exception) {
-                        utilityClass.processDialogStop();
                         utilityClass.toast("Don't get your Email with Twitter");
                         _debug.d(LOG_TAG, "Fail Email Twitter : " + exception.toString());
                         Twitter.getSessionManager().clearActiveSession();
@@ -642,7 +641,6 @@ public class LoginAcitivity extends AppCompatActivity {
             @Override
             public void failure(TwitterException exception) {
                 // Do something on failure
-                utilityClass.processDialogStop();
                 utilityClass.toast("Login failure with Twitter");
                 _debug.d(LOG_TAG, "Twitter failure : " + exception.toString());
                 Twitter.getSessionManager().clearActiveSession();
@@ -655,12 +653,13 @@ public class LoginAcitivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        _debug.d(LOG_TAG, "Request Code : " + requestCode + ", Activity Result : " + resultCode + ", Intent Extra : " + data.getExtras().toString());
+        _debug.d(LOG_TAG, "Request Code : " + requestCode + ", Activity Result : " + resultCode + ", Intent Extra : " + UtilityClass.getExtraString(data));
         if( callbackManager != null )
             callbackManager.onActivityResult(requestCode, resultCode, data);
 
         btnTwitter_login_button.onActivityResult(requestCode, resultCode, data);
 
+        liSessionManager = LISessionManager.getInstance(getApplicationContext());
         if( liSessionManager != null )
             liSessionManager.onActivityResult(this, requestCode, resultCode, data);
     }

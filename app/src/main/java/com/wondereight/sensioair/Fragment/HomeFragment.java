@@ -8,13 +8,19 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
@@ -36,6 +42,7 @@ import com.shehabic.droppy.DroppyMenuCustomItem;
 import com.shehabic.droppy.DroppyMenuItem;
 import com.shehabic.droppy.DroppyMenuPopup;
 import com.shehabic.droppy.animations.DroppyFadeInAnimation;
+import com.wondereight.sensioair.Activity.HomeActivity;
 import com.wondereight.sensioair.Activity.SymptomActivity;
 import com.wondereight.sensioair.Adapter.ViewPagerAdapter;
 import com.wondereight.sensioair.Helper._Debug;
@@ -56,6 +63,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 /**
@@ -69,28 +77,34 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
 
     UtilityClass utilityClass;
 
-    public static final int RESULT_SYMPTOM = 101;
-
     @Bind(R.id.city_name)
-    TextView tvCityname;
+        TextView tvCityname;
     @Bind(R.id.field_cityname)
-    LinearLayout rlCityname;
+        LinearLayout rlCityname;
     @Bind(R.id.text_advice)
-    TextView  tvAdvice;
+        TextView  tvAdvice;
     @Bind(R.id.allergy_index)
-            TextView tvAllergyIndex;
+        TextView tvAllergyIndex;
     @Bind(R.id.allergy_intensity)
-            TextView tvAlergyIntensity;
+        TextView tvAlergyIntensity;
     @Bind(R.id.pollution_index)
-            TextView tvPollutionIndex;
+        TextView tvPollutionIndex;
     @Bind(R.id.pollution_intensity)
-            TextView tvPollutionIntensity;
+        TextView tvPollutionIntensity;
     @Bind(R.id.logoutbreakCanvas)
-            View _mainContainer;
+        View _mainContainer;
     @Bind(R.id.sub_page)
-            View mSubpage;
+        View mSubpage;
     @Bind(R.id.data_details_container)
-            ViewGroup vgContainer;
+        ViewGroup vgContainer;
+    @Bind(R.id.city_environment)
+        View vEnviron;
+    @Bind(R.id.spinnerimage)
+        ImageView ivSpinner;
+    @Bind(R.id.city_list_container)
+        View vCityListContainer;
+    @Bind(R.id.city_list)
+        ListView lvCityList;
 
     private ArrayList<DataDetailsModal> dataModals = new ArrayList<>();
     private int nCallDataDetails;
@@ -114,6 +128,7 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
         HomeFragment f = new HomeFragment();
         return f;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -131,7 +146,9 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
         loadDataDetails();
 
         tvCityname.setText(Global.GetInstance().GetCityName());
-        initCityMenu();
+//        initCityMenu();
+
+        initCityList();
 
         _mainContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -147,14 +164,13 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
             }
         });
 
-
         return view;
     }
 
     @OnClick(R.id.btnPress)
     public void onClickPress(){
         Intent SymptomActivity = new Intent(_context, SymptomActivity.class);
-        startActivityForResult(SymptomActivity, RESULT_SYMPTOM);
+        startActivityForResult(SymptomActivity, Constant.RESULT_SYMPTOM);
     }
 
 
@@ -162,20 +178,47 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
     public void onClickCityname(){
         getCityList();
         isShownCityMenu = true;
+
+        if( vCityListContainer.getVisibility() == View.VISIBLE ) {
+            vCityListContainer.setVisibility(View.GONE);
+            ivSpinner.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.dropdown_icon));
+        }
+        else {
+            vCityListContainer.setVisibility(View.VISIBLE);
+            ivSpinner.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.dropup_icon));
+
+            int height = getItemHeightofListView(lvCityList);
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)lvCityList.getLayoutParams();
+            if(params.height != height) {
+                params.height = height;
+                lvCityList.setLayoutParams(params);
+            }
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
-            case (RESULT_SYMPTOM) : {
+            case (Constant.RESULT_SYMPTOM) : {
                 if (resultCode == Activity.RESULT_OK) {
                     //String newText = data.getStringExtra(PUBLIC_STATIC_STRING_IDENTIFIER);
                     utilityClass.sendSymptomList( );
+                } else if (resultCode == Activity.RESULT_CANCELED ) {
+                    Bundle bundle = data.getExtras();
+                    if( bundle != null && bundle.getBoolean(Constant.TUTORIAL, false) )
+                        ((HomeActivity)getActivity()).mTabPager.setCurrentItem(1);
                 }
                 break;
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        _debug.d(LOG_TAG, "HomeFragment destroyed.");
+        AirSensioRestClient.cancelRequest(getContext());
+        super.onDestroy();
     }
 
     private void getCityList(){
@@ -211,16 +254,16 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
             }
 
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                ArrayList arraylist = ParsingResponse.parsingCitiesList(response);
+                ArrayList<CityModal> arraylist = ParsingResponse.parsingCitiesList(response);
                 if (!arraylist.isEmpty()) {
                     Global.GetInstance().SetCityList(arraylist);
 
-                    if(isShownCityMenu)
-                        cityMenu.dismiss(false);
-                    initCityMenu();
-                    if(isShownCityMenu)
-                        cityMenu.show();
-
+//                    if(isShownCityMenu)
+//                        cityMenu.dismiss(false);
+//                    initCityMenu();
+                    initCityList();
+//                    if(isShownCityMenu)
+//                        cityMenu.show();
                     _debug.d(LOG_TAG, "AirSensioRestClient.GET_CITIES_LIST.onSuccess : " + arraylist.toString());
                 } else {
                     _debug.d(LOG_TAG, "AirSensioRestClient.GET_CITIES_LIST.onSuccess : Empty");
@@ -270,14 +313,87 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
         cityMenu = droppyBuilder.build();
     }
 
+    public static int getItemHeightofListView(ListView listView) {
+        ListAdapter adapter = listView.getAdapter();
+
+        int grossElementHeight = 0;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            View childView = adapter.getView(i, null, listView);
+            childView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+            grossElementHeight += childView.getMeasuredHeight();
+        }
+        return grossElementHeight;
+    }
+
+    private void initCityList( ){
+
+        if( Global.GetInstance().IsSetCitiesList() ) {
+
+            // Define a new Adapter
+            // First parameter - Context
+            // Second parameter - Layout for the row
+            // Third parameter - ID of the TextView to which the data is written
+            // Forth - the Array of data
+            ArrayList<CityModal> cityModals = Global.GetInstance().GetCityList();
+            ArrayList<String> cityList = new ArrayList<>(cityModals.size());
+            for( CityModal cityModal : cityModals){
+                cityList.add(cityModal.getCityName());
+            }
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                    R.layout.city_listview_item, android.R.id.text1, cityList);
+
+
+            // Assign adapter to ListView
+            lvCityList.setAdapter(adapter);
+
+            // ListView Item Click Listener
+            lvCityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                                        int position, long id) {
+
+                    ArrayList<CityModal> cityList = Global.GetInstance().GetCityList();
+                    Global.GetInstance().SetCityName(cityList.get(position).getCityName());
+                    Global.GetInstance().SetCityID(cityList.get(position).getCityId());
+                    initIndex();
+                    initAdvice();
+                    restCallGetAdviceApi();
+                    restCallGetIndexApi();
+                    tvCityname.setText(Global.GetInstance().GetCityName());
+                    vCityListContainer.setVisibility(View.GONE);
+                    ivSpinner.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.dropdown_icon));
+                }
+            });
+        } else {
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.city_listview_item,
+                    android.R.id.text1, new ArrayList<>(Arrays.asList(new String[]{"Connecting..."})));
+
+            // Assign adapter to ListView
+            lvCityList.setAdapter(adapter);
+
+            // ListView Item Click Listener
+            lvCityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                                        int position, long id) {
+                    vCityListContainer.setVisibility(View.GONE);
+                    ivSpinner.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.dropdown_icon));
+                }
+            });
+        }
+    }
+
     @Override
     public void onUserClicked(String materialIntroViewId) {
         _debug.d(LOG_TAG, "pressed " + materialIntroViewId);
-        if(materialIntroViewId == Constant.INTRO_ID_1){
+        if(materialIntroViewId.equalsIgnoreCase(Constant.INTRO_ID_1)){
             View btnPress = getView().findViewById(R.id.btnPress);
             if( btnPress != null) {
-                new PreferencesManager(getContext()).reset(Constant.INTRO_ID_2);
-                showIntro(btnPress, Constant.INTRO_ID_2, getString(R.string.tutorial_home_press), ArrowType.AT_RED);
+                //new PreferencesManager(getContext()).reset(Constant.INTRO_ID_2);
+                showIntro(btnPress, Constant.INTRO_ID_2, getString(R.string.tutorial_home_press), ArrowType.AT_BLUE);
             }
         }
     }
@@ -325,7 +441,7 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
 
     public void restCallGetAdviceApi(){
         RequestParams params = new RequestParams();
-        UserModal userModal = SaveSharedPreferences.getLoginUserData(getActivity());
+        UserModal userModal = Global.GetInstance().GetUserModal();
         String str_userid = userModal.getId();
         String str_email = userModal.getEmail();
         String str_deviceid = utilityClass.GetDeviceID();
@@ -417,7 +533,7 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
     private void restCallGetIndexApi(){
 
         RequestParams params = new RequestParams();
-        UserModal userModal = SaveSharedPreferences.getLoginUserData(getActivity());
+        UserModal userModal = Global.GetInstance().GetUserModal();
         String str_userid = userModal.getId();
         String str_email = userModal.getEmail();
         String str_deviceid = utilityClass.GetDeviceID();
@@ -521,7 +637,7 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
     private void restCallGetDataDetailsApi(){
 
         RequestParams params = new RequestParams();
-        UserModal userModal = SaveSharedPreferences.getLoginUserData(getActivity());
+        UserModal userModal = Global.GetInstance().GetUserModal();
         String str_userid = userModal.getId();
         String str_email = userModal.getEmail();
         String str_deviceid = utilityClass.GetDeviceID();
@@ -534,7 +650,7 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
         params.put(Constant.STR_HASH, str_hash);
         params.put(Constant.STR_CITYID, str_cityid);
 
-        AirSensioRestClient.post(AirSensioRestClient.GET_DATA_DETAILS, params, new TextHttpResponseHandler() {   //new JsonHttpResponseHandler(false) : onSuccess(int statusCode, Header[] headers, String responseString) must be overrided.
+        AirSensioRestClient.post(AirSensioRestClient.GET_DATA_DETAILS2, params, new TextHttpResponseHandler() {   //new JsonHttpResponseHandler(false) : onSuccess(int statusCode, Header[] headers, String responseString) must be overrided.
             @Override
             public void onStart() {
                 // called before request is started
@@ -609,41 +725,46 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
 
     public void drawDataDetails(ArrayList<DataDetailsModal> arr){
         //View item = LayoutInflater.from(getContext()).inflate(R.layout.fragment_statistics_sub, null);
-        View itemRow, leftItem, rightItem;
-        for(int i=0; i<arr.size(); i+=2 ){
-            itemRow = LayoutInflater.from(getContext()).inflate(R.layout.fragment_statistics_sub, null);
-            leftItem = itemRow.findViewById(R.id.left_item);
-            ((TextView)leftItem.findViewById(R.id.subitem_title)).setText(arr.get(i).getParameter());
-            ((TextView)leftItem.findViewById(R.id.subitem_value)).setText(arr.get(i).getLogValue());
-            if(arr.get(i).getLogIntensity().equalsIgnoreCase("low"))
-                leftItem.findViewById(R.id.low_mark).setVisibility(View.VISIBLE);
-            else if (arr.get(i).getLogIntensity().equalsIgnoreCase("moderate"))
-                leftItem.findViewById(R.id.moderate_mark).setVisibility(View.VISIBLE);
-            else if (arr.get(i).getLogIntensity().equalsIgnoreCase("high"))
-                leftItem.findViewById(R.id.high_mark).setVisibility(View.VISIBLE);
-
-            if( i+1 < arr.size() ) {
-                rightItem = itemRow.findViewById(R.id.right_item);
-                ((TextView) rightItem.findViewById(R.id.subitem_title)).setText(arr.get(i + 1).getParameter());
-                ((TextView) rightItem.findViewById(R.id.subitem_value)).setText(arr.get(i + 1).getLogValue());
-                if (arr.get(i + 1).getLogIntensity().equalsIgnoreCase("low"))
-                    rightItem.findViewById(R.id.low_mark).setVisibility(View.VISIBLE);
-                else if (arr.get(i + 1).getLogIntensity().equalsIgnoreCase("moderate"))
-                    rightItem.findViewById(R.id.moderate_mark).setVisibility(View.VISIBLE);
-                else if (arr.get(i + 1).getLogIntensity().equalsIgnoreCase("high"))
-                    rightItem.findViewById(R.id.high_mark).setVisibility(View.VISIBLE);
-            }
-            vgContainer.addView(itemRow);
+        String format_html = "%s: %s %s <strong>%s</strong>";
+        ((LinearLayout)(vgContainer.findViewById(R.id.allergen_detail)).findViewById(R.id.data_detail_content)).removeAllViews();
+        ((LinearLayout)(vgContainer.findViewById(R.id.harmful_detail)).findViewById(R.id.data_detail_content)).removeAllViews();
+        ((LinearLayout)(vgContainer.findViewById(R.id.particle_detail)).findViewById(R.id.data_detail_content)).removeAllViews();
+        ((LinearLayout)(vgContainer.findViewById(R.id.temperature_detail)).findViewById(R.id.data_detail_content)).removeAllViews();
+        ((LinearLayout)(vgContainer.findViewById(R.id.uxindex_detail)).findViewById(R.id.data_detail_content)).removeAllViews();
+        for( DataDetailsModal modal : arr ){
+            LinearLayout text_container;
+            try {
+                if (modal.getCategory().equalsIgnoreCase(Constant.CATEGORY_ALLERGEN)) {
+                    text_container = (LinearLayout) vgContainer.findViewById(R.id.allergen_detail).findViewById(R.id.data_detail_content);
+                } else if (modal.getCategory().equalsIgnoreCase(Constant.CATEGORY_HARMFUL)) {
+                    text_container = (LinearLayout) vgContainer.findViewById(R.id.harmful_detail).findViewById(R.id.data_detail_content);
+                } else if (modal.getCategory().equalsIgnoreCase(Constant.CATEGORY_PARTICLE)) {
+                    text_container = (LinearLayout) vgContainer.findViewById(R.id.particle_detail).findViewById(R.id.data_detail_content);
+                } else if (modal.getCategory().equalsIgnoreCase(Constant.CATEGORY_TEMPERATUR)) {
+                    text_container = (LinearLayout) vgContainer.findViewById(R.id.temperature_detail).findViewById(R.id.data_detail_content);
+                } else if (modal.getCategory().equalsIgnoreCase(Constant.CATEGORY_UXINDEX)) {
+                    text_container = (LinearLayout) vgContainer.findViewById(R.id.uxindex_detail).findViewById(R.id.data_detail_content);
+                } else {
+                    text_container = new LinearLayout(getContext());
+                }
+                TextView valueTV = new TextView(getContext());
+                String html = String.format(format_html, modal.getParameter(), modal.getLogValue(), modal.getLogUnit(), modal.getLogIntensity());
+                valueTV.setText(Html.fromHtml(html));
+                //valueTV.setId(5);
+                valueTV.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                text_container.addView(valueTV);
+            } catch (Exception e) {}
         }
     }
 
-
     public void drawHomeTutorial(){
-        //Show intro
+        drawHomeTutorial(vEnviron);
+    }
 
-        View viewEnvir = getView().findViewById(R.id.city_environment);
+    public void drawHomeTutorial(View viewEnvir){
+        //Show intro
         if( viewEnvir != null ){
-            new PreferencesManager(getContext()).reset(Constant.INTRO_ID_1);
+            //new PreferencesManager(getContext()).reset(Constant.INTRO_ID_1);
             showIntro(viewEnvir, Constant.INTRO_ID_1, getString(R.string.tutorial_home_index), ArrowType.AT_NORMAL);
         }
     }

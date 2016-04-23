@@ -8,9 +8,9 @@ public class HealthInfoModal {
 
     boolean mConscious;
     boolean mAllergies;
-    boolean mEyes;
-    boolean mNose;
-    boolean mLungs;
+//    boolean mEyes;
+//    boolean mNose;
+//    boolean mLungs;
     String strSpecify;          //String
     boolean mRespiratory;
     String strAnotherspecify;          //String
@@ -19,9 +19,9 @@ public class HealthInfoModal {
     public HealthInfoModal(){
         mConscious = false;
         mAllergies = false;
-        mEyes = false;
-        mNose = false;
-        mLungs = false;
+//        mEyes = false;
+//        mNose = false;
+//        mLungs = false;
         strSpecify = "";
         mRespiratory = false;
         strAnotherspecify = "";
@@ -29,10 +29,9 @@ public class HealthInfoModal {
     }
     public void firstInit()
     {
-        mConscious = true;
-        mEyes = true;
-        mRespiratory = true;
-        mPet = true;
+        mConscious = false;
+        mRespiratory = false;
+        mPet = false;
     }
 
     public boolean getConscious()
@@ -63,47 +62,47 @@ public class HealthInfoModal {
         mAllergies = allergies.equalsIgnoreCase("1") ? true : false;
     }
 
-    public boolean getEyes()
-    {
-        return mEyes;
-    }
-
-    public void setEyes(boolean eyes)
-    {
-        mEyes = eyes;
-    }
-    public void setEyes(String eyes)
-    {
-        mEyes = eyes.equalsIgnoreCase("1") ? true : false;
-    }
-
-    public boolean getNose()
-    {
-        return mNose;
-    }
-
-    public void setNose(boolean Nose)
-    {
-        mNose = Nose;
-    }
-    public void setNose(String Nose)
-    {
-        mNose = Nose.equalsIgnoreCase("1") ? true : false;
-    }
-
-    public boolean getLungs()
-    {
-        return mLungs;
-    }
-
-    public void setLungs(boolean Lungs)
-    {
-        mLungs = Lungs;
-    }
-    public void setLungs(String Lungs)
-    {
-        mLungs = Lungs.equalsIgnoreCase("1") ? true : false;
-    }
+//    public boolean getEyes()
+//    {
+//        return mEyes;
+//    }
+//
+//    public void setEyes(boolean eyes)
+//    {
+//        mEyes = eyes;
+//    }
+//    public void setEyes(String eyes)
+//    {
+//        mEyes = eyes.equalsIgnoreCase("1") ? true : false;
+//    }
+//
+//    public boolean getNose()
+//    {
+//        return mNose;
+//    }
+//
+//    public void setNose(boolean Nose)
+//    {
+//        mNose = Nose;
+//    }
+//    public void setNose(String Nose)
+//    {
+//        mNose = Nose.equalsIgnoreCase("1") ? true : false;
+//    }
+//
+//    public boolean getLungs()
+//    {
+//        return mLungs;
+//    }
+//
+//    public void setLungs(boolean Lungs)
+//    {
+//        mLungs = Lungs;
+//    }
+//    public void setLungs(String Lungs)
+//    {
+//        mLungs = Lungs.equalsIgnoreCase("1") ? true : false;
+//    }
 
     public String getSpecify()
     {

@@ -115,7 +115,7 @@ public class FeedbackFragment extends Fragment {
     private void restCallSendFeedbackApi(){
 
         RequestParams params = new RequestParams();
-        UserModal userModal = SaveSharedPreferences.getLoginUserData(getActivity());
+        UserModal userModal = Global.GetInstance().GetUserModal();
         String str_userid = userModal.getId();
         String str_email = userModal.getEmail();
         String str_deviceid = utilityClass.GetDeviceID();

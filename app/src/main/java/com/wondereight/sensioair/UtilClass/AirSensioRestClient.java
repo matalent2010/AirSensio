@@ -4,6 +4,8 @@ package com.wondereight.sensioair.UtilClass;
  * Created by Miguel on 02/23/2016.
  */
 
+import android.content.Context;
+
 import com.loopj.android.http.*;
 
 public class AirSensioRestClient {
@@ -23,6 +25,7 @@ public class AirSensioRestClient {
     public static final String GET_PROFILE_INFO = "get_profile_info.php";
     public static final String GET_ALLERGY_INDEX = "get_indexes.php";
     public static final String GET_DATA_DETAILS = "get_data_details.php";
+    public static final String GET_DATA_DETAILS2 = "get_data_details2.php";
     public static final String GET_ADVICE = "get_advice.php";
     public static final String SEND_FEEDBACK = "do_send_feedback.php";
     public static final String SEND_PUSHID = "get_push_id.php";
@@ -38,6 +41,10 @@ public class AirSensioRestClient {
 
     public static void post(String url, RequestParams params, AsyncHttpResponseHandler  responseHandler) {
         client.post(getAbsoluteUrl(url), params, responseHandler);
+    }
+
+    public static void cancelRequest(Context context){
+        client.cancelRequests(context, true);
     }
 
     private static String getAbsoluteUrl(String relativeUrl) {
