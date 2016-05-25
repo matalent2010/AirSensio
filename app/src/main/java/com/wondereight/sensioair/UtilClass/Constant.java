@@ -29,7 +29,7 @@ public class Constant {
     public static final String DEFAULT_POLLUTION_INTENSITY = "";
 
     public static final String DEFAULT_ADVICE= "";
-    public static final String DEFAULT_PASSWORD = "SensioAirApp";
+    public static final String DEFAULT_PASSWORD = ""; //"SensioAirApp";
 
     //Login Mode
     public static final String LM_LOCAL = "0";
@@ -140,6 +140,8 @@ public class Constant {
 
     //Network ChangeReceiver
     public static final String NETWORKSTATUS = "network status changed";
+    public static final String ONLINEMESSAGE = "You are working on online mode";
+    public static final String OFFLINEMESSAGE = "You are working on offline mode";
 
     // Tutorial
     public static final int RESULT_SYMPTOM = 101;

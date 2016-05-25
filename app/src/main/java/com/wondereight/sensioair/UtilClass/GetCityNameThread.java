@@ -63,14 +63,20 @@ public class GetCityNameThread implements Runnable {
                 _callback.runFailCallback("GPS Provider is not available. Please allow the permission and try again.");
             } else {
                 this.canGetLocation = true;
+                // If Network provider enabled, get latitude/longitude using GPS Services
                 if (isNetworkEnabled) {
                     _debug.d(LOG_TAG, "Network Enabled");
                     if (locationManager != null) {
-                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        if (location != null) {
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
-                            _debug.d(LOG_TAG, String.format("Geolocation by network : %f, %f", latitude, longitude));
+                        if (checkSelfPermission(_context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                                checkSelfPermission(_context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            _debug.e(LOG_TAG, "The permission of Location is not granted.");
+                        } else {
+                            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                            if (location != null) {
+                                latitude = location.getLatitude();
+                                longitude = location.getLongitude();
+                                _debug.d(LOG_TAG, String.format("Geolocation by network : %f, %f", latitude, longitude));
+                            }
                         }
                     }
                 }
@@ -101,6 +107,7 @@ public class GetCityNameThread implements Runnable {
                     return;
                 }
                 try {
+                    _debug.d(LOG_TAG, "Location::"+latitude+", "+longitude);
                     List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
                     if( addresses.isEmpty() ){
                         _debug.e(LOG_TAG, "address is empty.");
@@ -127,7 +134,7 @@ public class GetCityNameThread implements Runnable {
                 _callback.runSuccessCallback();
             }
 
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException | SecurityException e){
             e.printStackTrace();
             _debug.e(LOG_TAG, e.getMessage());
             Global.GetInstance().SetGeolocation(latitude + ", " + longitude);

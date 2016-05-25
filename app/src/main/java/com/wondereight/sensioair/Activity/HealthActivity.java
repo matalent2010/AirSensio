@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
@@ -66,6 +67,8 @@ public class HealthActivity extends AppCompatActivity {
     EditText etAnotherApecify;
     @Bind(R.id.chbpet)
     CheckBox chbPet;
+    @Bind(R.id.btn_close)
+    View btnClose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +87,8 @@ public class HealthActivity extends AppCompatActivity {
 
                 setViewsWithModal(infoModal);
             } catch (Exception ignored){ }
+        } else {
+            btnClose.setVisibility(View.GONE);
         }
     }
 
@@ -119,6 +124,11 @@ public class HealthActivity extends AppCompatActivity {
                 restCallSaveInfoApi();
             }
         }
+    }
+
+    @OnClick(R.id.btn_close)
+    void onClickCloseBtn(){
+        goBack(RESULT_CANCELED);
     }
 
     private void setViewsWithModal(HealthInfoModal modal){
@@ -240,7 +250,9 @@ public class HealthActivity extends AppCompatActivity {
         setResult(result, intent);
         finish();
     }
+
     private void restCallGetProfileInfoApi() {
+        if( !Global.GetInstance().isLogedinUser() ) return;
 
         RequestParams params = new RequestParams();
         UserModal userModal = Global.GetInstance().GetUserModal();
@@ -265,6 +277,8 @@ public class HealthActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 utilityClass.processDialogStop();
+                if( !Global.GetInstance().isLogedinUser() ) return;
+
                 if (responseString == null) {
                     _debug.e(LOG_TAG, "None response string");
                 } else if (responseString.equals("0")) {
@@ -305,6 +319,8 @@ public class HealthActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 //utilityClass.processDialogStop();
                 //utilityClass.toast(getResources().getString(R.string.check_internet));
+                if( !Global.GetInstance().isLogedinUser() ) return;
+
                 _debug.e(LOG_TAG, "errorString: " + responseString);
                 nCountCallingProfile++;
                 if (nCountCallingProfile < 3) {
@@ -318,6 +334,8 @@ public class HealthActivity extends AppCompatActivity {
             public void onRetry(int retryNo) {
                 // called when request is retried{
                 //utilityClass.toast(getResources().getString(R.string.try_again));
+                if( !Global.GetInstance().isLogedinUser() ) return;
+
                 _debug.d(LOG_TAG, "AirSensioRestClient.GET_PROFILE_INFO.onRetry");
                 nCountCallingProfile++;
                 if (nCountCallingProfile < 3) {

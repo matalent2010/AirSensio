@@ -70,4 +70,10 @@
     <!-- Profile Fragment Color-->
     <color name="textColor_gray">@color/lightblack</color>
     <color name="color_btn_edit">@color/lightgreen</color>
+
+    <!-- Symptom Button Color -->
+    <color name="btnCircle_3">#f83a07</color>
+    <color name="btnCircle_2">#f7674a</color>
+    <color name="btnCircle_1">#f48b78</color>
+    <color name="btnCircle_0">#b4d7f8</color>
 </resources>

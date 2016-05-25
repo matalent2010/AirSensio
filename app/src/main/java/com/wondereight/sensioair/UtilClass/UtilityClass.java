@@ -270,8 +270,7 @@ public class UtilityClass {
                 } else if (responseString.equals("0")) {
                     int i = (int)getTag();
                     _symFlagList.set(i,false);
-                    //finish();
-                    Log.e(LOG_TAG, "Log outbreak Success");
+                    Log.i(LOG_TAG, "Log outbreak Success");
                 } else if (responseString.equals("1")) {
                     int i = (int)getTag();
                     _symFlagList.set(i,false);

@@ -18,138 +18,160 @@
             android:fillViewport="true"
             android:isScrollContainer="false"
             android:orientation="vertical">
-
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
+                android:layout_height="wrap_content">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_20sdp"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:text="@string/title_health"
-                        style = "@style/TVTitleStyle"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:text="@string/title_health"
+                            style = "@style/TVTitleStyle"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/_40sdp"
+                        android:paddingRight="@dimen/_40sdp"
+                        android:orientation="vertical">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:layout_marginLeft="@dimen/_8sdp">
+                            <CheckBox
+                                style="@style/chb_style2"
+                                android:text="@string/chb_conscious"
+                                android:id="@+id/chbconscious"/>
+                            <CheckBox
+                                style="@style/chb_style2"
+                                android:text="@string/chb_allergies"
+                                android:id="@+id/chballergies"/>
+                        </LinearLayout>
+
+                        <!--<LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:layout_marginLeft="@dimen/_8sdp"
+                            android:paddingLeft="@dimen/_10sdp">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+                                <CheckBox
+                                    style="@style/chb_smallstyle1"
+                                    android:text="@string/chb_eyes"
+                                    android:id="@+id/chbeyes"
+                                    android:checked="true"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+                                <CheckBox
+                                    style="@style/chb_smallstyle1"
+                                    android:text="@string/chb_nose"
+                                    android:id="@+id/chbnose"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+                                <CheckBox
+                                    style="@style/chb_smallstyle1"
+                                    android:text="@string/chb_lungs"
+                                    android:id="@+id/chblungs"/>
+                            </LinearLayout>
+                        </LinearLayout>-->
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:orientation="vertical">
+                            <EditText
+                                android:id="@+id/etspecify"
+                                style="@style/ETInputStyle"
+                                android:hint="@string/hint_specify"/>
+
+                            <LinearLayout
+                                style="@style/whiteLineLayout"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:layout_marginLeft="@dimen/_8sdp">
+                            <CheckBox
+                                style="@style/chb_style2"
+                                android:text="@string/chb_respiratory"
+                                android:id="@+id/chbrespiratory"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:orientation="vertical">
+                            <EditText
+                                android:id="@+id/etanotherspecify"
+                                style="@style/ETInputStyle"
+                                android:hint="@string/hint_specify"/>
+
+                            <LinearLayout
+                                style="@style/whiteLineLayout"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:layout_marginLeft="@dimen/_8sdp">
+                            <CheckBox
+                                style="@style/chb_style2"
+                                android:text="@string/chb_pet"
+                                android:id="@+id/chbpet"/>
+                        </LinearLayout>
+                    </LinearLayout>
 
                 </LinearLayout>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/_40sdp"
-                    android:paddingRight="@dimen/_40sdp"
-                    android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginTop="@dimen/_15sdp"
-                        android:layout_marginLeft="@dimen/_8sdp">
-                        <CheckBox
-                            style="@style/chb_style2"
-                            android:text="@string/chb_conscious"
-                            android:id="@+id/chbconscious"/>
-                        <CheckBox
-                            style="@style/chb_style2"
-                            android:text="@string/chb_allergies"
-                            android:id="@+id/chballergies"/>
-                    </LinearLayout>
-
-                    <!--<LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="@dimen/_15sdp"
-                        android:layout_marginLeft="@dimen/_8sdp"
-                        android:paddingLeft="@dimen/_10sdp">
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1">
-                            <CheckBox
-                                style="@style/chb_smallstyle1"
-                                android:text="@string/chb_eyes"
-                                android:id="@+id/chbeyes"
-                                android:checked="true"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1">
-                            <CheckBox
-                                style="@style/chb_smallstyle1"
-                                android:text="@string/chb_nose"
-                                android:id="@+id/chbnose"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1">
-                            <CheckBox
-                                style="@style/chb_smallstyle1"
-                                android:text="@string/chb_lungs"
-                                android:id="@+id/chblungs"/>
-                        </LinearLayout>
-                    </LinearLayout>-->
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_15sdp"
-                        android:orientation="vertical">
-                        <EditText
-                            android:id="@+id/etspecify"
-                            style="@style/ETInputStyle"
-                            android:hint="@string/hint_specify"/>
-
-                        <LinearLayout
-                            style="@style/whiteLineLayout"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginTop="@dimen/_15sdp"
-                        android:layout_marginLeft="@dimen/_8sdp">
-                        <CheckBox
-                            style="@style/chb_style2"
-                            android:text="@string/chb_respiratory"
-                            android:id="@+id/chbrespiratory"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_15sdp"
-                        android:orientation="vertical">
-                        <EditText
-                            android:id="@+id/etanotherspecify"
-                            style="@style/ETInputStyle"
-                            android:hint="@string/hint_specify"/>
-
-                        <LinearLayout
-                            style="@style/whiteLineLayout"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginTop="@dimen/_15sdp"
-                        android:layout_marginLeft="@dimen/_8sdp">
-                        <CheckBox
-                            style="@style/chb_style2"
-                            android:text="@string/chb_pet"
-                            android:id="@+id/chbpet"/>
-                    </LinearLayout>
+                    android:layout_alignParentTop="true"
+                    android:gravity="right"
+                    android:padding="@dimen/_12sdp">
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/btn_close"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="right"
+                        android:gravity="center_vertical|center_horizontal"
+                        style="@style/Base.Widget.AppCompat.Button.Borderless"
+                        android:text="X"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:textSize="30sp"/>
                 </LinearLayout>
+            </RelativeLayout>
 
-            </LinearLayout>
         </ScrollView>
 
         <LinearLayout

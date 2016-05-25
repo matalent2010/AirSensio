@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.wondereight.sensioair.UtilClass.Constant;
 import com.wondereight.sensioair.UtilClass.Global;
 import com.wondereight.sensioair.UtilClass.UtilityClass;
 
@@ -26,10 +27,10 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             Global.GetInstance().SetOnlineMode(true);
             UtilityClass utilityClass = new UtilityClass(context);
             utilityClass.sendSymptomList( );
-            Toast.makeText(context, "You are working on online mode", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, Constant.ONLINEMESSAGE, Toast.LENGTH_LONG).show();
         } else if( !UtilityClass.isInternetConnection(context) && Global.GetInstance().IsOnlineMode() ){
             Global.GetInstance().SetOnlineMode(false);
-            Toast.makeText(context, "You are working on offline mode", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, Constant.OFFLINEMESSAGE, Toast.LENGTH_LONG).show();
         }
     }
 }

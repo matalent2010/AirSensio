@@ -46,13 +46,13 @@ public class SplashScreen extends AppCompatActivity {
         if( Global.GetInstance().IsOnlineMode() ) {
             utilityClass = new UtilityClass(SplashScreen.this);
             if (utilityClass.isHavingSymptomList()) {
+                mNothingPreWork = false;
                 utilityClass.sendSymptomList(new Runnable() {
                     @Override
                     public void run() {
                         goMainActivity();
                     }
                 });
-                mNothingPreWork = false;
             }
         }
 

@@ -2,6 +2,7 @@ package com.wondereight.sensioair.Activity;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -48,9 +49,9 @@ public class SymptomActivity extends AppCompatActivity implements MaterialIntroL
 
     int[] symptomList;
     Drawable sDrawable;
-    int[][] idDrawable;
+    int[] btnCircle;
 
-    @Bind({R.id.sneezing, R.id.itchyeyes, R.id.runnynose, R.id.nasal, R.id.wateryeyes, R.id.itchynose})
+    @Bind({R.id.wateryeyes, R.id.itchyeyes, R.id.runnynose, R.id.itchynose, R.id.sneezing, R.id.nasal})
     List<ImageView> ivSymptoms;
 
     @Bind(R.id.btn_close)
@@ -84,35 +85,16 @@ public class SymptomActivity extends AppCompatActivity implements MaterialIntroL
 
     private void initialization() {
         sDrawable = null;
-        idDrawable = new int[][]{
-                {R.drawable.symptom_1_0, R.drawable.symptom_1_1, R.drawable.symptom_1_2, R.drawable.symptom_1_3},
-                {R.drawable.symptom_2_0, R.drawable.symptom_2_1, R.drawable.symptom_2_2, R.drawable.symptom_2_3},
-                {R.drawable.symptom_3_0, R.drawable.symptom_3_1, R.drawable.symptom_3_2, R.drawable.symptom_3_3},
-                {R.drawable.symptom_4_0, R.drawable.symptom_4_1, R.drawable.symptom_4_2, R.drawable.symptom_4_3},
-                {R.drawable.symptom_5_0, R.drawable.symptom_5_1, R.drawable.symptom_5_2, R.drawable.symptom_5_3},
-                {R.drawable.symptom_6_0, R.drawable.symptom_6_1, R.drawable.symptom_6_2, R.drawable.symptom_6_3}
-        };
+        btnCircle = new int[] {R.drawable.circle_btn_0, R.drawable.circle_btn_1, R.drawable.circle_btn_2, R.drawable.circle_btn_3};
 
         for (int i=0; i<ivSymptoms.size(); i++)
         {
-            switch (symptomList[i]){
-                case 0:
-                    sDrawable = ContextCompat.getDrawable(getBaseContext(), idDrawable[i][0]);
-                    break;
-                case 1:
-                    sDrawable = ContextCompat.getDrawable(getBaseContext(), idDrawable[i][1]);
-                    break;
-                case 2:
-                    sDrawable = ContextCompat.getDrawable(getBaseContext(), idDrawable[i][2]);
-                    break;
-                case 3:
-                    sDrawable = ContextCompat.getDrawable(getBaseContext(), idDrawable[i][3]);
-                    break;
-                default:
-                    sDrawable = ContextCompat.getDrawable(getBaseContext(), idDrawable[i][0]);
-                    break;
+            sDrawable = ContextCompat.getDrawable(getBaseContext(), btnCircle[symptomList[i]]);
+            if(Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                ivSymptoms.get(i).setBackgroundDrawable( sDrawable );
+            } else {
+                ivSymptoms.get(i).setBackground( sDrawable );
             }
-            ivSymptoms.get(i).setImageDrawable(sDrawable);
         }
     }
 
@@ -151,9 +133,20 @@ public class SymptomActivity extends AppCompatActivity implements MaterialIntroL
         //Global.GetInstance().SetStateSymptomList(symptomList);
         if(isSelectedSymptom(symptomList)) {
             SaveSharedPreferences.addSymptomData(SymptomActivity.this, getParam());
-            Intent intent = new Intent();
-            setResult(RESULT_OK, intent);
-            finish();
+
+            if( Global.GetInstance().IsOnlineMode() ){
+                utilityClass.processDialogStart(false);
+                utilityClass.sendSymptomList(new Runnable() {
+                    @Override
+                    public void run() {
+                        utilityClass.processDialogStop();
+                        goBackHomeActivity();
+                    }
+                });
+            } else {
+                utilityClass.sendSymptomList();
+                goBackHomeActivity();
+            }
         }
         else
             utilityClass.toast(getResources().getString(R.string.select_symptom));
@@ -161,12 +154,16 @@ public class SymptomActivity extends AppCompatActivity implements MaterialIntroL
 
     @OnClick(R.id.sneezing)
     void onClickSneezing(){
-        symptomList[0]++;
-        if(symptomList[0]>3)
-            symptomList[0] = 0;
+        symptomList[4]++;
+        if(symptomList[4]>3)
+            symptomList[4] = 0;
 
-        sDrawable = ContextCompat.getDrawable(getBaseContext(), idDrawable[0][symptomList[0]]);
-        ivSymptoms.get(0).setImageDrawable(sDrawable);
+        sDrawable = ContextCompat.getDrawable(getBaseContext(), btnCircle[symptomList[4]]);
+        if(Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            ivSymptoms.get(4).setBackgroundDrawable( sDrawable );
+        } else {
+            ivSymptoms.get(4).setBackground(sDrawable);
+        }
 
     }
     @OnClick(R.id.itchyeyes)
@@ -175,8 +172,12 @@ public class SymptomActivity extends AppCompatActivity implements MaterialIntroL
         if(symptomList[1]>3)
             symptomList[1] = 0;
 
-        sDrawable = ContextCompat.getDrawable(getBaseContext(), idDrawable[1][symptomList[1]]);
-        ivSymptoms.get(1).setImageDrawable(sDrawable);
+        sDrawable = ContextCompat.getDrawable(getBaseContext(), btnCircle[symptomList[1]]);
+        if(Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            ivSymptoms.get(1).setBackgroundDrawable( sDrawable );
+        } else {
+            ivSymptoms.get(1).setBackground(sDrawable);
+        }
     }
     @OnClick(R.id.runnynose)
     void onClickRunnyNose(){
@@ -184,35 +185,51 @@ public class SymptomActivity extends AppCompatActivity implements MaterialIntroL
         if(symptomList[2]>3)
             symptomList[2] = 0;
 
-        sDrawable = ContextCompat.getDrawable(getBaseContext(), idDrawable[2][symptomList[2]]);
-        ivSymptoms.get(2).setImageDrawable(sDrawable);
+        sDrawable = ContextCompat.getDrawable(getBaseContext(), btnCircle[symptomList[2]]);
+        if(Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            ivSymptoms.get(2).setBackgroundDrawable( sDrawable );
+        } else {
+            ivSymptoms.get(2).setBackground(sDrawable);
+        }
     }
     @OnClick(R.id.nasal)
     void onClickNasal(){
-        symptomList[3]++;
-        if(symptomList[3]>3)
-            symptomList[3] = 0;
-
-        sDrawable = ContextCompat.getDrawable(getBaseContext(), idDrawable[3][symptomList[3]]);
-        ivSymptoms.get(3).setImageDrawable(sDrawable);
-    }
-    @OnClick(R.id.wateryeyes)
-    void onClickWateryEyes(){
-        symptomList[4]++;
-        if(symptomList[4]>3)
-            symptomList[4] = 0;
-
-        sDrawable = ContextCompat.getDrawable(getBaseContext(), idDrawable[4][symptomList[4]]);
-        ivSymptoms.get(4).setImageDrawable(sDrawable);
-    }
-    @OnClick(R.id.itchynose)
-    void onClickItchyNose(){
         symptomList[5]++;
         if(symptomList[5]>3)
             symptomList[5] = 0;
 
-        sDrawable = ContextCompat.getDrawable(getBaseContext(), idDrawable[5][symptomList[5]]);
-        ivSymptoms.get(5).setImageDrawable(sDrawable);
+        sDrawable = ContextCompat.getDrawable(getBaseContext(), btnCircle[symptomList[5]]);
+        if(Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            ivSymptoms.get(5).setBackgroundDrawable( sDrawable );
+        } else {
+            ivSymptoms.get(5).setBackground(sDrawable);
+        }
+    }
+    @OnClick(R.id.wateryeyes)
+    void onClickWateryEyes(){
+        symptomList[0]++;
+        if(symptomList[0]>3)
+            symptomList[0] = 0;
+
+        sDrawable = ContextCompat.getDrawable(getBaseContext(), btnCircle[symptomList[0]]);
+        if(Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            ivSymptoms.get(0).setBackgroundDrawable( sDrawable );
+        } else {
+            ivSymptoms.get(0).setBackground(sDrawable);
+        }
+    }
+    @OnClick(R.id.itchynose)
+    void onClickItchyNose(){
+        symptomList[3]++;
+        if(symptomList[3]>3)
+            symptomList[3] = 0;
+
+        sDrawable = ContextCompat.getDrawable(getBaseContext(), btnCircle[symptomList[3]]);
+        if(Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            ivSymptoms.get(3).setBackgroundDrawable( sDrawable );
+        } else {
+            ivSymptoms.get(3).setBackground(sDrawable);
+        }
     }
 
     private RequestParamsModal getParam(){
@@ -324,8 +341,10 @@ public class SymptomActivity extends AppCompatActivity implements MaterialIntroL
 
     public void drawSymptomTutorial(){
         //Show intro
-        View viewEnvir = ivSymptoms.get(5);
-        if( viewEnvir != null ){
+        View viewEnvir = ivSymptoms.get(3);
+        PreferencesManager pm = new PreferencesManager(this);
+
+        if( viewEnvir != null && !pm.isDisplayed(Constant.INTRO_ID_3)){
             //new PreferencesManager(this).reset(Constant.INTRO_ID_3);
             showIntro(viewEnvir, Constant.INTRO_ID_3, getString(R.string.tutorial_sympotom), ArrowType.AT_RED);
         }
@@ -342,6 +361,7 @@ public class SymptomActivity extends AppCompatActivity implements MaterialIntroL
                 .setDelayMillis(200)
                 .enableFadeAnimation(true)
                 .performClick(true)
+                .setTouchCount(5)
                 .setListener(this)
                 .setArrowType(type)
                 .setInfoText(text)
@@ -354,14 +374,26 @@ public class SymptomActivity extends AppCompatActivity implements MaterialIntroL
 
     @Override
     public void onUserClicked(String materialIntroViewId) {
-        _debug.d(LOG_TAG, "pressed " + materialIntroViewId);
+        _debug.d(LOG_TAG, "Tutor pressed: " + materialIntroViewId);
 
         if(materialIntroViewId == Constant.INTRO_ID_3){
-            Intent intent = new Intent();
-            intent.putExtra(Constant.TUTORIAL, true);
-            setResult(RESULT_CANCELED, intent);
-            finish();
+            new android.os.Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent();
+                    intent.putExtra(Constant.TUTORIAL, true);
+                    setResult(RESULT_CANCELED, intent);
+                    finish();
+                }
+            }, 200);
+
             _debug.e(LOG_TAG, "Log outbreak closed by tutorial");;
         }
+    }
+
+    private void goBackHomeActivity(){
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

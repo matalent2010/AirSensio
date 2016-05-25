@@ -1,15 +1,20 @@
 package com.wondereight.sensioair.Activity;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -101,9 +106,16 @@ public class SignupActivity extends AppCompatActivity {
     private static final String topCardUrl = "https://" + host + "/v1/people/~:" +
             "(id,email-address,first-name,last-name,phone-numbers)";
 
+    private static final String[] LOCATION_PERMS={
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+    };
+    private static final int LOCATION_REQUEST=188;
+
     UtilityClass utilityClass;
     Calendar myCalendar = Calendar.getInstance();
     UserModal userModal = null;
+
 
     //facebook
     CallbackManager callbackManager = null;
@@ -208,41 +220,16 @@ public class SignupActivity extends AppCompatActivity {
             if (!utilityClass.isInternetConnection()) {
                 utilityClass.toast(getResources().getString(R.string.check_internet));
             } else {
-                utilityClass.processDialogStart(false);
-//                if (chbGelocation.isChecked()) {
-                    GetCityNameThread getCityNameThread = new GetCityNameThread(SignupActivity.this, new ThreadCallback() {
-
-                        @Override
-                        public void runSuccessCallback() {
-                            SignupActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //utilityClass.processDialogStop();
-                                    restCallSignupApi();
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void runFailCallback(final String err) {
-                            SignupActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    utilityClass.processDialogStop();
-                                    utilityClass.showAlertMessage(getString(R.string.title_alert), err);
-                                }
-                            });
-                        }
-                    });
-                    new Thread(getCityNameThread).start();
-//                } else {
-//                    Global.GetInstance().SetGoeCityName("");
-//                    restCallSignupApi();
-//                }
-
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, LOCATION_PERMS, LOCATION_REQUEST);
+                    _debug.e(LOG_TAG, "Needed permission request of Location.");
+                } else {
+                    utilityClass.processDialogStart(false);
+                    SignupWithCityName();
+                }
             }
         }
-
     }
 
     @OnClick(R.id.btn_facebook)
@@ -291,6 +278,13 @@ public class SignupActivity extends AppCompatActivity {
                 myCalendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent loginActivity = new Intent(SignupActivity.this, LoginAcitivity.class);
+        startActivity(loginActivity);
+        finish();
+        super.onBackPressed();
+    }
     private void updateBirthday() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
         tvBirthday.setText(dateFormat.format(myCalendar.getTime()));
@@ -323,7 +317,7 @@ public class SignupActivity extends AppCompatActivity {
         String str_hash = UtilityClass.MD5(str_deviceid + str_email + Constant.LOGIN_SECTRET);
         String str_geolocation = Global.GetInstance().GetGeolocation();
         String str_cityname = Global.GetInstance().GetGeoCityName().isEmpty() ? Constant.DEFAULT_CITYNAME : Global.GetInstance().GetGeoCityName();
-        if( str_cityname.equalsIgnoreCase("丹东市") ) str_cityname = "Lisbon";     //MUST Remove
+        //if( str_cityname.equalsIgnoreCase("丹东市") ) str_cityname = "Lisbon";     //MUST Remove
 
         params.put(Constant.STR_FIRSTNAME, str_firstname);
         params.put(Constant.STR_LASTNAME, str_lastname);
@@ -497,11 +491,13 @@ public class SignupActivity extends AppCompatActivity {
                 Profile profile = Profile.getCurrentProfile();
 
                 if ( profile != null ) {
+                    _debug.d(LOG_TAG, "FB Profile: " + profile.toString());
                     getFacebookProfileInfo(profile, mFacebookToken);
                 }else {
                     mProfileTracker = new ProfileTracker() {
                         @Override
                         protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
+                            _debug.d(LOG_TAG, "FB stopTracking()");
                             getFacebookProfileInfo(newProfile, mFacebookToken);
                             mProfileTracker.stopTracking();
                         }
@@ -748,4 +744,57 @@ public class SignupActivity extends AppCompatActivity {
         request.executeAsync();
         return true;
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch(requestCode) {
+            case LOCATION_REQUEST:
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    SignupWithNoCityName();
+                    _debug.e(LOG_TAG, "The permission of Location is not granted.");
+                } else {
+                    utilityClass.processDialogStart(false);
+                    SignupWithCityName();
+                }
+                break;
+        }
+    }
+
+    private void SignupWithCityName(){
+        GetCityNameThread getCityNameThread = new GetCityNameThread(SignupActivity.this, new ThreadCallback() {
+            @Override
+            public void runSuccessCallback() {
+                SignupActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //utilityClass.processDialogStop();
+                        restCallSignupApi();
+                    }
+                });
+            }
+
+            @Override
+            public void runFailCallback(final String err) {
+                SignupActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        utilityClass.processDialogStop();
+                        utilityClass.showAlertMessage(getString(R.string.title_alert), err);
+                    }
+                });
+            }
+        });
+        new Thread(getCityNameThread).start();
+    }
+
+    private void SignupWithNoCityName(){
+        Global.GetInstance().SetGeolocation("0, 0");
+        Global.GetInstance().SetGoeCityName("");
+        utilityClass.processDialogStart(false);
+        restCallSignupApi();
+    }
+
+
 }

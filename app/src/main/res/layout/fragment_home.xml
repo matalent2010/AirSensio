@@ -11,8 +11,9 @@
         android:orientation="vertical"
         android:background="@drawable/bg_log_outbreak">
         <ScrollView
+            android:id="@+id/svContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:fillViewport="true"
             android:isScrollContainer="true"
             android:orientation="vertical">
@@ -69,7 +70,7 @@
                             <ListView
                                 android:id="@+id/city_list"
                                 android:layout_width="match_parent"
-                                android:layout_height="300dp"
+                                android:layout_height="150dp"
                                 android:divider="@null"
                                 android:dividerHeight="0dp">
                             </ListView>

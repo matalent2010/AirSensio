@@ -142,7 +142,7 @@ public class StatisticsFragment extends Fragment implements MaterialIntroListene
     public void onClickTabDay(){
         int oldGraphStyle = styleGraph;
 
-        if ( oldGraphStyle != GS_DAY){
+//        if ( oldGraphStyle != GS_DAY){
             tabButton.get(oldGraphStyle).setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.itembuttonpannel));
             tabButton.get(oldGraphStyle).setTextColor(ContextCompat.getColor(getContext(), R.color.textColor_Green));
             tabButton.get(GS_DAY).setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.itemgreenpannel));
@@ -150,7 +150,7 @@ public class StatisticsFragment extends Fragment implements MaterialIntroListene
             styleGraph = GS_DAY;
             loadCurrentGraphData();
             redrawGraph(_view);
-        }
+//        }
     }
 
     @OnClick(R.id.tab_week)
@@ -554,6 +554,7 @@ public class StatisticsFragment extends Fragment implements MaterialIntroListene
         return result;
     }
     private void restCallGraphDataApi(final int style) {
+        if( !Global.GetInstance().isLogedinUser() ) return;
 
         RequestParams params = new RequestParams();
         String str_userid, str_deviceid, str_email;
@@ -694,7 +695,9 @@ public class StatisticsFragment extends Fragment implements MaterialIntroListene
 
     public void drawStatTutorial(View viewEnvir){
         //Show intro
-        if( viewEnvir != null ){
+        PreferencesManager pm = new PreferencesManager(getContext());
+
+        if( viewEnvir != null && !pm.isDisplayed(Constant.INTRO_ID_4)){
             //new PreferencesManager(getContext()).reset(Constant.INTRO_ID_4);
             showIntro(viewEnvir, Constant.INTRO_ID_4, getString(R.string.tutorial_statisticss), ArrowType.AT_NORMAL);
         }
@@ -707,7 +710,7 @@ public class StatisticsFragment extends Fragment implements MaterialIntroListene
                 .setTextColor(0xFF3F9CFF)
                 .enableDotAnimation(false)
                 .setFocusGravity(FocusGravity.CENTER)
-                .setFocusType(Focus.MINIMUM)
+                .setFocusType(Focus.NORMAL)
                 .setDelayMillis(200)
                 .enableFadeAnimation(true)
                 .performClick(true)
@@ -723,6 +726,8 @@ public class StatisticsFragment extends Fragment implements MaterialIntroListene
 
     @Override
     public void onUserClicked(String materialIntroViewId) {
+        _debug.d(LOG_TAG, "Tutor pressed: " + materialIntroViewId);
+
         if( materialIntroViewId == Constant.INTRO_ID_4 ){
             ((HomeActivity)getActivity()).mTabPager.setCurrentItem(2);
         }

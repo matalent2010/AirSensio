@@ -25,6 +25,7 @@ import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.wondereight.sensioair.Activity.HomeActivity;
 import com.wondereight.sensioair.CustomView.FontsOverride;
+import com.wondereight.sensioair.UtilClass.Constant;
 import com.wondereight.sensioair.UtilClass.Global;
 import com.wondereight.sensioair.UtilClass.UtilityClass;
 
@@ -42,8 +43,8 @@ public class SensioAirApplication extends MultiDexApplication {
     private static final String LOG_TAG = "Application";
 
     // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
-    private static final String TWITTER_CONSUMER_KEY = "9BTgHWtXNZLWkECtTlMjcdN41"; //m  //"LklqPP0PO24ILtWK59I2m8PYb"; //client //
-    private static final String TWITTER_CONSUMER_SECRET = "ESGOagVAh0UFEKaCBwIczPVHFTBevuWt2rdOiGadoSrXglkTM0"; //m //"vObhW72i8rieeZZmarPtPz9RRsnVDJ9QQMpSerjed3TqXgWNXL"; //client //
+    private static final String TWITTER_CONSUMER_KEY = "LklqPP0PO24ILtWK59I2m8PYb"; //client //"dHWt79PLMeQUPrMrjvMuV4bhr"; //m  //
+    private static final String TWITTER_CONSUMER_SECRET = "vObhW72i8rieeZZmarPtPz9RRsnVDJ9QQMpSerjed3TqXgWNXL"; //client //"ThU4GOmnRtrEbcUAqvLFRI79mVyixlSxw48FfNTyyOR7qaQIQ6"; //m //
 
     public static BroadcastReceiver brNetStatus = null;
 
@@ -101,7 +102,7 @@ public class SensioAirApplication extends MultiDexApplication {
                             utilityClass.sendSymptomList( );
 
                             if( foreground )
-                                Toast.makeText(getApplicationContext(), "You are working on online mode", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), Constant.ONLINEMESSAGE, Toast.LENGTH_LONG).show();
                         }
                     } else {
                         Log.d(LOG_TAG, "NetStatus: offline");
@@ -109,7 +110,7 @@ public class SensioAirApplication extends MultiDexApplication {
                             Global.GetInstance().SetOnlineMode(false);
 
                             if( foreground )
-                                Toast.makeText(getApplicationContext(), "You are working on offline mode", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), Constant.OFFLINEMESSAGE, Toast.LENGTH_LONG).show();
                         }
                     }
                 }

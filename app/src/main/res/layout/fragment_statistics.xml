@@ -362,8 +362,7 @@
                             android:layout_marginRight="20dp"
                             android:layout_marginEnd="20dp"
                             android:layout_marginBottom="15dp"
-                            chart:chart_axisColor="#30547d99"
-                            chart:chart_typeface="OpenSans-Regular.ttf"/>
+                            chart:chart_axisColor="#30547d99"/>
 
                     </LinearLayout>
 

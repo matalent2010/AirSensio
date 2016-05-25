@@ -118,7 +118,8 @@ public class LoginAcitivity extends AppCompatActivity {
 
         if( Global.GetInstance().SetUserModalFromShared(this) )
             runAutoLogin();
-
+        else if(Global.GetInstance().GetUserModal()!=null && !Global.GetInstance().GetUserModal().getEmail().isEmpty())
+            etEmail.setText(Global.GetInstance().GetUserModal().getEmail());
     }
 
     @Override
@@ -186,7 +187,12 @@ public class LoginAcitivity extends AppCompatActivity {
     @OnClick(R.id.btn_facebook)
     void onClickBtnFacebook(){
         if (utilityClass.isInternetConnection()) {
+            if(AccessToken.getCurrentAccessToken()!=null){
+                _debug.d(LOG_TAG, "FB logout");
+                LoginManager.getInstance().logOut();
+            }
             LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email"));
+
         } else {
             utilityClass.toast(getString(R.string.check_internet));
         }
@@ -349,6 +355,7 @@ public class LoginAcitivity extends AppCompatActivity {
                         SignupActivity.putExtra("password", Constant.DEFAULT_PASSWORD);
                     }
                     startActivity(SignupActivity);
+                    finish();
                 } else if(responseString.equals("3")){
 
                     utilityClass.showAlertMessage(getString(R.string.title_alert), getString(R.string.user_suspended));
@@ -546,8 +553,10 @@ public class LoginAcitivity extends AppCompatActivity {
                 // App code
                 if (exception instanceof FacebookAuthorizationException) {
                     if (AccessToken.getCurrentAccessToken() != null) {
+                        _debug.d(LOG_TAG, "FB now access token:" + AccessToken.getCurrentAccessToken().toString());
                         LoginManager.getInstance().logOut();
                     }
+                    _debug.d(LOG_TAG, "Authorization Exception:" + exception.toString());
                     utilityClass.toast("User logged in as different Facebook user");
                     return;
                 }

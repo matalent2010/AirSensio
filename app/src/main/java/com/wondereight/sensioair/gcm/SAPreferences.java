@@ -22,5 +22,5 @@ public class SAPreferences {
     public static final String REGISTRATION_COMPLETE = "registrationComplete";
     public static final String COUNT_MESSAGES = "countGCMMessages";
     public static final String UPDATED_TOKEN = "updatedToken";
-    public static final String REGISTER_TO_SERVER = "registerServer";
+//    public static final String REGISTER_TO_SERVER = "registerServer";
 }

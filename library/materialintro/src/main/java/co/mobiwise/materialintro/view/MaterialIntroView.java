@@ -226,6 +226,14 @@ public class MaterialIntroView extends RelativeLayout {
      */
     private ArrowType arrowType;
 
+    /**
+     * touch count
+     * until user click the target for touchCount times, show the tutorials.
+     */
+    private int touchCount;
+    private int clickedCount;
+
+
     public MaterialIntroView(Context context) {
         super(context);
         init(context);
@@ -271,6 +279,8 @@ public class MaterialIntroView extends RelativeLayout {
         isPerformClick = false;
         isImageViewEnabled = true;
         arrowType = ArrowType.AT_NORMAL;
+        touchCount = 1;
+        clickedCount = 0;
 
         /**
          * initialize objects
@@ -340,8 +350,10 @@ public class MaterialIntroView extends RelativeLayout {
         if (!isReady) return;
 
         if (bitmap == null || canvas == null) {
-            if (bitmap == null)
+            if (bitmap == null) {
+                Log.d("MaterialIntroView", "Canvas Width, Height: "+width+", " +height);
                 bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            }
             else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     bitmap.reconfigure(width, height, Bitmap.Config.ARGB_8888);
@@ -399,8 +411,10 @@ public class MaterialIntroView extends RelativeLayout {
                 return true;
             case MotionEvent.ACTION_UP:
 
-                if (isTouchOnFocus || dismissOnTouch)
-                    dismiss();
+                if(clickedCount >= touchCount-1) {
+                    if (isTouchOnFocus || dismissOnTouch)
+                        dismiss();
+                }
 
                 if (isTouchOnFocus && isPerformClick) {
                     targetView.getView().performClick();
@@ -408,6 +422,7 @@ public class MaterialIntroView extends RelativeLayout {
                     targetView.getView().invalidate();
                     targetView.getView().setPressed(false);
                     targetView.getView().invalidate();
+                    clickedCount++;
                 }
 
                 return true;
@@ -704,6 +719,10 @@ public class MaterialIntroView extends RelativeLayout {
         this.materialIntroListener = materialIntroListener;
     }
 
+    public void setTouchCount(int touchCount) {
+        this.touchCount = touchCount;
+    }
+
     private void setPerformClick(boolean isPerformClick){
         this.isPerformClick = isPerformClick;
     }
@@ -812,6 +831,11 @@ public class MaterialIntroView extends RelativeLayout {
             return this;
         }
 
+        public Builder setTouchCount(int touchCount) {
+            materialIntroView.setTouchCount(touchCount);
+            return this;
+        }
+
         public Builder performClick(boolean isPerformClick){
             materialIntroView.setPerformClick(isPerformClick);
             return this;
@@ -823,6 +847,7 @@ public class MaterialIntroView extends RelativeLayout {
         }
 
         public MaterialIntroView build() {
+            Log.d("Intro Show::", ""+materialIntroView.touchCount + "::" + materialIntroView.clickedCount);
             Circle circle = new Circle(
                     materialIntroView.targetView,
                     materialIntroView.focusType,

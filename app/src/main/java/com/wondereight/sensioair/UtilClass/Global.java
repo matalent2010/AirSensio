@@ -3,6 +3,7 @@ package com.wondereight.sensioair.UtilClass;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.twitter.sdk.android.core.models.User;
 import com.wondereight.sensioair.Modal.CityModal;
 import com.wondereight.sensioair.Modal.UserModal;
 import com.wondereight.sensioair.R;
@@ -64,17 +65,20 @@ public class Global {
     }
 
     public Boolean SetUserModalFromShared(Context context){
-        if ( SaveSharedPreferences.isLogedinUser(context) ) {
-            UserModal = SaveSharedPreferences.getLoginUserData(context);
-            return true;
-        } else {
-            UserModal = null;
-            return false;
-        }
+        UserModal = SaveSharedPreferences.getLoginUserData(context);
+
+        return isLogedinUser();
     }
 
     public UserModal GetUserModal() {
         return UserModal;
+    }
+
+    public Boolean isLogedinUser(){
+        if(UserModal == null)               return false;
+        if(UserModal.getEmail().isEmpty())  return false;
+        if(UserModal.isLogoutedUser())      return false;
+        return true;
     }
 
     public void SaveUserModal(Context context, UserModal userModal) {

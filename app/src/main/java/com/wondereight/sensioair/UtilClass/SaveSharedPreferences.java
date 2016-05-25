@@ -15,6 +15,8 @@ import com.wondereight.sensioair.Modal.SettingsModal;
 import com.wondereight.sensioair.Modal.UserModal;
 import com.wondereight.sensioair.R;
 
+import org.json.JSONObject;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
@@ -37,16 +39,19 @@ public class SaveSharedPreferences {
     }
 
     public static void setLoginUserData(Context ctx, UserModal userModal) {
-        Gson gson = new Gson();
+
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
-        editor.putString(LoginUserData, gson.toJson(userModal));
+        editor.putString(LoginUserData, userModal.toJson().toString());
         editor.apply();
     }
 
     public static UserModal getLoginUserData(Context ctx) {
-        Gson gson = new Gson();
-        String json = getSharedPreferences(ctx).getString(LoginUserData, new Gson().toJson(new UserModal()));
-        return gson.fromJson(json, UserModal.class);
+        String json = getSharedPreferences(ctx).getString(LoginUserData, "");
+        UserModal result = new UserModal();
+        try {
+            result.fromJson(new JSONObject(json));
+        } catch (Exception ignore) {}
+        return result;
     }
 
     public static void setInstallInfo(Context ctx, Boolean installed) {
@@ -111,11 +116,4 @@ public class SaveSharedPreferences {
         editor.apply();
     }
 
-    public static Boolean isLogedinUser(Context ctx){
-        UserModal modal = SaveSharedPreferences.getLoginUserData(ctx);
-        if( !modal.getEmail().isEmpty() && !modal.isLogoutedUser() )
-            return true;
-
-        return false;
-    }
 }

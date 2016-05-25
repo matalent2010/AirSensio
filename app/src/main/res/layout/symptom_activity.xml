@@ -75,14 +75,16 @@ tools:context=".Activity.SymptomActivity">
                                 android:layout_height="@dimen/_90sdp"
                                 android:layout_marginLeft="@dimen/_20sdp"
                                 android:layout_marginRight="@dimen/_20sdp"
-                                android:src="@drawable/symptom_5_0"/>
+                                android:background="@drawable/circle_btn_0"
+                                android:src="@drawable/watery_eyes"/>
                             <ImageView
                                 android:id="@+id/itchyeyes"
                                 android:layout_width="@dimen/_90sdp"
                                 android:layout_height="@dimen/_90sdp"
                                 android:layout_marginLeft="@dimen/_20sdp"
                                 android:layout_marginRight="@dimen/_20sdp"
-                                android:src="@drawable/symptom_2_0"/>
+                                android:background="@drawable/circle_btn_0"
+                                android:src="@drawable/itchy_eyes"/>
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -97,14 +99,16 @@ tools:context=".Activity.SymptomActivity">
                                 android:layout_height="@dimen/_90sdp"
                                 android:layout_marginLeft="@dimen/_20sdp"
                                 android:layout_marginRight="@dimen/_20sdp"
-                                android:src="@drawable/symptom_3_0"/>
+                                android:background="@drawable/circle_btn_0"
+                                android:src="@drawable/runny_nose"/>
                             <ImageView
                                 android:id="@+id/itchynose"
                                 android:layout_width="@dimen/_90sdp"
                                 android:layout_height="@dimen/_90sdp"
                                 android:layout_marginLeft="@dimen/_20sdp"
                                 android:layout_marginRight="@dimen/_20sdp"
-                                android:src="@drawable/symptom_6_0"/>
+                                android:background="@drawable/circle_btn_0"
+                                android:src="@drawable/itchy_nose"/>
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -119,14 +123,16 @@ tools:context=".Activity.SymptomActivity">
                                 android:layout_height="@dimen/_90sdp"
                                 android:layout_marginLeft="@dimen/_20sdp"
                                 android:layout_marginRight="@dimen/_20sdp"
-                                android:src="@drawable/symptom_1_0"/>
+                                android:background="@drawable/circle_btn_0"
+                                android:src="@drawable/sneezing"/>
                             <ImageView
                                 android:id="@+id/nasal"
                                 android:layout_width="@dimen/_90sdp"
                                 android:layout_height="@dimen/_90sdp"
                                 android:layout_marginLeft="@dimen/_20sdp"
                                 android:layout_marginRight="@dimen/_20sdp"
-                                android:src="@drawable/symptom_4_0"/>
+                                android:background="@drawable/circle_btn_0"
+                                android:src="@drawable/nasal_con"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>

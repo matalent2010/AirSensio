@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.support.annotation.BinderThread;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,7 +27,9 @@ import org.w3c.dom.Text;
 public class MainActivity extends AppCompatActivity {
 
     @Bind(R.id.btnAcceptTerms)
-    TextView btnAcceptTerms;
+        TextView btnAcceptTerms;
+    @Bind(R.id.tvTerms)
+        TextView tvTerms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +37,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        tvTerms.setText(Html.fromHtml(getString(R.string.terms_condition)));
         if(getIntent().getExtras()==null) {
-            if (SaveSharedPreferences.getInstallInfo(MainActivity.this) == false) {
+            if (!SaveSharedPreferences.getInstallInfo(MainActivity.this)) {
                 SaveSharedPreferences.setInstallInfo(MainActivity.this, true);
             } else {
                 Intent LogninIntent = new Intent(MainActivity.this, LoginAcitivity.class);
                 startActivity(LogninIntent);
                 finish();
+                return;
             }
         } else {
             btnAcceptTerms.setText(getString(R.string.button_continue));

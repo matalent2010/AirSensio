@@ -126,6 +126,7 @@ package com.wondereight.sensioair.gcm;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -137,7 +138,11 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
 import com.wondereight.sensioair.R;
+
+import java.io.IOException;
 
 public class GcmMain {
     private static String LOG_TAG = "GcmMain";
@@ -182,6 +187,30 @@ public class GcmMain {
         isReceiverRegistered = false;
     }
 
+//    public void deleteGCMToken(Context context){
+//        final InstanceID instanceID = InstanceID.getInstance(context);
+//        final String authorizedEntity = context.getString(R.string.gcm_defaultSenderId);
+//        Log.i(LOG_TAG, "To delete token :: instanceID: " + instanceID + ", authorizedEntity:" + authorizedEntity);
+//
+//        Thread thread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    instanceID.deleteToken(authorizedEntity, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
+//                    Log.i(LOG_TAG, "GCM Token deleted to success");
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    Log.i(LOG_TAG, "GCM Token deleted to failure");
+//                }
+//                // [END delete_token]
+//
+//            }
+//        });
+//
+//        thread.start();
+//
+//    }
+
     public boolean checkPlayServices(Activity activity) {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(activity);
@@ -189,13 +218,22 @@ public class GcmMain {
             if (apiAvailability.isUserResolvableError(resultCode)) {
                 apiAvailability.getErrorDialog( activity, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
                         .show();
+                Log.i(LOG_TAG, "Google Play Services Version Error.");
             } else {
 
-                Log.i(LOG_TAG, "This device is not supported.");
+                Log.i(LOG_TAG, "This device is not supported with Google Play Services.");
             }
             return false;
         }
+        Log.i(LOG_TAG, "This device is supported the Google Play Services.");
         return true;
     }
 
+    public void removeLocalNotification (Context context) {
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        //notificationManager.cancel( 0 );
+        notificationManager.cancelAll();
+    }
 }

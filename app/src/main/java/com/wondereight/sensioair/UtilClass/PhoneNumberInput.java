@@ -44,11 +44,11 @@ public class PhoneNumberInput extends PhoneNumberFormattingTextWatcher {
         //what matters are the phone digits beneath the mask, so we always work with a raw string with only digits
         String phone = string.replaceAll("[^\\d]", "");
 
-/*        //if the text was just edited, :afterTextChanged is called another time... so we need to verify the flag of edition
+        //if the text was just edited, :afterTextChanged is called another time... so we need to verify the flag of edition
         //if the flag is false, this is a original user-typed entry. so we go on and do some magic
         if (!editedFlag) {
 
-            //we start verifying the worst case, many characters mask need to be added
+/*            //we start verifying the worst case, many characters mask need to be added
             //example: 999999999 <- 6+ digits already typed
             // masked: (999) 999-999
             if (phone.length() >= 6 && !backspacingFlag) {
@@ -68,10 +68,15 @@ public class PhoneNumberInput extends PhoneNumberFormattingTextWatcher {
                 String ans = "(" +phone.substring(0, 3) + ") " + phone.substring(3);
                 _context.setText(ans);
                 _context.setSelection(_context.getText().length()-cursorComplement);
+            }*/
+            // if you are going to use the above code, following code is deleted.
+            if(!string.equals(phone)){
+                editedFlag = true;
+                _context.setText(phone);
+                _context.setSelection(_context.getText().length()-cursorComplement);
             }
-            // We just edited the field, ignoring this cicle of the watcher and getting ready for the next
         } else {
             editedFlag = false;
-        }*/
+        }
     }
 }

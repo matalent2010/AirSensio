@@ -2,9 +2,11 @@ package com.wondereight.sensioair.Fragment;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +71,24 @@ public class SettingsFragment extends Fragment {
 
     @OnClick(R.id.btnSendEmail)
     public void onclickSendEmail(){
-        restCallSendUserinfoApi();
+        AlertDialog sureDlg;
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(_context);
+        alertDialogBuilder.setMessage("It will send the settings information via your email.")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        restCallSendUserinfoApi();
+                    }
+                });
+        alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        sureDlg = alertDialogBuilder.create();
+        sureDlg.show();
     }
 
     @OnClick(R.id.btnSaveSettings)

@@ -87,23 +87,17 @@ public class HomeActivity extends FragmentActivity {
     @Bind(R.id.ivitemtext_settings) public TextView mBtnSettingsText;
 
 
-    private final String INTRO_1 = "1/6";
-    private final String INTRO_2 = "2/6";
-    private final String INTRO_3 = "3/6";
-    private final String INTRO_4 = "4/6";
-    private final String INTRO_5 = "5/6";
-    private final String INTRO_6 = "6/6";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity);
         ButterKnife.bind(HomeActivity.this);
 
-        if( Global.GetInstance().GetUserModal() == null ) {
+        if( !Global.GetInstance().SetUserModalFromShared(this) ) {
             gotoLoginActivity();
             return;
         }
+
         utilityClass = new UtilityClass(HomeActivity.this);
         //restCallDeviceDataApi();
         mTabPager.setPagingEnabled(true);
@@ -152,7 +146,7 @@ public class HomeActivity extends FragmentActivity {
             public void run() {
                 drawHomeTutorial();
             }
-        }, 200);
+        }, 300);
     }
 
 
@@ -267,6 +261,8 @@ public class HomeActivity extends FragmentActivity {
                     sDrawablePressed = ContextCompat.getDrawable(getBaseContext(), R.drawable.btn_home_s);
                     mBtnHomeImage.setImageDrawable(sDrawablePressed);
                     mBtnHomeText.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.BottomMenuTextColor_s));
+
+                    _debug.d(LOG_TAG, "displayed Home page");
                     new android.os.Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -278,17 +274,21 @@ public class HomeActivity extends FragmentActivity {
                     sDrawablePressed = ContextCompat.getDrawable(getBaseContext(), R.drawable.btn_statistics_s);
                     mBtnStatisticsImage.setImageDrawable(sDrawablePressed);
                     mBtnStatisticsText.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.BottomMenuTextColor_s));
+
+                    _debug.d(LOG_TAG, "displayed Statistics page");
                     new android.os.Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             drawStatTutorial();
                         }
-                    }, 100);
+                    }, 200);
                     break;
                 case 2:
                     sDrawablePressed = ContextCompat.getDrawable(getBaseContext(), R.drawable.btn_sensio_s);
                     mBtnSensioImage.setImageDrawable(sDrawablePressed);
                     mBtnSensioText.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.BottomMenuTextColor_s));
+
+                    _debug.d(LOG_TAG, "displayed Sensio page");
                     new android.os.Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -300,11 +300,15 @@ public class HomeActivity extends FragmentActivity {
                     sDrawablePressed = ContextCompat.getDrawable(getBaseContext(), R.drawable.btn_profile_s);
                     mBtnProfileImage.setImageDrawable(sDrawablePressed);
                     mBtnProfileText.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.BottomMenuTextColor_s));
+
+                    _debug.d(LOG_TAG, "displayed Profile page");
                     break;
                 case 4:
                     sDrawablePressed = ContextCompat.getDrawable(getBaseContext(), R.drawable.btn_settings_s);
                     mBtnSettingsImage.setImageDrawable(sDrawablePressed);
                     mBtnSettingsText.setTextColor(ContextCompat.getColor(getBaseContext(), R.color.BottomMenuTextColor_s));
+
+                    _debug.d(LOG_TAG, "displayed Setting page");
                     break;
             }
 
@@ -347,6 +351,11 @@ public class HomeActivity extends FragmentActivity {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     public void setPreorderNow(boolean flag){
         preorderNow = flag;
     }
@@ -355,6 +364,7 @@ public class HomeActivity extends FragmentActivity {
     }
 
     private void restCallDeviceDataApi() {
+        if( !Global.GetInstance().isLogedinUser() ) return;
 
         RequestParams params = new RequestParams();
         String str_userid = Global.GetInstance().GetUserModal().getId();
@@ -379,7 +389,7 @@ public class HomeActivity extends FragmentActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                // If the response is JSONObject instead of expected JSONArray
+                // If the response is JSONObject instead of expected Jrray
                 utilityClass.processDialogStop();
                 _debug.d(LOG_TAG, "Recieved JSONObject result");
             }

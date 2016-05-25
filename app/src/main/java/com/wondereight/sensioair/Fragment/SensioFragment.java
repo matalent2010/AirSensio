@@ -32,7 +32,7 @@ import co.mobiwise.materialintro.view.MaterialIntroView;
  */
 public class SensioFragment extends Fragment implements MaterialIntroListener {
     private static Context _context;
-    private static final String LOG_TAG = "StatisticFragment";
+    private static final String LOG_TAG = "SensioFragment";
     private static _Debug _debug = new _Debug(true);
     UtilityClass utilityClass;
 
@@ -53,6 +53,7 @@ public class SensioFragment extends Fragment implements MaterialIntroListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        _debug.d(LOG_TAG, "onCreateView");
         View view = inflater.inflate(R.layout.fragment_sensio, container, false);
         ButterKnife.bind(this, view);
         utilityClass = new UtilityClass(_context);
@@ -78,7 +79,9 @@ public class SensioFragment extends Fragment implements MaterialIntroListener {
 
     public void drawSensioTutorial(View view){
         //Show intro
-        if( view != null ){
+        PreferencesManager pm = new PreferencesManager(getContext());
+
+        if( view != null && !pm.isDisplayed(Constant.INTRO_ID_5)){
             //new PreferencesManager(getContext()).reset(Constant.INTRO_ID_5);
             showIntro(view, Constant.INTRO_ID_5, getString(R.string.tutorial_sensio_scanning), ArrowType.AT_RED);
         }
@@ -107,26 +110,35 @@ public class SensioFragment extends Fragment implements MaterialIntroListener {
 
     @Override
     public void onUserClicked(String materialIntroViewId) {
+        _debug.d(LOG_TAG, "Tutor pressed: " + materialIntroViewId);
+
         if( materialIntroViewId == Constant.INTRO_ID_5 ){
             //new PreferencesManager(getContext()).reset(Constant.INTRO_ID_6);
-            //showIntro(vPreorderDsc, Constant.INTRO_ID_6, getString(R.string.tutorial_sensio), ArrowType.AT_NORMAL);
-            new MaterialIntroView.Builder(getActivity())
-                    .setMaskColor(0x70000000)
-                    .setTextColor(0xFF3F9CFF)
-                    .enableDotAnimation(false)
-                    .setFocusGravity(FocusGravity.CENTER)
-                    .setFocusType(Focus.NORMAL)     //changed
-                    .setDelayMillis(200)
-                    .enableFadeAnimation(true)
-                    .performClick(true)
-                    .setListener(this)
-                    .setArrowType(ArrowType.AT_NORMAL)
-                    .setInfoText(getString(R.string.tutorial_sensio))
-                    .enableInfoIDText(true)     //Info ID text appear
-                    .enableIcon(false)
-                    .setTarget(vPreorderDesc)
-                    .setUsageId(Constant.INTRO_ID_6) //THIS SHOULD BE UNIQUE ID
-                    .show();
+            PreferencesManager pm = new PreferencesManager(getContext());
+
+            if( vPreorderDesc != null && !pm.isDisplayed(Constant.INTRO_ID_6)) {
+                //showIntro(vPreorderDsc, Constant.INTRO_ID_6, getString(R.string.tutorial_sensio), ArrowType.AT_NORMAL);
+                new MaterialIntroView.Builder(getActivity())
+                        .setMaskColor(0x70000000)
+                        .setTextColor(0xFF3F9CFF)
+                        .enableDotAnimation(false)
+                        .setFocusGravity(FocusGravity.CENTER)
+                        .setFocusType(Focus.NORMAL)     //changed
+                        .setDelayMillis(200)
+                        .enableFadeAnimation(true)
+                        .performClick(true)
+                        .setListener(this)
+                        .setArrowType(ArrowType.AT_NORMAL)
+                        .setInfoText(getString(R.string.tutorial_sensio))
+                        .enableInfoIDText(true)     //Info ID text appear
+                        .enableIcon(false)
+                        .setTarget(vPreorderDesc)
+                        .setUsageId(Constant.INTRO_ID_6) //THIS SHOULD BE UNIQUE ID
+                        .show();
+            }
+        } else if( materialIntroViewId == Constant.INTRO_ID_6 ){
+            ((HomeActivity)getActivity()).mTabPager.setCurrentItem(0);
         }
+
     }
 }

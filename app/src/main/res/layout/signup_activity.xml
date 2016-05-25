@@ -23,10 +23,12 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/_18sdp"
                 android:paddingRight="@dimen/_18sdp"
-                android:orientation="vertical">
+                android:minHeight="?android:attr/actionBarSize">
 
                 <TextView
                     android:text="@string/title_create_account"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_20sdp"
                     style = "@style/TVTitleStyle"/>
 
             </LinearLayout>
@@ -234,8 +236,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_20sdp"
-                    android:layout_marginLeft="@dimen/_90sdp"
-                    android:layout_marginRight="@dimen/_90sdp"
+                    android:layout_marginLeft="@dimen/_60sdp"
+                    android:layout_marginRight="@dimen/_60sdp"
                     android:orientation="horizontal">
                     <LinearLayout
                         android:id="@+id/btn_facebook"

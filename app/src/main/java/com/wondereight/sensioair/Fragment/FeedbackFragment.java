@@ -113,6 +113,7 @@ public class FeedbackFragment extends Fragment {
     }
 
     private void restCallSendFeedbackApi(){
+        if( !Global.GetInstance().isLogedinUser() ) return;
 
         RequestParams params = new RequestParams();
         UserModal userModal = Global.GetInstance().GetUserModal();

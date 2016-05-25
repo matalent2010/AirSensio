@@ -3,10 +3,13 @@ package com.wondereight.sensioair.Fragment;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.iid.InstanceID;
 import com.google.gson.Gson;
 import com.linkedin.platform.LISessionManager;
 import com.loopj.android.http.RequestParams;
@@ -93,29 +97,24 @@ public class ProfileFragment extends Fragment {
 
     @OnClick(R.id.btnLogout)
     public void onClickLogout(){
-        UserModal userModal = Global.GetInstance().GetUserModal();
-        userModal.setLogouted(true);
-        restCallLogoutApi();
-        Global.GetInstance().SaveUserModal(getContext(), userModal);
-        Global.GetInstance().init();
-
-        //GCM UnregisterReciever
-        PreferenceManager.getDefaultSharedPreferences(getContext())
-                .edit().putBoolean(SAPreferences.REGISTER_TO_SERVER, false)
-                .apply();
-        GcmMain.GetInstance().unregisterReceiver(getContext());
-
-        try {
-            //Facebook Token logout
-            if (AccessToken.getCurrentAccessToken() != null) {
-                LoginManager.getInstance().logOut();
+        AlertDialog sureDlg;
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(_context);
+        alertDialogBuilder.setMessage("Are you sure?")
+                .setCancelable(false)
+                .setPositiveButton("Log Out", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        logoutUser();
+                    }
+                });
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
             }
-        }catch (Exception e){ }
-
-        //Linkedin clear session
-        LISessionManager.getInstance(getActivity().getApplicationContext()).clearSession();
-
-        gotoLoginActivity();
+        });
+        sureDlg = alertDialogBuilder.create();
+        sureDlg.show();
     }
 
     @OnClick(R.id.btnFeedback)
@@ -141,7 +140,8 @@ public class ProfileFragment extends Fragment {
                 if (resultCode == Activity.RESULT_OK) {
                     displayProfileInfo();
                 } else {
-                    utilityClass.showAlertMessage(getString(R.string.title_alert), getString(R.string.not_saved_info));
+                    //utilityClass.showAlertMessage(getString(R.string.title_alert), getString(R.string.not_saved_info));
+                    utilityClass.toast("Cancelled editing your information");
                 }
                 break;
             }
@@ -153,6 +153,33 @@ public class ProfileFragment extends Fragment {
         _debug.d(LOG_TAG, "ProfileFragment destroyed.");
         AirSensioRestClient.cancelRequest(getContext());
         super.onDestroy();
+    }
+
+    private void logoutUser(){
+        UserModal userModal = Global.GetInstance().GetUserModal();
+        userModal.setLogouted(true);
+        restCallLogoutApi();
+        Global.GetInstance().SaveUserModal(getContext(), userModal);
+        Global.GetInstance().init();
+
+        //GCM UnregisterReciever
+        PreferenceManager.getDefaultSharedPreferences(getContext())
+                .edit().putBoolean(SAPreferences.SENT_TOKEN_TO_SERVER, false)
+                .apply();
+        GcmMain.GetInstance().unregisterReceiver(getContext());
+        GcmMain.GetInstance().removeLocalNotification(getContext());
+
+        try {
+            //Facebook Token logout
+            if (AccessToken.getCurrentAccessToken() != null) {
+                LoginManager.getInstance().logOut();
+            }
+        }catch (Exception ignored){ }
+
+        //Linkedin clear session
+        LISessionManager.getInstance(getActivity().getApplicationContext()).clearSession();
+
+        gotoLoginActivity();
     }
 
     private void restCallLogoutApi(){
@@ -210,6 +237,7 @@ public class ProfileFragment extends Fragment {
         });*/
     }
     private void restCallGetSavedInfoApi() {
+        if( !Global.GetInstance().isLogedinUser() ) return;
 
         RequestParams params = new RequestParams();
         UserModal userModal = Global.GetInstance().GetUserModal();
@@ -255,9 +283,9 @@ public class ProfileFragment extends Fragment {
                     try {
                         HealthInfoModal info = ParsingResponse.parsingSavedInfo(new JSONArray(responseString));
                         Gson gson = new Gson();
-                        Intent intentTerms = new Intent(_context, HealthActivity.class);
-                        intentTerms.putExtra("HealthInfoModal", gson.toJson(info));
-                        startActivityForResult(intentTerms, RESULT_SAVEDPROFILE);
+                        Intent intentHealth = new Intent(_context, HealthActivity.class);
+                        intentHealth.putExtra("HealthInfoModal", gson.toJson(info));
+                        startActivityForResult(intentHealth, RESULT_SAVEDPROFILE);
                         //utilityClass.showAlertMessage(getResources().getString(R.string.title_alert), "Saved Info : " + responseString);
                         _debug.d(LOG_TAG, "AirSensioRestClient.GET_SAVED_INFO.Success");
                     } catch (JSONException e) {
@@ -305,6 +333,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void restCallGetProfileInfoApi() {
+        if( !Global.GetInstance().isLogedinUser() ) return;
 
         RequestParams params = new RequestParams();
         UserModal userModal;

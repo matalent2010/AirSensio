@@ -32,8 +32,12 @@ import android.util.Log;
 import com.google.android.gms.gcm.GcmListenerService;
 import com.wondereight.sensioair.Activity.HomeActivity;
 import com.wondereight.sensioair.Activity.LoginAcitivity;
+import com.wondereight.sensioair.Modal.UserModal;
 import com.wondereight.sensioair.R;
 import com.wondereight.sensioair.UtilClass.Constant;
+import com.wondereight.sensioair.UtilClass.SaveSharedPreferences;
+
+import java.util.Random;
 
 public class SAGcmListenerService extends GcmListenerService {
 
@@ -71,7 +75,10 @@ public class SAGcmListenerService extends GcmListenerService {
          * In some cases it may be useful to show a notification indicating to the user
          * that a message was received.
          */
-        sendNotification(message);
+        UserModal UserModal = SaveSharedPreferences.getLoginUserData(this);
+        if(UserModal != null && !UserModal.getEmail().isEmpty() && !UserModal.isLogoutedUser()) {
+            sendNotification(message);
+        }
         // [END_EXCLUDE]
     }
     // [END receive_message]
@@ -85,8 +92,9 @@ public class SAGcmListenerService extends GcmListenerService {
         Intent intent = new Intent(this, HomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(Constant.NOTI_MESSAGE, message);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                0);
+        int requestCode = new Random().nextInt(); //System.currentTimeMillis() / 1000;
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, requestCode /* Request code */, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)

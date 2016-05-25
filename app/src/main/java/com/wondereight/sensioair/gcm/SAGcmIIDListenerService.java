@@ -41,7 +41,10 @@ public class SAGcmIIDListenerService extends InstanceIDListenerService {
         // Fetch updated Instance ID token and notify our app's server of any changes (if applicable).
         Log.i(TAG, "Instance ID token is updated.");
         Intent intent = new Intent(this, RegistrationIntentService.class);
-        intent.putExtra(SAPreferences.UPDATED_TOKEN, true);
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .edit().putBoolean(SAPreferences.SENT_TOKEN_TO_SERVER, false)
+                .apply();
         startService(intent);
     }
     // [END refresh_token]

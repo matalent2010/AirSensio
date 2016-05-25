@@ -4,24 +4,15 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:typeface">monospace</item>
-        <item name="droppyPopupStyle">@style/customCityListPopup</item>
     </style>
-
-    <style name="customCityListPopup" parent="Droppy.DroppyPopup">
-        <item name="android:layout_width">@dimen/_200sdp</item>
-        <item name="android:layout_height">@dimen/_100sdp</item>
-    </style>
-
 
     <style name="TVTitleStyle" parent="android:Widget.TextView">
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/_20sdp</item>
-        <item name="android:layout_marginBottom">@dimen/_20sdp</item>
-        <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">26sp</item>
+        <item name="android:textSize">22sp</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
 

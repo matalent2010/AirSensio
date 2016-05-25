@@ -1,8 +1,6 @@
 package com.wondereight.sensioair.Fragment;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -11,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -21,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
@@ -37,11 +37,6 @@ import cz.msebera.android.httpclient.Header;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
-import com.shehabic.droppy.DroppyClickCallbackInterface;
-import com.shehabic.droppy.DroppyMenuCustomItem;
-import com.shehabic.droppy.DroppyMenuItem;
-import com.shehabic.droppy.DroppyMenuPopup;
-import com.shehabic.droppy.animations.DroppyFadeInAnimation;
 import com.wondereight.sensioair.Activity.HomeActivity;
 import com.wondereight.sensioair.Activity.SymptomActivity;
 import com.wondereight.sensioair.Adapter.ViewPagerAdapter;
@@ -55,7 +50,6 @@ import com.wondereight.sensioair.UtilClass.AirSensioRestClient;
 import com.wondereight.sensioair.UtilClass.Constant;
 import com.wondereight.sensioair.UtilClass.Global;
 import com.wondereight.sensioair.UtilClass.ParsingResponse;
-import com.wondereight.sensioair.UtilClass.SaveSharedPreferences;
 import com.wondereight.sensioair.UtilClass.UtilityClass;
 
 import org.json.JSONArray;
@@ -102,14 +96,16 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
     @Bind(R.id.spinnerimage)
         ImageView ivSpinner;
     @Bind(R.id.city_list_container)
-        View vCityListContainer;
+        View svCityListContainer;
     @Bind(R.id.city_list)
         ListView lvCityList;
+
+    @Bind(R.id.svContainer)
+        ScrollView svContainer;
 
     private ArrayList<DataDetailsModal> dataModals = new ArrayList<>();
     private int nCallDataDetails;
 
-    DroppyMenuPopup cityMenu;
     Boolean isShownCityMenu = false;
     Boolean isLoading;
     private String strAdvice = "";
@@ -148,6 +144,7 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
         tvCityname.setText(Global.GetInstance().GetCityName());
 //        initCityMenu();
 
+        resetTouchListener();
         initCityList();
 
         _mainContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -179,12 +176,12 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
         getCityList();
         isShownCityMenu = true;
 
-        if( vCityListContainer.getVisibility() == View.VISIBLE ) {
-            vCityListContainer.setVisibility(View.GONE);
+        if( svCityListContainer.getVisibility() == View.VISIBLE ) {
+            svCityListContainer.setVisibility(View.GONE);
             ivSpinner.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.dropdown_icon));
         }
         else {
-            vCityListContainer.setVisibility(View.VISIBLE);
+            svCityListContainer.setVisibility(View.VISIBLE);
             ivSpinner.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.dropup_icon));
 
             int height = getItemHeightofListView(lvCityList);
@@ -202,12 +199,24 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
         switch(requestCode) {
             case (Constant.RESULT_SYMPTOM) : {
                 if (resultCode == Activity.RESULT_OK) {
-                    //String newText = data.getStringExtra(PUBLIC_STATIC_STRING_IDENTIFIER);
-                    utilityClass.sendSymptomList( );
+                    ((HomeActivity)getActivity()).mTabPager.setCurrentItem(1);
+                    new android.os.Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            StatisticsFragment statPage = (StatisticsFragment)((ViewPagerAdapter)((HomeActivity)getActivity()).mTabPager.getAdapter()).getItem(1);
+                            statPage.tabButton.get(0).performClick();
+                        }
+                    }, 100);
                 } else if (resultCode == Activity.RESULT_CANCELED ) {
                     Bundle bundle = data.getExtras();
-                    if( bundle != null && bundle.getBoolean(Constant.TUTORIAL, false) )
-                        ((HomeActivity)getActivity()).mTabPager.setCurrentItem(1);
+                    if( bundle != null && bundle.getBoolean(Constant.TUTORIAL, false) ) {
+                        new android.os.Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((HomeActivity) getActivity()).mTabPager.setCurrentItem(1);
+                            }
+                        }, 100);
+                    }
                 }
                 break;
             }
@@ -245,8 +254,9 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
             restCallGetIndexApi();
     }
 
-    private void restCallGetCitiesApi()
-    {
+    private void restCallGetCitiesApi(){
+        if( !Global.GetInstance().isLogedinUser() ) return;
+
         AirSensioRestClient.post(AirSensioRestClient.GET_CITYLIST, new RequestParams(), new JsonHttpResponseHandler() {
 
             public void onStart() {
@@ -258,12 +268,7 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
                 if (!arraylist.isEmpty()) {
                     Global.GetInstance().SetCityList(arraylist);
 
-//                    if(isShownCityMenu)
-//                        cityMenu.dismiss(false);
-//                    initCityMenu();
                     initCityList();
-//                    if(isShownCityMenu)
-//                        cityMenu.show();
                     _debug.d(LOG_TAG, "AirSensioRestClient.GET_CITIES_LIST.onSuccess : " + arraylist.toString());
                 } else {
                     _debug.d(LOG_TAG, "AirSensioRestClient.GET_CITIES_LIST.onSuccess : Empty");
@@ -287,30 +292,6 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
             public void onFinish() {
             }
         });
-    }
-
-    private void initCityMenu( )
-    {
-        DroppyMenuPopup.Builder droppyBuilder = new DroppyMenuPopup.Builder(getContext(), rlCityname);
-
-        CityMenuCallback cityMenuCallback = new CityMenuCallback();
-
-        if( Global.GetInstance().IsSetCitiesList() ) {
-            ArrayList<CityModal> cityList = Global.GetInstance().GetCityList();
-            for (int i = 0; i < cityList.size(); i++) {
-                droppyBuilder.addMenuItem(new DroppyMenuItem(cityList.get(i).getCityName()));
-            }
-        } else {
-            droppyBuilder.addMenuItem(new DroppyMenuCustomItem(R.layout.loading_menu_item));
-        }
-        droppyBuilder.setOnDismissCallback(cityMenuCallback)
-                .setOnClick(cityMenuCallback)
-                .setXOffset(getResources().getDimensionPixelSize(R.dimen._10sdp))
-                .setPopupAnimation(new DroppyFadeInAnimation())
-                .triggerOnAnchorClick(true);
-
-
-        cityMenu = droppyBuilder.build();
     }
 
     public static int getItemHeightofListView(ListView listView) {
@@ -361,7 +342,7 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
                     restCallGetAdviceApi();
                     restCallGetIndexApi();
                     tvCityname.setText(Global.GetInstance().GetCityName());
-                    vCityListContainer.setVisibility(View.GONE);
+                    svCityListContainer.setVisibility(View.GONE);
                     ivSpinner.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.dropdown_icon));
                 }
             });
@@ -379,7 +360,7 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view,
                                         int position, long id) {
-                    vCityListContainer.setVisibility(View.GONE);
+                    svCityListContainer.setVisibility(View.GONE);
                     ivSpinner.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.dropdown_icon));
                 }
             });
@@ -388,43 +369,15 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
 
     @Override
     public void onUserClicked(String materialIntroViewId) {
-        _debug.d(LOG_TAG, "pressed " + materialIntroViewId);
+        _debug.d(LOG_TAG, "Tutor pressed: " + materialIntroViewId);
         if(materialIntroViewId.equalsIgnoreCase(Constant.INTRO_ID_1)){
             View btnPress = getView().findViewById(R.id.btnPress);
-            if( btnPress != null) {
+            PreferencesManager pm = new PreferencesManager(getContext());
+
+            if( btnPress != null && !pm.isDisplayed(Constant.INTRO_ID_2)){
                 //new PreferencesManager(getContext()).reset(Constant.INTRO_ID_2);
                 showIntro(btnPress, Constant.INTRO_ID_2, getString(R.string.tutorial_home_press), ArrowType.AT_BLUE);
             }
-        }
-    }
-
-    class CityMenuCallback implements DroppyMenuPopup.OnDismissCallback, DroppyClickCallbackInterface
-    {
-
-        @Override
-        public void call(View v, int id) {
-            String idText;
-
-            switch (id) {
-                //case R.id.droppy1:  idText = "Droppy Item 1"; break;
-                default:
-                    idText = String.valueOf(id);
-            }
-            ArrayList<CityModal> cityList = Global.GetInstance().GetCityList();
-            Global.GetInstance().SetCityName(cityList.get(id).getCityName());
-            Global.GetInstance().SetCityID(cityList.get(id).getCityId());
-            initIndex();
-            initAdvice();
-            restCallGetAdviceApi();
-            restCallGetIndexApi();
-            tvCityname.setText(Global.GetInstance().GetCityName());
-            isShownCityMenu = false;
-        }
-
-        @Override
-        public void call() {
-            isShownCityMenu = false;
-            //utilityClass.toast("Menu dismissed");
         }
     }
 
@@ -440,6 +393,8 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
     }
 
     public void restCallGetAdviceApi(){
+        if( !Global.GetInstance().isLogedinUser() ) return;
+
         RequestParams params = new RequestParams();
         UserModal userModal = Global.GetInstance().GetUserModal();
         String str_userid = userModal.getId();
@@ -531,6 +486,7 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
     }
 
     private void restCallGetIndexApi(){
+        if( !Global.GetInstance().isLogedinUser() ) return;
 
         RequestParams params = new RequestParams();
         UserModal userModal = Global.GetInstance().GetUserModal();
@@ -635,6 +591,7 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
     }
 
     private void restCallGetDataDetailsApi(){
+        if( !Global.GetInstance().isLogedinUser() ) return;
 
         RequestParams params = new RequestParams();
         UserModal userModal = Global.GetInstance().GetUserModal();
@@ -763,7 +720,9 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
 
     public void drawHomeTutorial(View viewEnvir){
         //Show intro
-        if( viewEnvir != null ){
+        PreferencesManager pm = new PreferencesManager(getContext());
+
+        if( viewEnvir != null && !pm.isDisplayed(Constant.INTRO_ID_1)){
             //new PreferencesManager(getContext()).reset(Constant.INTRO_ID_1);
             showIntro(viewEnvir, Constant.INTRO_ID_1, getString(R.string.tutorial_home_index), ArrowType.AT_NORMAL);
         }
@@ -789,4 +748,32 @@ public class HomeFragment extends Fragment implements MaterialIntroListener {
                 .setUsageId(usageId) //THIS SHOULD BE UNIQUE ID
                 .show();
     }
+
+    private void resetTouchListener(){
+        if( Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            svContainer.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    _debug.v(LOG_TAG, "PARENT TOUCH");
+
+                    svContainer.requestDisallowInterceptTouchEvent(false);
+                    return false;
+                }
+            });
+
+            lvCityList.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    _debug.v(LOG_TAG, "CHILD TOUCH");
+
+                    // Disallow the touch request for parent scroll on touch of  child view
+                    svContainer.requestDisallowInterceptTouchEvent(true);
+                    return false;
+                }
+            });
+        }
+    }
 }
+

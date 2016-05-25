@@ -71,11 +71,7 @@ public class RegistrationIntentService extends IntentService {
             Log.i(LOG_TAG, "GCM Registration Token: " + token);
 
             // TODO: Implement this method to send any registration to your app's servers.
-            boolean isUpdated = false;
-            if( intent.getExtras() != null )
-                isUpdated = intent.getExtras().getBoolean(SAPreferences.UPDATED_TOKEN);
-
-            sendRegistrationToServer(token, isUpdated);
+            sendRegistrationToServer(token);
 
             // Subscribe to topic channels
             subscribeTopics(token);
@@ -83,7 +79,7 @@ public class RegistrationIntentService extends IntentService {
             // You should store a boolean that indicates whether the generated token has been
             // sent to your server. If the boolean is false, send the token to your server,
             // otherwise your server should have already received the token.
-            sharedPreferences.edit().putBoolean(SAPreferences.SENT_TOKEN_TO_SERVER, true).apply();
+//            sharedPreferences.edit().putBoolean(SAPreferences.SENT_TOKEN_TO_SERVER, true).apply();
             // [END register_for_gcm]
         } catch (Exception e) {
             Log.e(LOG_TAG, "Failed to complete token refresh", e);
@@ -104,10 +100,10 @@ public class RegistrationIntentService extends IntentService {
      *
      * @param token The new token.
      */
-    private void sendRegistrationToServer(String token, boolean isUpdated) {
+    private void sendRegistrationToServer(String token) {
         // Add custom implementation, as needed.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if( !sharedPreferences.getBoolean(SAPreferences.REGISTER_TO_SERVER, false) || isUpdated ) {
+        if( !sharedPreferences.getBoolean(SAPreferences.SENT_TOKEN_TO_SERVER, false)) {
             restCallSendPushIDApi(token);
         }
     }
@@ -154,8 +150,8 @@ public class RegistrationIntentService extends IntentService {
                     Log.e(LOG_TAG, "None response string");
                 } else if (responseString.equals("0")) {
                     PreferenceManager.getDefaultSharedPreferences(this)
-                            .edit().putBoolean(SAPreferences.REGISTER_TO_SERVER, true)
-                            .commit();
+                            .edit().putBoolean(SAPreferences.SENT_TOKEN_TO_SERVER, true)
+                            .apply();
                     Log.d(LOG_TAG, "SEND_PUSHID to success");
                 } else if (responseString.equals("1")) {
                     Log.e(LOG_TAG, "Incorrect Hash");
